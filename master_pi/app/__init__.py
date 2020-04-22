@@ -4,12 +4,13 @@ from flask import Flask
 from flask import jsonify
 from flask import render_template
 
-import configparser
+from app.database_util import DatabaseUtil
 
 app = Flask(__name__)
 
-config = configparser.ConfigParser()
-config.read(os.path.join(os.path.dirname(__file__), os.pardir, 'config.ini'))
+with DatabaseUtil() as db:
+    db.create_user_table()
+    # db.insert_user('test', '1234')
 
 # Frontend HTML
 @app.route('/login')
