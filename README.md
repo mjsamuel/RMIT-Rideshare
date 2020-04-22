@@ -22,7 +22,7 @@ $ pip install -r requirements.txt
 ```
 In order for passwords and other sensitive data to be hidden from version control a `config.ini` file must be created that put in the root of the project. These values relate to the Google cloud database as well as the encryption key used to encrypt user passwords.
 
-The template file`config.ini.example` details what `config.ini` should look like:
+The template file `config.ini.example` details what the `config.ini` should look like:
 ```ini
 [DEFAULT]
 HOST = 35.201.18.142
@@ -40,13 +40,16 @@ ENCRYPTION_KEY = abcd1234
 ```
 
 ### Master Pi
-Navigate to `/master_pi` and run the REST API and frontend code by typing:
+Navigate to `/master_pi` folder and run the REST API and frontend code by typing:
 ```
 $ export FLASK_APP=app
-$ flask run
+$ flask run --host=0.0.0.0
 ```
+You can then access the app by going to a browser and typing the Master Pi's IP, followed by the specified port.
+E.g `192.168.1.235:5000/`
+
 ###  Agent Pi
-Navigate to `/agent_pi` and run the console application by typing:
+Navigate to `/agent_pi` folder and run the console application by typing:
 ```
 $ python3 main.py
 ```
