@@ -1,36 +1,35 @@
 import os
 
+import configparser
 from flask import Flask
-from flask import jsonify
-from flask import render_template
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 
-from app.database_util import DatabaseUtil
+from app.blueprint_api import api
+from app.blueprint_site import site
 
+
+# Reading from config.ini file
+config = configparser.ConfigParser()
+config.read(os.path.join(
+    os.path.dirname(__file__),
+    os.pardir,
+    os.pardir,
+    'config.ini'))
+
+# Setting up Flask app
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://{}:{}@{}/{}".format(
+    config['DEFAULT']['USER'],
+    config['DEFAULT']['PASSWORD'],
+    config['DEFAULT']['HOST'],
+    config['DEFAULT']['DATABASE'])
 
-with DatabaseUtil() as db:
-    db.create_user_table()
-    # db.insert_user('test', '1234')
+db = SQLAlchemy(app)
+ma = Marshmallow(app)
 
-# Frontend HTML
-@app.route('/login')
-def login_page():
-    return render_template('login.html', title='Login')
-
-@app.route('/register')
-def register_page():
-    return render_template('register.html', title='Register')
-
-# RESTful API
-@app.route('/api/login')
-def login():
-    ret_value = {'message': 'Correct credentials'}
-    return jsonify(ret_value)
-
-@app.route('/api/register')
-def register():
-    ret_value = {'message': 'Account created'}
-    return jsonify(ret_value)
+app.register_blueprint(api)
+app.register_blueprint(site)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
