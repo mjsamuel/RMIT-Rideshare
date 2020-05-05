@@ -1,14 +1,85 @@
-from flask import Blueprint, jsonify
-from flask import current_app as app
+from flask import Blueprint, current_app, jsonify, request
+
+from app.database import db, ma
+from app.user import User, user_schema
 
 api = Blueprint("api", __name__, url_prefix='/api')
 
-@api.route('/login')
+@api.route('/login', methods = ["POST"])
 def login():
-    ret_value = {'message': 'Correct credentials'}
-    return jsonify(ret_value)
+    response = {
+        'message': '',
+        'user': None
+    }
+    status = None
 
-@api.route('/register')
-def register():
-    ret_value = {'message': 'Account created'}
-    return jsonify(ret_value)
+    if ('username' not in request.json) or (request.json["username"] == ""):
+        response['message'] = "Missing username"
+        status = 400
+    elif ('password' not in request.json) or (request.json["password"] == ""):
+        response['message'] = "Missing password"
+        status = 400
+    else:
+        username = request.json["username"]
+        password = request.json["password"]
+
+        user = User.query.get(username)
+        if user is None:
+            response['message'] = "User does not exist"
+            status = 404
+        else:
+            if password != user.password:
+                response['message'] = "Incorrect password"
+                status = 401
+            else:
+                response['message'] = "Logged in successfully "
+                response['user'] = user_schema.dump(user)
+                status = 200
+
+    return response, status
+
+@api.route('/user', methods=["POST"])
+def register_user():
+    response = {'message': ''}
+    status = None
+
+    if 'username' not in request.json:
+        response['message'] = "Missing username"
+        status = 400
+    elif 'password' not in request.json:
+        response['message'] = "Missing password"
+        status = 400
+    else:
+        username = request.json["username"]
+        password = request.json["password"]
+        new_user = User(username, password)
+
+        db.session.add(new_user)
+        db.session.commit()
+
+        response['message'] = "Registered user successfully"
+        status = 200
+
+    return response, status
+
+
+@api.route('/user', methods=["GET"])
+def get_user():
+    response = {'message': ''}
+    status = None
+
+    username = request.args.get('username')
+    user = User.query.get(username)
+    if user is None:
+        response['message'] = "User not found"
+        status = 404
+    else:
+        response = user_schema.dump(user)
+        status = 200
+
+    return response, status
+
+@api.route('/user', methods=["DELETE"])
+def delete_user():
+    username = request.args.get('username')
+    return 'Unimplemented'
