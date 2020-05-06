@@ -6,6 +6,26 @@
   padding-top: 125px;
 }
 
+.topnav {
+    text-align: left;
+    padding-bottom: 12px;
+}
+
+.topnav a:link {
+    color: black;
+    text-decoration: none;
+}
+
+.topnav a:visited {
+    color: black;
+    text-decoration: none;
+}
+
+.topnav img {
+    width: 20px;
+}
+
+
 form {
   text-align: left;
   padding-top: 12px;

@@ -40,25 +40,41 @@ def login():
 
 @api.route('/user', methods=["POST"])
 def register_user():
-    response = {'message': ''}
+    response = {
+        'message': '',
+        'user': None
+    }
     status = None
 
-    if 'username' not in request.json:
+    if ('username' not in request.json) or (request.json["username"] == ""):
         response['message'] = "Missing username"
         status = 400
-    elif 'password' not in request.json:
+    elif ('password' not in request.json) or (request.json["password"] == ""):
         response['message'] = "Missing password"
+        status = 400
+    elif ('confirm_password' not in request.json) or (request.json["confirm_password"] == ""):
+        response['message'] = "Missing confirmed password"
         status = 400
     else:
         username = request.json["username"]
         password = request.json["password"]
-        new_user = User(username, password)
+        confirm_password = request.json["confirm_password"]
 
-        db.session.add(new_user)
-        db.session.commit()
+        if password != confirm_password:
+            response['message'] = "Passwords do not match"
+            status = 400
+        else:
+            if User.query.get(username) is not None:
+                response['message'] = "User already exists"
+                status = 400
+            else:
+                new_user = User(username, password)
+                db.session.add(new_user)
+                db.session.commit()
 
-        response['message'] = "Registered user successfully"
-        status = 200
+                response['message'] = "Registered user successfully"
+                response['user'] = user_schema.dump(new_user)
+                status = 200
 
     return response, status
 
