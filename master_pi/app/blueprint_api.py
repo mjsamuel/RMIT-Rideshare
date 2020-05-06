@@ -1,6 +1,6 @@
 from flask import Blueprint, current_app, jsonify, request
 
-from app.database import db, ma
+from app.extensions import db, ma, bcrypt
 from app.user import User, user_schema
 
 api = Blueprint("api", __name__, url_prefix='/api')
@@ -28,13 +28,14 @@ def login():
             response['message'] = "User does not exist"
             status = 404
         else:
-            if password != user.password:
-                response['message'] = "Incorrect password"
-                status = 401
-            else:
+            password_matche = bcrypt.check_password_hash(user.password, password)
+            if password_matche:
                 response['message'] = "Logged in successfully "
                 response['user'] = user_schema.dump(user)
                 status = 200
+            else:
+                response['message'] = "Incorrect password"
+                status = 401
 
     return response, status
 
@@ -68,7 +69,10 @@ def register_user():
                 response['message'] = "User already exists"
                 status = 400
             else:
-                new_user = User(username, password)
+                # Hashing password
+                hashed_password = bcrypt.generate_password_hash(password)
+
+                new_user = User(username, hashed_password)
                 db.session.add(new_user)
                 db.session.commit()
 

@@ -3,7 +3,7 @@ import os
 import configparser
 from flask import Flask
 
-from app.database import db, ma
+from app.extensions import db, ma, bcrypt
 from app.blueprint_api import api
 from app.blueprint_site import site
 
@@ -30,6 +30,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
 db.init_app(app)
 ma.init_app(app)
+bcrypt.init_app(app)
 
 # Creating databse tables
 with app.app_context():
