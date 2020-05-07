@@ -59,6 +59,7 @@ def login():
     :status 401: incorrect password
     :status 404: user does not exist
     """
+
     response = {
         'message': '',
         'user': None
@@ -145,6 +146,7 @@ def register_user():
     :status 200: successful registration
     :status 400: malformed request
     """
+
     response = {
         'message': '',
         'user': None
@@ -232,6 +234,7 @@ def get_user():
     :status 200: user found
     :status 404: user does not exit
     """
+
     response = {
         'message': '',
         'user': None

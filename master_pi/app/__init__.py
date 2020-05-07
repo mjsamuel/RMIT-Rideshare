@@ -7,39 +7,49 @@ from app.extensions import db, ma, bcrypt
 from app.blueprint_api import api
 from app.blueprint_site import site
 
-# Reading from config.ini file
-config = configparser.ConfigParser()
-config.read(os.path.join(
-    os.path.dirname(__file__),
-    os.pardir,
-    os.pardir,
-    'config.ini'))
 
-app = Flask(__name__)
+def create_app(test_config = None):
+    app = Flask(__name__)
 
-# Reloads HTML templates without having to restart application
-app.config['TEMPLATES_AUTO_RELOAD'] = True
+    # Loading config.ini file
+    user_config = configparser.ConfigParser()
+    user_config.read(os.path.join(
+        os.path.dirname(__file__),
+        os.pardir,
+        os.pardir,
+        'config.ini'))
 
-# Setting up database connection
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://{}:{}@{}/{}".format(
-    config['DEFAULT']['USER'],
-    config['DEFAULT']['PASSWORD'],
-    config['DEFAULT']['HOST'],
-    config['DEFAULT']['DATABASE'])
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
+    # Checking if in test eviroment to change config values
+    if test_config is None:
+        config_state = "DEFAULT"
+    else:
+        config_state = "TEST"
 
-db.init_app(app)
-ma.init_app(app)
-bcrypt.init_app(app)
+    # Allows reloading of HTML templates without having to restart application
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
 
-# Creating databse tables
-with app.app_context():
-    db.create_all()
-    db.session.commit()
+    # Setting up database connection
+    app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://{}:{}@{}/{}".format(
+        user_config[config_state]['USER'],
+        user_config[config_state]['PASSWORD'],
+        user_config[config_state]['HOST'],
+        user_config[config_state]['DATABASE'])
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
-# Registering blueprints
-app.register_blueprint(api)
-app.register_blueprint(site)
+    db.init_app(app)
+    ma.init_app(app)
+    bcrypt.init_app(app)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    # Creating databse tables
+    with app.app_context():
+        db.create_all()
+        db.session.commit()
+
+    # Registering blueprints
+    app.register_blueprint(api)
+    app.register_blueprint(site)
+
+    return app
+
+def get_db():
+    return db
