@@ -1,4 +1,5 @@
 
+
 <div align="center">
   <h1>
     <br>
@@ -29,17 +30,16 @@ HOST = 35.201.18.142
 USER = root
 PASSWORD = abcd1234
 DATABASE = main-db
-ENCRYPTION_KEY = abcd1234
 
 [TEST]
 HOST = 35.201.18.142
 USER = root
 PASSWORD = abcd1234
 DATABASE = test-db
-ENCRYPTION_KEY = abcd1234
 ```
 
 ### Master Pi
+#### Running Flask Project
 Navigate to the `/master_pi` folder and run the REST API and frontend code by typing:
 ```
 $ export FLASK_APP=app
@@ -47,6 +47,18 @@ $ flask run --host=0.0.0.0
 ```
 You can then access the app by going to a browser and typing the Master Pi's IP, followed by the specified port.
 E.g `192.168.1.235:5000/`
+
+#### Compiling Sphinx documentation
+Navigate to the `/docs` folder and compile the documentation by typing:
+```
+$ make html
+```
+
+### Running Unit Tests
+Navigate to the `/master_pi` folder and run the unit tests by typing:
+```
+$ pytest
+```
 
 ###  Agent Pi
 Navigate to the `/agent_pi` folder and run the console application by typing:
