@@ -1,8 +1,8 @@
 Flask API
 =========
 
-.. qrefflask:: app:app
+.. qrefflask:: app:create_app()
   :undoc-static:
 
-.. autoflask:: app:app
+.. autoflask:: app:create_app()
    :undoc-static:
