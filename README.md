@@ -46,13 +46,15 @@ $ export FLASK_APP=app
 $ flask run --host=0.0.0.0
 ```
 You can then access the app by going to a browser and typing the Master Pi's IP, followed by the specified port.
-E.g `192.168.1.235:5000/`
+E.g. `192.168.1.235:5000/`
 
 #### Compiling Sphinx documentation
 Navigate to the `/docs` folder and compile the documentation by typing:
 ```
 $ make html
 ```
+From there you can view the docs by running the Flask application and going to the app's adress followed by `/docs/index.html`
+E.g. `192.168.1.235:5000/docs/index.html`
 
 ### Running Unit Tests
 Navigate to the `/master_pi` folder and run the unit tests by typing:

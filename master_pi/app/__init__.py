@@ -6,7 +6,7 @@ from flask import Flask
 from app.extensions import db, ma, bcrypt
 from app.blueprint_api import api
 from app.blueprint_site import site
-
+from app.blueprint_docs import docs
 
 def create_app(test_config = None):
     app = Flask(__name__)
@@ -48,6 +48,7 @@ def create_app(test_config = None):
     # Registering blueprints
     app.register_blueprint(api)
     app.register_blueprint(site)
+    app.register_blueprint(docs)
 
     return app
 
