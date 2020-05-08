@@ -41,3 +41,12 @@ form #error-message {
   width: 100%;
   padding-top: 16px;
 }
+
+.table-title {
+  width: 100%;
+  text-align: left;
+}
+
+.table-data-row {
+    cursor: pointer;
+}

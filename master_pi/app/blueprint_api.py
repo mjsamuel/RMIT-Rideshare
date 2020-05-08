@@ -310,7 +310,6 @@ def get_cars():
     :>json app.car.Car car: the car objects found
     :resheader Content-Type: application/json
     :status 200: cars found
-    :status 400: malformed request
     """
 
     response = {
@@ -343,8 +342,7 @@ def get_cars():
             cost_per_hour = request.args.get('cost_per_hour')
             cars = Car.query.filter_by(cost_per_hour=cost_per_hour).all()
         else:
-            response['message'] = 'Invalid search parameters'
-            status = 400
+            cars = Car.query.all()
         response['cars'] = car_schema.dump(cars, many=True)
         status = 200
 
