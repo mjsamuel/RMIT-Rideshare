@@ -1,7 +1,7 @@
 import pytest
 from app.user import User
 
-class TestUserLogin:
+class TestApiUserEndpoints:
     def test_login_success(self, client):
         """Testing for a sucessful login with an already registered user
         """
