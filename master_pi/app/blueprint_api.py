@@ -229,6 +229,7 @@ def get_user():
             "user": null
         }
 
+    :query username: the username that you are searching for
     :>json message: repsonse information such as error information
     :>json app.user.User user: the user object found
     :resheader Content-Type: application/json
@@ -256,7 +257,7 @@ def get_user():
 
 @api.route('/cars', methods=["GET"])
 def get_cars():
-    """Gets a collection of cars based on the search criteria
+    """Gets a single car or collection of cars based on the search criteria
 
     .. :quickref: GET; Get a collection of cars.
 
@@ -264,7 +265,7 @@ def get_cars():
 
     .. sourcecode:: http
 
-        GET /api/user?body_type=SUV HTTP/1.1
+        GET /api/user?make=Toyota HTTP/1.1
         Host: localhost
         Accept: application/json
 
@@ -275,19 +276,41 @@ def get_cars():
         HTTP/1.1 200 OK
         Content-Type: application/json
 
-        [
-            {
+        {
+            "message":
+            "cars"": [
+                {
+                    "body_type": "SUV",
+                    "colour": "Black",
+                    "cost_per_hour": 15,
+                    "id": 1,
+                    "location": null,
+                    "make": "Toyota",
+                    "no_seats": 5
+                },
+                {
+                    "body_type": "Hatchback",
+                    "colour": "Black",
+                    "cost_per_hour": 15,
+                    "id": 3,
+                    "location": null,
+                    "make": "Toyota",
+                    "no_seats": 5
+                }
+            ]
+        }
 
-            },
-            {
-
-            }
-        ]
-
-    :>json app.user.User user: the user object found
+    :query id: id of the car
+    :query make: make of the car
+    :query body_type: body_type of the car
+    :query colour:  colour of the car
+    :query no_sears: number of seats in car
+    :query cost_per_hour: cost per hpur to rent the car
+    :>json message: repsonse information such as error information
+    :>json app.car.Car car: the car objects found
     :resheader Content-Type: application/json
-    :status 200: user found
-    :status 404: user does not exit
+    :status 200: cars found
+    :status 400: malformed request
     """
 
     response = {
