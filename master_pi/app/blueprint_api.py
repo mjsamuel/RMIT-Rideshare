@@ -2,6 +2,7 @@ from flask import Blueprint, current_app, jsonify, request
 
 from app.extensions import db, ma, bcrypt
 from app.user import User, user_schema
+from app.car import Car, car_schema
 
 api = Blueprint("api", __name__, url_prefix='/api')
 
@@ -253,7 +254,75 @@ def get_user():
 
     return response, status
 
-@api.route('/user', methods=["DELETE"])
-def delete_user():
-    username = request.args.get('username')
-    return 'Unimplemented'
+@api.route('/cars', methods=["GET"])
+def get_cars():
+    """Gets a collection of cars based on the search criteria
+
+    .. :quickref: GET; Get a collection of cars.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        GET /api/user?body_type=SUV HTTP/1.1
+        Host: localhost
+        Accept: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        [
+            {
+
+            },
+            {
+
+            }
+        ]
+
+    :>json app.user.User user: the user object found
+    :resheader Content-Type: application/json
+    :status 200: user found
+    :status 404: user does not exit
+    """
+
+    response = {
+        'message': '',
+        'cars': None
+    }
+    status = None
+
+    if (request.args.get('id') is not None):
+        id = request.args.get('id')
+        car = Car.query.get(id)
+
+        response['cars'] = car_schema.dump(car)
+        status = 200
+    else:
+        cars = None
+        if (request.args.get('make') is not None):
+            make = request.args.get('make')
+            cars = Car.query.filter_by(make=make).all()
+        elif (request.args.get('body_type') is not None):
+            body_type = request.args.get('body_type')
+            cars = Car.query.filter_by(body_type=body_type).all()
+        elif (request.args.get('colour') is not None):
+            colour = request.args.get('colour')
+            cars = Car.query.filter_by(colour=colour).all()
+        elif (request.args.get('no_seats') is not None):
+            no_seats = request.args.get('no_seats')
+            cars = Car.query.filter_by(no_seats=no_seats).all()
+        elif (request.args.get('cost_per_hour') is not None):
+            cost_per_hour = request.args.get('cost_per_hour')
+            cars = Car.query.filter_by(cost_per_hour=cost_per_hour).all()
+        else:
+            response['message'] = 'Invalid search parameters'
+            status = 400
+        response['cars'] = car_schema.dump(cars, many=True)
+        status = 200
+
+    return response, status

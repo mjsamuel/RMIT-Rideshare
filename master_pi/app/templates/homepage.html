@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <script>
+    isLoggedIn();
+
+    function bookCarsClicked() {
+      window.location.href = "/cars"
+    }
+
+    function logoutClicked() {
+      sessionStorage.removeItem('username')
+      window.location.href = "/login"
+    }
+  </script>
+
+  <h2>Booked cars</h2>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Car</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>8/5/2020 - 3:37pm</td>
+        <td>Black, Toyota, SUV</td>
+        <td>
+          <button type="button" class="btn btn-danger">Cancel</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary" onclick='bookCarsClicked()'>Book a car</button>
+    <button type="button" class="btn btn-secondary" onclick='logoutClicked()'>Logout</button>
+  </div>
+{% endblock %}

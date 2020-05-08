@@ -1,4 +1,5 @@
 from app.extensions import db, ma
+from marshmallow import fields
 
 class User(db.Model):
     """Class to represent a basic user that can hire vehicles
@@ -23,6 +24,6 @@ class UserSchema(ma.SQLAlchemySchema):
     class Meta:
         model = User
 
-    username = ma.auto_field()
+    username = fields.Str()
 
 user_schema = UserSchema()

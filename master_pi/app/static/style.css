@@ -25,16 +25,19 @@
     width: 20px;
 }
 
+h2 {
+  padding-bottom: 12px;
+}
 
 form {
   text-align: left;
-  padding-top: 12px;
 }
 
-form .btn-group {
-  width: 100%;
-  padding-top: 16px;
-}
 form #error-message {
   display: none;
+}
+
+.btn-group {
+  width: 100%;
+  padding-top: 16px;
 }

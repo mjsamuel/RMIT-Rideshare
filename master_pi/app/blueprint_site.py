@@ -3,7 +3,11 @@ from flask import current_app as app
 
 site = Blueprint("site", __name__,
     template_folder='templates',
-     static_folder='static')
+    static_folder='static')
+
+@site.route('/')
+def homepage():
+    return render_template('homepage.html', title='Home')
 
 @site.route('/login')
 def login():
