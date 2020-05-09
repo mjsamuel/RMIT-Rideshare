@@ -6,11 +6,10 @@
 
     function submitClicked() {
       var data = {
-        carId: "",
+        car_id: "{{ car.id }}",
         username: sessionStorage.getItem('username'),
-        time: document.getElementById('time').value
+        duration: document.getElementById('duration').value
       };
-      console.log(data)
 
       fetch('/api/booking', {
           method: "POST",
@@ -41,7 +40,7 @@
 
   <form>
     <div class="form-group">
-      <input type="number" id="time"  class="form-control" name="time" min="1" placeholder="Booking Duration (Hours)">
+      <input type="number" id="duration" class="form-control" min="1" placeholder="Booking Duration (Hours)">
     </div>
     <div class="alert alert-danger" id="error-message"></div>
   </form>

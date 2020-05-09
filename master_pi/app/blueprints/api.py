@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Blueprint, current_app, jsonify, request
 
 from app.extensions import db, ma, bcrypt
@@ -357,7 +357,38 @@ def make_booking():
     }
     status = None
 
-    response['message'] = "Success"
-    status = 200
+    if ('duration' not in request.json) or (request.json["duration"] == "") :
+        response['message'] = "Missing duration"
+        status = 400
+    else:
+        car_id = request.json["car_id"]
+        username = request.json["username"]
+        duration = request.json["duration"]
+        book_time = datetime.utcnow()
+
+        # Below code block will be checking if the car is currently booked
+        currently_booked = False
+        # Getting most recent booking from the database
+        prev_booking = (Booking.query
+            .filter_by(car_id=car_id)
+            .order_by(Booking.book_time.desc())
+            .first())
+        if (prev_booking is not None):
+            # Calculating the end time for the previous booking
+            prev_end_time = prev_booking.book_time + timedelta(hours=prev_booking.duration)
+            # Checking if the time being booked is after the end time
+            if (book_time < prev_end_time):
+                currently_booked = True
+                response['message'] = "Car is currently booked"
+                status = 401
+
+        # Adding booking to database if car is not currently booked
+        if not currently_booked:
+            booking = Booking(car_id, username, book_time, duration)
+            db.session.add(booking)
+            db.session.commit()
+            response['message'] = "Success"
+            status = 200
+
 
     return response, status
