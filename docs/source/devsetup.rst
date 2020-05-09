@@ -1,4 +1,3 @@
 Development Setup
 =================
-
-This is a test
+View README.md

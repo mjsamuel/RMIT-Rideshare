@@ -12,7 +12,7 @@ api = Blueprint("api", __name__, url_prefix='/api')
 def login():
     """Endpoint for a user's credentials to be checked in order to log in to their account
 
-    .. :quickref: POST; Validate user credentials for login.
+    .. :quickref: User; Validate user credentials for login.
 
     **Example request**:
 
@@ -55,7 +55,7 @@ def login():
     :<json string username: unique username
     :<json string password: password for specified account
     :>json message: repsonse information such as error information
-    :>json app.user.User user: the user object that has been created
+    :>json app.models.user.User user: the user object that has been created
     :resheader Content-Type: application/json
     :status 200: successful login
     :status 400: malformed request
@@ -99,7 +99,7 @@ def login():
 def register_user():
     """Creates a user account that does not already exist
 
-    .. :quickref: POST; Create new user.
+    .. :quickref: User; Create new user.
 
     **Example request**:
 
@@ -113,7 +113,7 @@ def register_user():
         {
             "username": "dummy",
             "password": "abcd",
-            "confirm-password": "abcd"
+            "confirm_password": "abcd"
         }
 
     **Example response**:
@@ -142,9 +142,9 @@ def register_user():
 
     :<json string username: username that does not already exist within the database
     :<json string password: password for new accoutn
-    :<json string confirm-password: retyped password which should match the previous password value
+    :<json string confirm_password: retyped password which should match the previous password value
     :>json message: repsonse information such as error information
-    :>json app.user.User user: the user object that has been created
+    :>json app.models.user.User user: the user object that has been created
     :resheader Content-Type: application/json
     :status 200: successful registration
     :status 400: malformed request
@@ -197,7 +197,7 @@ def register_user():
 def get_user():
     """Gets a user from the database
 
-    .. :quickref: GET; Get a user.
+    .. :quickref: User; Get a user.
 
     **Example request**:
 
@@ -233,7 +233,7 @@ def get_user():
 
     :query username: the username that you are searching for
     :>json message: repsonse information such as error information
-    :>json app.user.User user: the user object found
+    :>json app.models.user.User user: the user object found
     :resheader Content-Type: application/json
     :status 200: user found
     :status 404: user does not exit
@@ -261,7 +261,7 @@ def get_user():
 def get_cars():
     """Gets a single car or collection of cars based on the search criteria
 
-    .. :quickref: GET; Get a collection of cars.
+    .. :quickref: Car; Get a collection of cars.
 
     **Example request**:
 
@@ -280,7 +280,7 @@ def get_cars():
 
         {
             "message":
-            "cars"": [
+            "cars": [
                 {
                     "body_type": "SUV",
                     "colour": "Black",
@@ -309,7 +309,7 @@ def get_cars():
     :query no_sears: number of seats in car
     :query cost_per_hour: cost per hpur to rent the car
     :>json message: repsonse information such as error information
-    :>json app.car.Car car: the car objects found
+    :>json app.models.car.Car car: the car objects found
     :resheader Content-Type: application/json
     :status 200: cars found
     """
@@ -352,6 +352,55 @@ def get_cars():
 
 @api.route('/booking', methods=['POST'])
 def make_booking():
+    """Creates a user booking for a car if it isn't already booked
+
+    .. :quickref: Booking; Make a booking.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        POST /api/booking HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "car_id": 1,
+            "username": "dummy",
+            "duration": 3
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Success"
+        }
+
+    .. sourcecode:: http
+
+        HTTP/1.1 401 UNAUTHORIZED
+        Content-Type: application/json
+
+        {
+            "message": "Car is currently booked",
+        }
+
+    :<json string car_id: the id of the car being booked
+    :<json string username: the username of the user booking the car
+    :<json string duration: how long the car will be booked for in hours
+    :>json message: repsonse information such as error information
+    :resheader Content-Type: application/json
+    :status 200: successful booking
+    :status 400: malformed request
+    :status 401: car is already booked
+    """
+
     response = {
         'message': '',
     }
@@ -389,6 +438,5 @@ def make_booking():
             db.session.commit()
             response['message'] = "Success"
             status = 200
-
 
     return response, status
