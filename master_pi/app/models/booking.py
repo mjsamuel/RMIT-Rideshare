@@ -1,5 +1,6 @@
 from app.extensions import db, ma
 from marshmallow import fields
+from app.models.car import CarSchema
 
 class Booking(db.Model):
     """Class to represent a user booking for a vehicle
@@ -14,6 +15,8 @@ class Booking(db.Model):
     :type book_time: datetime
     :param duration: the total time that the car has been booked for
     :type duration: int
+    :param car: optional variable to easily serialize booking along with a car object
+    :type car: app.model.car.Car
     """
 
     id = db.Column(db.Integer, primary_key=True)
@@ -22,13 +25,14 @@ class Booking(db.Model):
     book_time = db.Column(db.DateTime, unique=False, nullable=False)
     duration = db.Column(db.Integer, unique=False, nullable=False)
 
-    def __init__(self, car_id, username, book_time, duration):
+    def __init__(self, car_id, username, book_time, duration, car = None):
         """Constructor method
         """
         self.car_id = car_id
         self.username = username
         self.book_time = book_time
         self.duration = duration
+        self.car = car
 
 class BookingSchema(ma.SQLAlchemySchema):
     """A class to represent the schema for a booking
@@ -41,5 +45,6 @@ class BookingSchema(ma.SQLAlchemySchema):
     username = fields.Str()
     book_time = fields.DateTime()
     duration = fields.Int()
+    car = fields.Nested(CarSchema)
 
 booking_schema = BookingSchema()

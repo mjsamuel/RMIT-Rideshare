@@ -350,6 +350,29 @@ def get_cars():
 
     return response, status
 
+@api.route('/booking', methods=['GET'])
+def get_bookings():
+    response = {
+        'bookings': None
+    }
+    status = None
+
+    username = request.args.get('username')
+    bookings = (Booking.query
+        .filter_by(username=username)
+        .order_by(Booking.book_time.desc())
+        .all())
+
+    # Adding the the car associated with the bookings to be searlized along
+    # with them
+    for booking in bookings:
+        booking.car = Car.query.get(booking.car_id)
+
+    response['bookings'] = booking_schema.dump(bookings, many=True)
+    status = 200
+
+    return response, status
+
 @api.route('/booking', methods=['POST'])
 def make_booking():
     """Creates a user booking for a car if it isn't already booked
@@ -402,7 +425,7 @@ def make_booking():
     """
 
     response = {
-        'message': '',
+        'message': None,
     }
     status = None
 

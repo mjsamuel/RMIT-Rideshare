@@ -4,8 +4,48 @@
   <script>
     isLoggedIn();
 
+    fetch("api/booking?username=" + sessionStorage.getItem('username'))
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("table-data").innerHTML = displayBookings(data.bookings)
+      });
+
+    function displayBookings(bookings) {
+      var output = ""
+      for (var i = 0; i < bookings.length; ++i) {
+        let car = bookings[i].car
+        // Formatting booking date and time
+        let bookTime = moment.utc(bookings[i].book_time).toDate()
+        let formattedBookTime = moment(bookTime).format('DD/MM/YY, hh:mm A');
+
+        // Formatting the prefix for the duration column
+        var duration = bookings[i].duration
+        var durationPrefix = "hours"
+        if (duration == 1) durationPrefix = "hour"
+
+        output += "<tr>\n"
+            + "<td>" + formattedBookTime + "</td>\n"
+            + "<td>" + duration + " " + durationPrefix + "</td>\n"
+            + "<td>" + car.make + " " + car.body_type + ", " + car.colour + "</td>\n"
+            + "<td>"
+              + "<button "
+                +"type=\"button\""
+                + "class=\"btn btn-danger\""
+                + "onclick=\"cancelBooking(" + bookings[i].id + ")\">"
+                  +"Cancel"
+                +"</button>"
+            + "</td>\n"
+          + "</tr>\n"
+      }
+      return output;
+    }
+
     function bookCarsClicked() {
       window.location.href = "/cars"
+    }
+
+    function cancelBooking(bookingId) {
+      console.log(bookingId)
     }
 
     function logoutClicked() {
@@ -18,18 +58,12 @@
     <thead>
       <tr>
         <th>Time</th>
+        <th>Duration</th>
         <th>Car</th>
         <th></th>
       </tr>
     </thead>
-    <tbody>
-      <tr>
-        <td>8/5/2020 - 3:37pm</td>
-        <td>Black, Toyota, SUV</td>
-        <td>
-          <button type="button" class="btn btn-danger">Cancel</button>
-        </td>
-      </tr>
+    <tbody id='table-data'>
     </tbody>
   </table>
 
