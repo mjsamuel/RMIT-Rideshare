@@ -3,12 +3,15 @@
 {% block content %}
   <script>
     isLoggedIn();
+    updateBookings();
 
-    fetch("api/booking?username=" + sessionStorage.getItem('username'))
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById("table-data").innerHTML = displayBookings(data.bookings)
-      });
+    function updateBookings() {
+      fetch("api/booking?username=" + sessionStorage.getItem('username'))
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("table-data").innerHTML = displayBookings(data.bookings)
+        });
+    }
 
     function displayBookings(bookings) {
       var output = ""
@@ -45,7 +48,14 @@
     }
 
     function cancelBooking(bookingId) {
-      console.log(bookingId)
+      method: 'delete'
+      fetch('/api/booking?id=' + bookingId, {
+          method: "DELETE"
+        })
+        .then(response => response.json())
+        .then(data => {
+          updateBookings()
+        });
     }
 
     function logoutClicked() {

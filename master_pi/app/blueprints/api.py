@@ -352,11 +352,51 @@ def get_cars():
 
 @api.route('/booking', methods=['GET'])
 def get_bookings():
+    """Get a collection of bookings a user has made
+
+    .. :quickref: Booking; Get bookings for a user.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        GET /api/booking?username=dummy HTTP/1.1
+        Host: localhost
+        Accept: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "bookings": [
+                {
+                    "id": 4,
+                    "car_id": 1,
+                    "username": "dummy",
+                    "book_time": "2020-05-09T13:38:17",
+                    "duration": 2,
+                    "car": {
+                        "make": "Tesla,",
+                        "body_type", "Pickup"
+                        "...": "..."
+                    }
+                }
+            ]
+        }
+
+    :query username: the username to filter by for bookings
+    :resheader Content-Type: application/json
+    :status 200: bookings found
+    """
     response = {
         'bookings': None
     }
-    status = None
 
+    # Getting bookings ordered from most recent, to least recent
     username = request.args.get('username')
     bookings = (Booking.query
         .filter_by(username=username)
@@ -369,9 +409,8 @@ def get_bookings():
         booking.car = Car.query.get(booking.car_id)
 
     response['bookings'] = booking_schema.dump(bookings, many=True)
-    status = 200
 
-    return response, status
+    return response, 200
 
 @api.route('/booking', methods=['POST'])
 def make_booking():
@@ -463,3 +502,34 @@ def make_booking():
             status = 200
 
     return response, status
+
+@api.route('/booking', methods=['DELETE'])
+def delete_booking():
+    """Deletes a booking from the database by suppling its id
+
+    .. :quickref: Booking; Delete a booking.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        DELETE /api/booking?id=1 HTTP/1.1
+        Host: localhost
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+
+    :query id: the id of the booking to be deleted
+    :status 200: booking deleted
+    """
+
+
+    id = request.args.get('id')
+    booking = Booking.query.get(id)
+    db.session.delete(booking)
+    db.session.commit()
+
+    return '', 200
