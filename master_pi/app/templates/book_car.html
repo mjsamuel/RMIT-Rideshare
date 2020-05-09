@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <script>
+    isLoggedIn();
+
+    function submitClicked() {
+      var data = {
+        carId: "",
+        username: sessionStorage.getItem('username'),
+        time: document.getElementById('time').value
+      };
+      console.log(data)
+
+      fetch('/api/booking', {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.message == "Success") {
+            window.location.href = "/"
+          } else {
+            var errorMessage = document.getElementById("error-message");
+            errorMessage.innerHTML = "<strong>Error:</strong> " + data.message
+            errorMessage.style.display = "block";
+          }
+        });
+    }
+
+    function backClicked() {
+      window.location.href = "/cars"
+    }
+  </script>
+
+  <h4>{{ car.colour }}, {{ car.no_seats }} seater, ${{ car.cost_per_hour }}/hour</h4><br>
+
+  <form>
+    <div class="form-group">
+      <input type="number" id="time"  class="form-control" name="time" min="1" placeholder="Booking Duration (Hours)">
+    </div>
+    <div class="alert alert-danger" id="error-message"></div>
+  </form>
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary" onclick='submitClicked()'>Book Car</button>
+    <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
+  </div>
+
+{% endblock %}

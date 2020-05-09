@@ -4,9 +4,9 @@ import configparser
 from flask import Flask
 
 from app.extensions import db, ma, bcrypt
-from app.blueprint_api import api
-from app.blueprint_site import site
-from app.blueprint_docs import docs
+from app.blueprints.api import api
+from app.blueprints.site import site
+from app.blueprints.docs import docs
 
 def create_app(test_config = None):
     app = Flask(__name__)

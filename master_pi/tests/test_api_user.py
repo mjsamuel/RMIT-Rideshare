@@ -1,5 +1,4 @@
 import pytest
-from app.user import User
 
 class TestApiUserEndpoints:
     def test_login_success(self, client):

@@ -14,17 +14,15 @@
 
     function displayCars(cars) {
       var output = ""
-
       for (var i = 0; i < cars.length; ++i) {
         output += "<tr class='table-data-row' onclick=rowClicked('" + cars[i].id + "')>\n"
             + "<td>" + cars[i].make + "</td>\n"
             + "<td>" + cars[i].body_type + "</td>\n"
             + "<td>" + cars[i].colour + "</td>\n"
             + "<td>" + cars[i].no_seats + "</td>\n"
-            + "<td>" + cars[i].cost_per_hour + "</td>\n"
+            + "<td>$" + cars[i].cost_per_hour + "</td>\n"
           + "</tr>\n"
       }
-
       return output;
     }
 

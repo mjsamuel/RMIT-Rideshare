@@ -10,6 +10,7 @@ def web_docs(filename):
         os.path.dirname(__file__),
         os.pardir,
         os.pardir,
+        os.pardir,
         'docs/_build/html')
     print(directory)
     print(filename)

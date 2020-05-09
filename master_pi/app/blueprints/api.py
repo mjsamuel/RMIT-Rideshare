@@ -1,8 +1,10 @@
+from datetime import datetime
 from flask import Blueprint, current_app, jsonify, request
 
 from app.extensions import db, ma, bcrypt
-from app.user import User, user_schema
-from app.car import Car, car_schema
+from app.models.user import User, user_schema
+from app.models.car import Car, car_schema
+from app.models.booking import Booking, booking_schema
 
 api = Blueprint("api", __name__, url_prefix='/api')
 
@@ -345,5 +347,17 @@ def get_cars():
             cars = Car.query.all()
         response['cars'] = car_schema.dump(cars, many=True)
         status = 200
+
+    return response, status
+
+@api.route('/booking', methods=['POST'])
+def make_booking():
+    response = {
+        'message': '',
+    }
+    status = None
+
+    response['message'] = "Success"
+    status = 200
 
     return response, status

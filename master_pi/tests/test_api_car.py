@@ -1,5 +1,4 @@
 import pytest
-from app.user import User
 
 class TestApiCarEndpoints:
     def test_search(self, client):
