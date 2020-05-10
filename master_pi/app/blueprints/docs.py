@@ -6,6 +6,10 @@ docs = Blueprint("docs", __name__)
 
 @docs.route('/docs/<path:filename>')
 def web_docs(filename):
+    """Endpoint to view Sphinx documentation easily within the Flask app
+
+    .. :quickref: Other; View Sphinx documentation.
+    """
     directory = os.path.join(
         os.path.dirname(__file__),
         os.pardir,

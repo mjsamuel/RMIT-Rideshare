@@ -1,10 +1,14 @@
 from datetime import datetime, timedelta
+import pickle
 from flask import Blueprint, current_app, jsonify, request
 
 from app.extensions import db, ma, bcrypt
 from app.models.user import User, user_schema
 from app.models.car import Car, car_schema
 from app.models.booking import Booking, booking_schema
+
+from google_auth_oauthlib.flow import Flow
+from googleapiclient.discovery import build
 
 api = Blueprint("api", __name__, url_prefix='/api')
 
@@ -493,11 +497,34 @@ def make_booking():
                 response['message'] = "Car is currently booked"
                 status = 401
 
-        # Adding booking to database if car is not currently booked
         if not currently_booked:
-            booking = Booking(car_id, username, book_time, duration)
+            # Adding to Google calendar if authorised
+            gcal_id = None
+            user = User.query.get(username)
+            if (user.google_credentials is not None):
+                car = Car.query.get(car_id)
+                service = build('calendar', 'v3', credentials=user.google_credentials)
+                end_time = book_time + timedelta(hours=int(duration))
+                event = {
+                  'summary': 'Ride in {} {}'.format(car.make, car.body_type),
+                  'description': 'Booked from RMIT Rideshare app',
+                  'start': {
+                    'dateTime': str(book_time.isoformat()),
+                    'timeZone': 'UTC',
+                  },
+                  'end': {
+                    'dateTime': str(end_time.isoformat()),
+                    'timeZone': 'UTC',
+                  }
+                }
+                event = service.events().insert(calendarId='primary', body=event).execute()
+                gcal_id = event.get('id')
+
+            # Adding booking to database with google calendar id
+            booking = Booking(car_id, username, book_time, duration, gcal_id)
             db.session.add(booking)
             db.session.commit()
+
             response['message'] = "Success"
             status = 200
 
@@ -522,14 +549,138 @@ def delete_booking():
 
         HTTP/1.1 200 OK
 
+        {
+            'message': 'Deleted successfully'
+        }
+
     :query id: the id of the booking to be deleted
+    :>json message: repsonse information such as error information
     :status 200: booking deleted
     """
 
-
+    response = {
+        'message': 'Deleted successfully'
+    }
     id = request.args.get('id')
     booking = Booking.query.get(id)
+
+    # Removing from Google calendar if event was created there
+    if (booking.gcal_id is not None):
+        user = User.query.get(booking.username)
+        service = build('calendar', 'v3', credentials=user.google_credentials)
+        service.events().delete(calendarId='primary', eventId=booking.gcal_id).execute()
+
     db.session.delete(booking)
     db.session.commit()
 
-    return '', 200
+    return response, 200
+
+@api.route('/googleauth', methods=['GET'])
+def get_auth_link():
+    """Retirieves a url to link a user's google account to this application
+
+    .. :quickref: Google Auth; Get an authentication link.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        GET /api/googleauth HTTP/1.1
+        Host: localhost
+        Accept: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+
+        {
+            "auth_url": "..."
+        }
+
+    :status 200: succesfully sent url
+    """
+
+    response = {
+        'auth_url': None
+    }
+
+    # Creating flow for user authentication for calendar read/write access
+    flow = Flow.from_client_secrets_file(
+        '../credentials.json',
+        ['https://www.googleapis.com/auth/calendar'],
+        redirect_uri='urn:ietf:wg:oauth:2.0:oob')
+
+    auth_url, _ = flow.authorization_url(prompt='consent')
+    response['auth_url'] = auth_url
+
+    return response, 200
+
+@api.route('/googleauth', methods=['POST'])
+def add_auth_credentials():
+    """Add Google credentials to a user to access Google Calendar
+
+    .. :quickref: Google Auth; Link Google account to user account.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        POST /api/googleauth HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "username": "dummy",
+            "code": "4/zgHpKQ9ASBXjkOTgjVucu_8GJAVrqQt5veJfXhzAcd6iWjyAI3a21xI"
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Success"
+        }
+
+    :<json string username: username that will be linked to the Google account
+    :<json string code: authenticaiton code to allow link
+    :>json message: repsonse information such as error information
+    :status 200: booking deleted
+    :status 400: malformed request
+    :status 500: server error
+    """
+
+    response = {
+        'message': None
+    }
+    status = None
+
+    if ('code' not in request.json) or (request.json["code"] == ""):
+        response['message'] = "Missing authorisation code"
+        status = 400
+    else:
+        username = request.json["username"]
+        code = request.json["code"]
+
+        flow = Flow.from_client_secrets_file(
+            '../credentials.json',
+            ['https://www.googleapis.com/auth/calendar'],
+            redirect_uri='urn:ietf:wg:oauth:2.0:oob')
+        try:
+            flow.fetch_token(code=code)
+            credentials = flow.credentials
+            # Updating user in database with credentials
+            user = User.query.get(username)
+            user.google_credentials = credentials
+            db.session.commit()
+        except:
+            response['message'] = "An error occured"
+            status = 500
+
+    return response, status

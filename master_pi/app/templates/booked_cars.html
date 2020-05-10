@@ -47,6 +47,10 @@
       window.location.href = "/cars"
     }
 
+    function linkAccountClicked() {
+      window.location.href = "/google-account"
+    }
+
     function cancelBooking(bookingId) {
       method: 'delete'
       fetch('/api/booking?id=' + bookingId, {
@@ -54,7 +58,7 @@
         })
         .then(response => response.json())
         .then(data => {
-          updateBookings()
+          updateBookings();
         });
     }
 
@@ -80,5 +84,8 @@
   <div class="btn-group">
     <button type="button" class="btn btn-primary" onclick='bookCarsClicked()'>Book a car</button>
     <button type="button" class="btn btn-secondary" onclick='logoutClicked()'>Logout</button>
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn btn-success" onclick='linkAccountClicked()'>Link Google account</button>
   </div>
 {% endblock %}

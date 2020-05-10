@@ -30,3 +30,7 @@ def book_car():
     title = data['cars']['make'] + ' - ' + data['cars']['body_type']
 
     return render_template('book_car.html', title=title, car=data['cars'])
+
+@site.route('/google-account')
+def link_google_account():
+    return render_template('link_google_account.html', title='Link Your Google Account')

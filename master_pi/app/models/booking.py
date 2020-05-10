@@ -15,7 +15,9 @@ class Booking(db.Model):
     :type book_time: datetime
     :param duration: the total time that the car has been booked for
     :type duration: int
-    :param car: optional variable to easily serialize booking along with a car object
+    :param gcal_id: event id if inserted into Google calendar
+    :type gcal_id: string
+    :param car: optional variable to easily serialize booking along with a car object (not stored in database)
     :type car: app.model.car.Car
     """
 
@@ -24,15 +26,17 @@ class Booking(db.Model):
     username = db.Column(db.String(128), unique=False, nullable=False)
     book_time = db.Column(db.DateTime, unique=False, nullable=False)
     duration = db.Column(db.Integer, unique=False, nullable=False)
+    gcal_id = db.Column(db.String(128), unique=False, nullable=True)
+    car = None
 
-    def __init__(self, car_id, username, book_time, duration, car = None):
+    def __init__(self, car_id, username, book_time, duration, gcal_id=None):
         """Constructor method
         """
         self.car_id = car_id
         self.username = username
         self.book_time = book_time
         self.duration = duration
-        self.car = car
+        self.gcal_id = gcal_id
 
 class BookingSchema(ma.SQLAlchemySchema):
     """A class to represent the schema for a booking
@@ -45,6 +49,7 @@ class BookingSchema(ma.SQLAlchemySchema):
     username = fields.Str()
     book_time = fields.DateTime()
     duration = fields.Int()
+    gcal_id = fields.Str()
     car = fields.Nested(CarSchema)
 
 booking_schema = BookingSchema()
