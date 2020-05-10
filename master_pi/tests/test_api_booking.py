@@ -6,11 +6,10 @@ class TestApiBookingEndpoints:
         """
 
         response = client.get('/api/booking?username=dummy')
-        expected_data = b'{"bookings":[{"book_time":"2020-05-09T10:22:51","car":{"body_type":"SUV","colour":"Black","cost_per_hour":15,"id":1,"location":null,"make":"Toyota","no_seats":5},"car_id":1,"duration":3,"id":2,"username":"dummy"},{"book_time":"2020-05-09T02:22:51","car":{"body_type":"Pickup","colour":"Silver","cost_per_hour":25,"id":2,"location":null,"make":"Tesla","no_seats":6},"car_id":2,"duration":1,"id":1,"username":"dummy"}]}\n'
-
+        expected_data = b'{"bookings":[{"book_time":"2020-05-09T10:22:51","car":{"body_type":"SUV","colour":"Black","cost_per_hour":15,"id":1,"location":null,"make":"Toyota","no_seats":5},"car_id":1,"duration":3,"gcal_id":null,"id":2,"username":"dummy"},{"book_time":"2020-05-09T02:22:51","car":{"body_type":"Pickup","colour":"Silver","cost_per_hour":25,"id":2,"location":null,"make":"Tesla","no_seats":6},"car_id":2,"duration":1,"gcal_id":null,"id":1,"username":"dummy"}]}\n'
+        print(response.data)
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
-
 
     def test_make_booking_success(self, client):
         """Testing that making a booking works when booking criteria is met

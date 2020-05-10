@@ -116,6 +116,9 @@ def register_user():
 
         {
             "username": "dummy",
+            "f_name": 'John',
+            "l_name": 'Doe',
+            "email": 'test@gmail.com'
             "password": "abcd",
             "confirm_password": "abcd"
         }
@@ -145,6 +148,9 @@ def register_user():
         }
 
     :<json string username: username that does not already exist within the database
+    :<json string f_name: first name of the user
+    :<json string l_name: last name of the user
+    :<json string email: email of the user (in the correct format)
     :<json string password: password for new accoutn
     :<json string confirm_password: retyped password which should match the previous password value
     :>json message: repsonse information such as error information
@@ -163,6 +169,15 @@ def register_user():
     if ('username' not in request.json) or (request.json["username"] == ""):
         response['message'] = "Missing username"
         status = 400
+    elif ('f_name' not in request.json) or (request.json["f_name"] == ""):
+        response['message'] = "Missing first name"
+        status = 400
+    elif ('l_name' not in request.json) or (request.json["l_name"] == ""):
+        response['message'] = "Missing last name"
+        status = 400
+    elif ('email' not in request.json) or (request.json["email"] == ""):
+        response['message'] = "Missing email"
+        status = 400
     elif ('password' not in request.json) or (request.json["password"] == ""):
         response['message'] = "Missing password"
         status = 400
@@ -171,6 +186,9 @@ def register_user():
         status = 400
     else:
         username = request.json["username"]
+        f_name =  request.json["f_name"]
+        l_name =  request.json["l_name"]
+        email =  request.json["email"]
         password = request.json["password"]
         confirm_password = request.json["confirm_password"]
 
@@ -185,8 +203,8 @@ def register_user():
             else:
                 # Hashing password using brcypt's one-way encryption
                 hashed_password = bcrypt.generate_password_hash(password)
-
-                new_user = User(username, hashed_password)
+                # Creating user and adding to the database
+                new_user = User(username, hashed_password, f_name, l_name, email)
                 db.session.add(new_user)
                 db.session.commit()
 
@@ -195,7 +213,6 @@ def register_user():
                 status = 200
 
     return response, status
-
 
 @api.route('/user', methods=["GET"])
 def get_user():
