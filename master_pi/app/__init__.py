@@ -4,7 +4,9 @@ import configparser
 from flask import Flask
 
 from app.extensions import db, ma, bcrypt
-from app.blueprints.api import api
+from app.blueprints.api_user import user
+from app.blueprints.api_car import car
+from app.blueprints.api_booking import booking
 from app.blueprints.site import site
 from app.blueprints.docs import docs
 
@@ -46,7 +48,9 @@ def create_app(test_config = None):
         db.session.commit()
 
     # Registering blueprints
-    app.register_blueprint(api)
+    app.register_blueprint(user)
+    app.register_blueprint(car)
+    app.register_blueprint(booking)
     app.register_blueprint(site)
     app.register_blueprint(docs)
 

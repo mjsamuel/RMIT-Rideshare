@@ -75,6 +75,9 @@ class TestApiUserEndpoints:
             '/api/user',
             json={
                 "username": "newuser",
+                "f_name": "Jane",
+                "l_name": "Doe",
+                "email": "abcd@gmail.com",
                 "password": "abcd",
                 "confirm_password": "abcd"
             }
@@ -90,13 +93,16 @@ class TestApiUserEndpoints:
             '/api/user',
             json={
                 "username": "newuser",
+                "f_name": "Jane",
+                "l_name": "Doe",
+                "email": "abcd@gmail.com",
                 "password": "abcd",
                 "confirm_password": "dcba"
             }
         )
 
         expected_data = b'{"message":"Passwords do not match","user":null}\n'
-
+        print(response.data)
         assert (response.status == '400 BAD REQUEST')
         assert (response.data == expected_data)
 
@@ -107,8 +113,11 @@ class TestApiUserEndpoints:
         response = client.post(
             '/api/user',
             json={
+                "f_name": "Jane",
+                "l_name": "Doe",
+                "email": "abcd@gmail.com",
                 "password": "abcd",
-                "confirm_password": "dcba"
+                "confirm_password": "abcd"
             }
         )
 
@@ -125,7 +134,10 @@ class TestApiUserEndpoints:
             '/api/user',
             json={
                 "username": "newuser",
-                "confirm_password": "dcba"
+                "f_name": "Jane",
+                "l_name": "Doe",
+                "email": "abcd@gmail.com",
+                "confirm_password": "abcd"
             }
         )
 
@@ -134,7 +146,7 @@ class TestApiUserEndpoints:
         assert (response.status == '400 BAD REQUEST')
         assert (response.data == expected_data)
 
-    def test_user_register_fail_missing_confirmedpassword(self, app, client):
+    def test_user_register_fail_missing_confirmed_password(self, app, client):
         """Testing for a unsucessful registration due to missing confirmed password
         """
 
@@ -142,6 +154,9 @@ class TestApiUserEndpoints:
             '/api/user',
             json={
                 "username": "newuser",
+                "f_name": "Jane",
+                "l_name": "Doe",
+                "email": "abcd@gmail.com",
                 "password": "abcd"
             }
         )
