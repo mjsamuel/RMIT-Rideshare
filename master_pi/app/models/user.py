@@ -1,5 +1,6 @@
+from marshmallow import fields, validates_schema, ValidationError
+
 from app.extensions import db, ma
-from marshmallow import fields
 
 class User(db.Model):
     """Class to represent a basic user that can hire vehicles
@@ -8,12 +9,12 @@ class User(db.Model):
     :type username: string
     :param password: Hashed password for user to log in with
     :type password: string
-    :param username: The user's first name
-    :type username: string
-    :param username: The user's last name
-    :type username: string
-    :param username: The user's email
-    :type username: string
+    :param f_name: The user's first name
+    :type f_name: string
+    :param l_name: The user's last name
+    :type l_name: string
+    :param email: The user's email
+    :type email: string
     :param google_credentials: Google authentication information
     :type username: credentials
     """

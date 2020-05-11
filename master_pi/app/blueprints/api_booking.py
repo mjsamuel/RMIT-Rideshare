@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
-
 from flask import Blueprint, request
+
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 
@@ -8,6 +8,7 @@ from app.extensions import db
 from app.models.user import User, user_schema
 from app.models.car import Car, car_schema
 from app.models.booking import Booking, booking_schema
+from app.forms import BookCarFormSchema
 
 
 booking = Blueprint("booking", __name__, url_prefix='/api')
@@ -128,10 +129,12 @@ def make_booking():
     response = {
         'message': None,
     }
-    status = None
+    status = 200
 
-    if ('duration' not in request.json) or (request.json["duration"] == "") :
-        response['message'] = "Missing duration"
+    form_schema = BookCarFormSchema()
+    form_errors = form_schema.validate(request.json)
+    if form_errors:
+        response['message'] = form_errors
         status = 400
     else:
         car_id = request.json["car_id"]
@@ -147,12 +150,13 @@ def make_booking():
             .order_by(Booking.book_time.desc())
             .first())
         if (prev_booking is not None):
-            # Calculating the end time for the previous booking
-            prev_end_time = prev_booking.book_time + timedelta(hours=prev_booking.duration)
-            # Checking if the time being booked is after the end time
-            if (book_time < prev_end_time):
+            # Checking if the time being booked is after the previous booking's
+            # end time
+            if (book_time < prev_booking.get_end_time()):
                 currently_booked = True
-                response['message'] = "Car is currently booked"
+                response['message'] = {
+                    'user': ['Car is currently booked.']
+                }
                 status = 401
 
         if not currently_booked:
@@ -178,13 +182,11 @@ def make_booking():
                 event = service.events().insert(calendarId='primary', body=event).execute()
                 gcal_id = event.get('id')
 
-            # Adding booking to database with google calendar id
+            # Adding booking to database with Google calendar id if present
             booking = Booking(car_id, username, book_time, duration, gcal_id)
             db.session.add(booking)
             db.session.commit()
-
             response['message'] = "Success"
-            status = 200
 
     return response, status
 

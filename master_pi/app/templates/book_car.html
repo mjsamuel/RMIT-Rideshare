@@ -6,7 +6,7 @@
 
     function submitClicked() {
       var data = {
-        car_id: "{{ car.id }}",
+        car_id: {{ car.id }},
         username: sessionStorage.getItem('username'),
         duration: document.getElementById('duration').value
       };
@@ -24,9 +24,10 @@
           if (data.message == "Success") {
             window.location.href = "/"
           } else {
-            var errorMessage = document.getElementById("error-message");
-            errorMessage.innerHTML = "<strong>Error:</strong> " + data.message
-            errorMessage.style.display = "block";
+            let errorBanner = document.getElementById("error-message");
+            errors = outputErrors(data.message);
+            errorBanner.innerHTML = errors;
+            errorBanner.style.display = "block";
           }
         });
     }

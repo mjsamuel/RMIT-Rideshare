@@ -26,7 +26,14 @@
         })
         .then(response => response.json())
         .then(data => {
-
+          if (data.message == "Success") {
+            window.location.href = "/";
+          } else {
+            let errorBanner = document.getElementById("error-message");
+            errors = outputErrors(data.message);
+            errorBanner.innerHTML = errors;
+            errorBanner.style.display = "block";
+          }
         });
     }
 

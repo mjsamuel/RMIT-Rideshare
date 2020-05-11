@@ -1,5 +1,7 @@
-from app.extensions import db, ma
+from datetime import datetime, timedelta
 from marshmallow import fields
+
+from app.extensions import db, ma
 from app.models.car import CarSchema
 
 class Booking(db.Model):
@@ -17,7 +19,7 @@ class Booking(db.Model):
     :type duration: int
     :param gcal_id: event id if inserted into Google calendar
     :type gcal_id: string
-    :param car: optional variable to easily serialize booking along with a car object (not stored in database)
+    :param car: variable to easily serialize booking along with a car object (not stored in database), optional
     :type car: app.model.car.Car
     """
 
@@ -37,6 +39,14 @@ class Booking(db.Model):
         self.book_time = book_time
         self.duration = duration
         self.gcal_id = gcal_id
+
+    def get_end_time(self):
+        """Calculates the end time of the booking and return it
+
+        :return: the time the booking ends
+        :rtype: datetime
+        """
+        return self.book_time + timedelta(hours=self.duration)
 
 class BookingSchema(ma.SQLAlchemySchema):
     """A class to represent the schema for a booking

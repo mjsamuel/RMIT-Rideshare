@@ -5,6 +5,7 @@ from googleapiclient.discovery import build
 from app.extensions import db, bcrypt
 from app.models.user import User, user_schema
 from app.models.booking import Booking, booking_schema
+from app.forms import LoginFormSchema, RegisterFormSchema, AuthenticationFormSchema
 
 user = Blueprint("user", __name__, url_prefix='/api')
 
@@ -67,30 +68,35 @@ def login():
         'message': '',
         'user': None
     }
-    status = None
+    status = 200
 
-    if ('username' not in request.json) or (request.json["username"] == ""):
-        response['message'] = "Missing username"
-        status = 400
-    elif ('password' not in request.json) or (request.json["password"] == ""):
-        response['message'] = "Missing password"
+    form_schema = LoginFormSchema()
+    form_errors = form_schema.validate(request.json)
+    if form_errors:
+        response['message'] = form_errors
         status = 400
     else:
         username = request.json["username"]
         password = request.json["password"]
 
+        # Checking if user is in database
         user = User.query.get(username)
         if user is None:
-            response['message'] = "User does not exist"
+            response['message'] = {
+                'user': ['User does not exist.']
+            }
             status = 404
         else:
-            password_match = bcrypt.check_password_hash(user.password, password)
-            if password_match:
+            # Checking wether passwords match
+            passwords_match = bcrypt.check_password_hash(user.password, password)
+            if passwords_match:
                 response['message'] = "Logged in successfully"
                 response['user'] = user_schema.dump(user)
                 status = 200
             else:
-                response['message'] = "Incorrect password"
+                response['message'] = {
+                    'user': ['Incorrect password.']
+                }
                 status = 401
 
     return response, status
@@ -160,25 +166,13 @@ def register_user():
         'message': '',
         'user': None
     }
-    status = None
+    status = 200
 
-    if ('username' not in request.json) or (request.json["username"] == ""):
-        response['message'] = "Missing username"
-        status = 400
-    elif ('f_name' not in request.json) or (request.json["f_name"] == ""):
-        response['message'] = "Missing first name"
-        status = 400
-    elif ('l_name' not in request.json) or (request.json["l_name"] == ""):
-        response['message'] = "Missing last name"
-        status = 400
-    elif ('email' not in request.json) or (request.json["email"] == ""):
-        response['message'] = "Missing email"
-        status = 400
-    elif ('password' not in request.json) or (request.json["password"] == ""):
-        response['message'] = "Missing password"
-        status = 400
-    elif ('confirm_password' not in request.json) or (request.json["confirm_password"] == ""):
-        response['message'] = "Missing confirmed password"
+    # Checking that form data is correct
+    form_schema = RegisterFormSchema()
+    form_errors = form_schema.validate(request.json)
+    if form_errors:
+        response['message'] = form_errors
         status = 400
     else:
         username = request.json["username"]
@@ -188,25 +182,23 @@ def register_user():
         password = request.json["password"]
         confirm_password = request.json["confirm_password"]
 
-        if password != confirm_password:
-            response['message'] = "Passwords do not match"
+        # Checking that user is not already in the system
+        if User.query.get(username) is not None:
+            response['message'] = {
+                'user': ['User already exists.']
+            }
             status = 400
         else:
-            # Querying database to check if user already exists in the system
-            if User.query.get(username) is not None:
-                response['message'] = "User already exists"
-                status = 400
-            else:
-                # Hashing password using brcypt's one-way encryption
-                hashed_password = bcrypt.generate_password_hash(password)
-                # Creating user and adding to the database
-                new_user = User(username, hashed_password, f_name, l_name, email)
-                db.session.add(new_user)
-                db.session.commit()
+            # Hashing password using brcypt's one-way encryption
+            hashed_password = bcrypt.generate_password_hash(password)
 
-                response['message'] = "Registered user successfully"
-                response['user'] = user_schema.dump(new_user)
-                status = 200
+            # Creating user and adding to the database
+            new_user = User(username, hashed_password, f_name, l_name, email)
+            db.session.add(new_user)
+            db.session.commit()
+
+            response['message'] = "Registered user successfully"
+            response['user'] = user_schema.dump(new_user)
 
     return response, status
 
@@ -360,8 +352,10 @@ def add_auth_credentials():
     }
     status = None
 
-    if ('code' not in request.json) or (request.json["code"] == ""):
-        response['message'] = "Missing authorisation code"
+    form_schema = AuthenticationFormSchema()
+    form_errors = form_schema.validate(request.json)
+    if form_errors:
+        response['message'] = form_errors
         status = 400
     else:
         username = request.json["username"]
@@ -378,8 +372,12 @@ def add_auth_credentials():
             user = User.query.get(username)
             user.google_credentials = credentials
             db.session.commit()
+            response['message'] = "Success"
+            status = 200
         except:
-            response['message'] = "An error occured"
+            response['message'] = {
+                'error': ['Google authentication error occured.']
+            }
             status = 500
 
     return response, status
