@@ -118,9 +118,9 @@ def register_user():
 
         {
             "username": "dummy",
-            "f_name": 'John',
-            "l_name": 'Doe',
-            "email": 'test@gmail.com'
+            "f_name": "John",
+            "l_name": "Doe",
+            "email": "test@gmail.com",
             "password": "abcd",
             "confirm_password": "abcd"
         }
