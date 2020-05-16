@@ -56,7 +56,7 @@ $ make html
 From there you can view the docs by running the Flask application and going to the app's adress followed by `/docs/index.html`
 E.g. `192.168.1.235:5000/docs/index.html`
 
-### Running Unit Tests
+#### Running Unit Tests
 Navigate to the `/master_pi` folder and run the unit tests by typing:
 ```
 $ pytest
