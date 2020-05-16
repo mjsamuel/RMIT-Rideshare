@@ -51,9 +51,9 @@ You can then access the app by going to a browser and typing the Master Pi's IP,
 E.g. `192.168.1.235:5000/`
 
 #### Running The TCP Socket Server
-Navigate to the `/master_pi/socket` folder and run the server by typing:
+Navigate to the `/master_pi` folder and run the server by typing:
 ```
-$ python server.py
+$ python socket_server
 ```
 
 #### Compiling Sphinx documentation
@@ -74,5 +74,6 @@ $ pytest
 #### Running The TCP Socket Client
 Navigate to the `/agent_pi` folder and run the console application by typing:
 ```
-$ python client.py <ip of master pi> <car id>
+$ python socket_client <ip of master pi> <car id>
 ```
+The client requires two command line arguments - the IP of the Master Pi as well as the ID of the car the Agent Pi corresponds to.

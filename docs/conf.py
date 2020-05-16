@@ -13,16 +13,17 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../master_pi'))
-sys.path.insert(1, os.path.abspath('../master_pi/socket'))
+sys.path.insert(1, os.path.abspath('../master_pi/socket_server'))
 sys.path.insert(2, os.path.abspath('../agent_pi'))
+sys.path.insert(3, os.path.abspath('../agent_pi/socket_client'))
 
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'RMIT Rideshare'
-copyright = '2020, Matthew Samuel, Sakaowduan Artpru, Oskar Floeck, Patrick Jones'
-author = 'Matthew Samuel, Sakaowduan Artpru, Oskar Floeck, Patrick Jones'
+copyright = '2020, Matthew Samuel, Sakaowduan Artpru, Oskar Floeck & Patrick Jones'
+author = 'Matthew Samuel, Sakaowduan Artpru, Oskar Floeck & Patrick Jones'
 
 
 # -- General configuration ---------------------------------------------------

@@ -1,28 +1,30 @@
-import argparse, socket
+import argparse
 
+from client import Client
 from menu_items import menu
 from text_helper import *
 
 def main():
     """Main method to run necessary methods.\n
     This method reads the command line arguments for the IP of the master pi and
-    the ID of the car, creates a socket connection and starts the main menu
+    the ID of the car, creates a client object that creates a connection to the
+    Master Pi based on the IP and starts the main menu.
     """
-    master_pi_ip, car_id = parse_arguments()
-
+    ip, car_id = parse_arguments()
     print(COLOUR_GREEN + LOGO + COLOUR_END)
+    client = Client(ip, car_id)
     try:
-        master_pi = connect_to_mp(master_pi_ip)
+        client.connect_to_server()
         print("Connected to Master Pi")
-        menu(master_pi, car_id)
     except ConnectionRefusedError:
         print("Failed to connect to Master Pi\n")
+
+    try:
+        menu(client)
     except KeyboardInterrupt:
-        master_pi.close()
-    except Exception as e:
-        print(e)
-        master_pi.close()
+        pass
     finally:
+        client.disconnect_from_server()
         print("Goodbye.")
 
 def parse_arguments():
@@ -46,20 +48,6 @@ def parse_arguments():
 
     args = parser.parse_args()
     return (args.master_pi_ip, args.car_id)
-
-def connect_to_mp(host):
-    """Creates and returns a TCP socket connection to the Master Pi
-
-    :param host: The Master Pi's IP address
-    :type host: string
-    :return: A socket connection to the Master Pi
-    :rtype: socket
-    """
-    port = 65000
-    address = (host, port)
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect(address)
-    return s
 
 if __name__ == "__main__":
     main()

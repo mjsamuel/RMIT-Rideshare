@@ -1,19 +1,28 @@
 Socket Client
 =============
 
-* :class:`client`
-* :class:`menu_items`
+.. automodule:: socket_client
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Main
+----
+.. automodule:: socket_client.__main__
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Client
 ------
-.. automodule:: client
+.. automodule:: socket_client.client
    :members:
    :undoc-members:
    :show-inheritance:
 
 Menu Items
 ----------
-.. automodule:: menu_items
+.. automodule:: socket_client.menu_items
    :members:
    :undoc-members:
    :show-inheritance:
