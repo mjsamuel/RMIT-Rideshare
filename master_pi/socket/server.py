@@ -7,6 +7,10 @@ ADDRESS = (HOST, PORT)
 logging.basicConfig(level=logging.INFO)
 
 def main():
+    """Main method to run necessary methods.\n
+    This method starts a TCP socket, waits for and establishes a connection, and
+    then starts the menu that awaits for commands.
+    """
     master_pi = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     master_pi.bind(ADDRESS)
     master_pi.listen()
@@ -24,6 +28,11 @@ def main():
         master_pi.close()
 
 def menu(agent_pi):
+    """Menu to indicate what operation the Agent Pi wants to do.
+
+    :param agent_pi: The socket connection to the Agent Pi
+    :type agent_pi: socket
+    """
     continue_loop = True
     while continue_loop:
         logging.info("Waiting for instruction...")
@@ -31,7 +40,7 @@ def menu(agent_pi):
         data = agent_pi.recv(4096)
         message = data.decode()
         if message == "Login":
-            log_in(agent_pi)
+            login(agent_pi)
         elif message == "Unlock":
             unlock_car(agent_pi)
         elif message == "Return":
@@ -40,7 +49,14 @@ def menu(agent_pi):
             logging.info("Agent Pi Disconnected")
             continue_loop = False
 
-def log_in(agent_pi):
+def login(agent_pi):
+    """Authenticates user via the Flask APi.\n
+    This method waits for a response from the Agent Pi, sends this information
+    to the Flask API and returns the response to the Agent Pi after encoding it.
+
+    :param agent_pi: The socket connection to the Agent Pi
+    :type agent_pi: socket
+    """
     logging.info("Login called")
 
     # Getting message from Agent Pi
@@ -57,9 +73,19 @@ def log_in(agent_pi):
     agent_pi.sendall(api_response.text.encode())
 
 def unlock_car(agent_pi):
+    """Unlocks a car via the Flask API.
+
+    :param agent_pi: The socket connection to the Agent Pi
+    :type agent_pi: socket
+    """
     pass
 
 def return_car(agent_pi):
+    """Returns a car via the Flask API.
+
+    :param agent_pi: The socket connection to the Agent Pi
+    :type agent_pi: socket
+    """
     pass
 
 if __name__ == "__main__":

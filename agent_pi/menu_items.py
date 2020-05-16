@@ -1,6 +1,13 @@
 import getpass, json
 
 def menu(master_pi, car_id):
+    """Displays a menu that users can select from that calls other methods
+
+    :param master_pi: The socket connection to the Master Pi
+    :type master_pi: socket
+    :param car_id: The id of the car
+    :type car_id: string
+    """
     user = "None"
     while True:
         if user == None:
@@ -12,15 +19,26 @@ def menu(master_pi, car_id):
                 + "\n3. Logout")
             selection = input("Make selection [1-3]: ")
             if selection == "1":
-                unlock_car(master_pi)
+                unlock_car(master_pi, car_id)
             elif selection == "2":
-                return_car(master_pi)
+                return_car(master_pi, car_id)
             elif selection == "3":
                 user = None
             else:
                 print("Incorrect selection")
 
 def login(master_pi):
+    """Sends user credentials to the Master Pi to log in.\n
+    Gets the username and password via user input, dumps these values as json,
+    encodes it and sends it to the Master Pi via the TCP socket.\n
+    The method then waits for a response where either an error is displayed or
+    the username is returned, indicating a successful login.
+
+    :param master_pi: The socket connection to the Master Pi
+    :type master_pi: socket
+    :return: The username of the logged in user
+    :rtype: string
+    """
     user = None
 
     # Indicating to Master Pi to begin login
@@ -49,8 +67,22 @@ def login(master_pi):
 
     return user
 
-def unlock_car(master_pi):
+def unlock_car(master_pi, car_id):
+    """Sends a message via sockets to unlock the car this Pi corresponds to.
+
+    :param master_pi: The socket connection to the Master Pi
+    :type master_pi: socket
+    :param car_id: The id of the car
+    :type car_id: string
+    """
     pass
 
-def return_car(master_pi):
+def return_car(master_pi, car_id):
+    """Sends a message via sockets to return the car that this Pi corresponds to.
+
+    :param master_pi: The socket connection to the Master Pi
+    :type master_pi: socket
+    :param car_id: The id of the car
+    :type car_id: string
+    """
     pass

@@ -21,6 +21,8 @@ Navigate to the root of the project and install all the necessary requirements b
 ```
 $ pip install -r requirements.txt
 ```
+I'd also recommend you do this within a virtual environment
+
 In order for passwords and other sensitive data to be hidden from version control a `config.ini` file must be created and put in the root of the project. These values relate to the Google cloud database as well as the encryption key used to encrypt user passwords.
 
 The template file `config.ini.example` details what the `config.ini` should look like:
@@ -48,6 +50,12 @@ $ flask run --host=0.0.0.0
 You can then access the app by going to a browser and typing the Master Pi's IP, followed by the specified port.
 E.g. `192.168.1.235:5000/`
 
+#### Running The TCP Socket Server
+Navigate to the `/master_pi/socket` folder and run the server by typing:
+```
+$ python server.py
+```
+
 #### Compiling Sphinx documentation
 Navigate to the `/docs` folder and compile the documentation by typing:
 ```
@@ -63,7 +71,8 @@ $ pytest
 ```
 
 ###  Agent Pi
+#### Running The TCP Socket Client
 Navigate to the `/agent_pi` folder and run the console application by typing:
 ```
-$ python3 main.py
+$ python client.py <ip of master pi> <car id>
 ```

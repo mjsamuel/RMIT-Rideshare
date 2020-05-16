@@ -4,6 +4,10 @@ from menu_items import menu
 from text_helper import *
 
 def main():
+    """Main method to run necessary methods.\n
+    This method reads the command line arguments for the IP of the master pi and
+    the ID of the car, creates a socket connection and starts the main menu
+    """
     master_pi_ip, car_id = parse_arguments()
 
     print(COLOUR_GREEN + LOGO + COLOUR_END)
@@ -22,6 +26,13 @@ def main():
         print("Goodbye.")
 
 def parse_arguments():
+    """Parses the Master Pi IP and car ID from the command line arguments.\n
+    Creates a parse object, specifies what arguments are required and checks to
+    make sure that they are present.
+
+    :return: A list containing the IP of the master pi and the car ID
+    :rtype: list
+    """
     parser = argparse.ArgumentParser(
         description='Car interface to connect to RMIT Rideshare Master Pi')
     parser.add_argument(
@@ -37,6 +48,13 @@ def parse_arguments():
     return (args.master_pi_ip, args.car_id)
 
 def connect_to_mp(host):
+    """Creates and returns a TCP socket connection to the Master Pi
+
+    :param host: The Master Pi's IP address
+    :type host: string
+    :return: A socket connection to the Master Pi
+    :rtype: socket
+    """
     port = 65000
     address = (host, port)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -1,11 +1,6 @@
 RMIT Rideshare Documentation
 ============================
 
-.. automodule:: agent_pi
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Indices and tables
 ------------------
 
@@ -30,6 +25,11 @@ Master Pi
 
    source/mp-api
    source/mp-models
+   source/mp-socket
 
 Agent Pi
 ^^^^^^^^
+.. toctree::
+   :maxdepth: 2
+
+   source/ap-socket
