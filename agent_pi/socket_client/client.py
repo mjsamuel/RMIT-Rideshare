@@ -35,7 +35,6 @@ class Client:
         self.__server.close()
         __server = None
 
-
     def login(self, username, password):
         """Sends user credentials to the Master Pi to log in.\n
         Sends the username and password values to the Master Pi via the TCP
@@ -46,6 +45,8 @@ class Client:
         :type username: string
         :param password: The user's password
         :type password: string
+        :return: A dictionary containing the response from the Master Pi
+        :rtype: dict
         """
         # Indicating to Master Pi to begin login
         message = "Login"
@@ -58,7 +59,15 @@ class Client:
         })
         self.__server.sendall(message.encode())
 
-        # Returning response
+        # Returning response from Master Pi
         data = self.__server.recv(4096)
         response = json.loads(data.decode())
         return response
+
+    def get_server(self):
+        """Gets the Master Pi server that the Agent Pi is connected to.
+
+        :return: Master Pi socket object
+        :rtype: socket
+        """
+        return self.__server

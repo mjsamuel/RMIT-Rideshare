@@ -77,3 +77,9 @@ Navigate to the `/agent_pi` folder and run the console application by typing:
 $ python socket_client <ip of master pi> <car id>
 ```
 The client requires two command line arguments - the IP of the Master Pi as well as the ID of the car the Agent Pi corresponds to.
+
+#### Running Unit Tests
+Navigate to the `/agent_pi` folder and run the unit tests by typing:
+```
+$ pytest
+```

@@ -88,3 +88,19 @@ class Server:
         """Returns a car via the Flask API.
         """
         pass
+
+    def get_server(self):
+        """Returns the server socket object.
+
+        :return: The server socket
+        :rtype: socket
+        """
+        return self.__server
+
+    def get_client(self):
+        """Returns the client socket object.
+
+        :return: The client socket
+        :rtype: socket
+        """
+        return self.__client
