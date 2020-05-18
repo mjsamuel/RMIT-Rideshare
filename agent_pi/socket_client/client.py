@@ -64,13 +64,21 @@ class Client:
         response = json.loads(data.decode())
         return response
 
-    def get_server(self):
-        """Gets the Master Pi server that the Agent Pi is connected to.
+    def login_via_face(self, image):
+        message = "Login With Face"
+        self.__server.sendall(message.encode())
 
-        :return: Master Pi socket object
-        :rtype: socket
-        """
-        return self.__server
+        # Sending piickle to Master Pi
+        self.__server.send(pickle.dumps(image))
+        # Since the pickled image is too large for it to be sent in one go, it
+        # has to be recieved in parts and so a terminating string is added to
+        # indicate that the image has finished being sent
+        self.__server.send(b'\x80\x03X\x08\x00\x00\x00ENDIMAGEq\x00.')
+
+        # Wait for Master Pi to send back which user it has identified
+        data = self.__server.recv(4096)
+        response = json.loads(data.decode())
+        return response
 
     def add_face(self, username, image):
         # Indicating to Master Pi to add face
@@ -93,3 +101,11 @@ class Client:
         # Wait for Master Pi to indicate that the image has been saved and
         # encoded
         data = self.__server.recv(4096)
+
+    def get_server(self):
+        """Gets the Master Pi server that the Agent Pi is connected to.
+
+        :return: Master Pi socket object
+        :rtype: socket
+        """
+        return self.__server

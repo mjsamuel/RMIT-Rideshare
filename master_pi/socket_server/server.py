@@ -13,6 +13,9 @@ class Server:
     """A socket object for the server"""
     __client = None
     """A socket object for the client"""
+    __fru = FaceRecognitionUtil()
+    """Used to call all the facial recognition functions"""
+
 
     def start_socket_server(self):
         """Starts the server and makes it listen on the specifed ip and port.
@@ -81,8 +84,30 @@ class Server:
         self.__client.sendall(api_response.encode())
 
     def add_face(self):
-        fru = FaceRecognitionUtil()
+        # Recieve username and image from Agent Pi
+        message = self.recieve_image_from_client()
+        username = message['username']
+        image = message['image']
 
+        # Saving and encoding images
+        self.__fru.add_face(username, image)
+        self.__fru.encode_faces()
+
+        # Letting Agent Pi know that the process has completed
+        self.__client.send("OK".encode())
+
+    def login_with_face(self):
+        # Recieve image from Agent Pi
+        image = self.recieve_image_from_client()
+        # Getting the matching user
+        username = self.__fru.recognise_face(image)
+        response = json.dumps({
+            "username": username
+        })
+
+        self.__client.send(response.encode())
+
+    def recieve_image_from_client(self):
         # Recieving image as a pickle, which is a very large strin and thus is
         # the data is broken up and recieved in a loop
         data = []
@@ -101,19 +126,7 @@ class Server:
                 # ed to the data
                 data.append(packet)
 
-        message = pickle.loads(b"".join(data))
-        username = message['username']
-        image = message['image']
-
-        # Saving and encoding images
-        fru.add_face(username, image)
-        fru.encode_faces()
-
-        # Letting Agent Pi know that the process has completed
-        self.__client.send("OK".encode())
-
-    def login_with_face(self):
-        fru = FaceRecognitionUtil()
+        return pickle.loads(b"".join(data))
 
     def unlock_car(self):
         """Unlocks a car via the Flask API.

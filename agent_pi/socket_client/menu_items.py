@@ -12,11 +12,12 @@ def menu(client, car_id):
     while True:
         if user == None:
             print("\nYou will need to log in to continue")
-            user = login(client)
+            user = login_menu(client)
         else:
-            print("\n1. Unlock Car"
+            print("\nLogged in as - " + user)
+            print("1. Unlock Car"
                 + "\n2. Return Car"
-                + "\n3. Setup face recognition login"
+                + "\n3. Setup facial recognition login"
                 + "\n4. Logout")
             selection = input("Make selection [1-4]: ")
             if selection == "1":
@@ -28,9 +29,22 @@ def menu(client, car_id):
             elif selection == "4":
                 user = None
             else:
-                print("Incorrect selection")
+                print("Invalid selection")
 
-def login(client):
+def login_menu(client):
+    user = None
+    print("1. Login via text"
+        + "\n2. Login via facial recognition")
+    selection = input("Make selection [1-2]: ")
+    if selection == "1":
+        user = login_via_text(client)
+    elif selection == "2":
+        user = login_via_face(client)
+    else:
+        print("Invalid selection")
+    return user
+
+def login_via_text(client):
     """Gets user credentials to log in user.\n
     Gets the username and password via user input, passes these values to the
     client.\n
@@ -51,9 +65,48 @@ def login(client):
             print("- " + response['message'][error][0])
     else:
         user = response['user']['username']
-        print("Logged in as - " + user)
 
     return user
+
+def login_via_face(client):
+    user = None
+
+    # Getting to the path to the image of the user's face
+    img_path = input(
+        "Enter path to an image of your face: "
+        +  str(os.path.expanduser('~'))
+        + "/")
+    path = os.path.join(os.path.expanduser('~'), img_path)
+
+    image = cv2.imread(path)
+    if image is None:
+        print("ERROR: Image does not exist")
+    else:
+        print("Processing...")
+        # Checking for successful login
+        response = client.login_via_face(image)
+        if response['username'] is None:
+            print("Unsuccessful Login.")
+        else:
+            user = response['username']
+
+    return user
+
+def add_face(client, username):
+    # Getting to the path to the image of the user's face
+    img_path = input(
+        "Enter path to an image of your face: "
+        +  str(os.path.expanduser('~'))
+        + "/")
+    path = os.path.join(os.path.expanduser('~'), img_path)
+
+    image = cv2.imread(path)
+    if image is None:
+        print("ERROR: Image does not exist")
+    else:
+        print("Processing image and adding to dataset...")
+        client.add_face(username, image)
+        print("Finished!")
 
 def unlock_car(client, car_id):
     """Sends a message via sockets to unlock the car this Pi corresponds to.
@@ -74,20 +127,3 @@ def return_car(client, car_id):
     :type car_id: string
     """
     pass
-
-def add_face(client, username):
-    img_path = input(
-        "Enter path to an image of your face: "
-        +  str(os.path.expanduser('~'))
-        + "/")
-
-    path = os.path.join(os.path.expanduser('~'), img_path)
-    print(path)
-
-    image = cv2.imread(path)
-    if image is None:
-        print("ERROR: Image does not exist")
-    else:
-        print("Adding image to dataset and processing...")
-        client.add_face(username, image)
-        print("Finished!")
