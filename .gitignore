@@ -130,3 +130,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Facial Recognition
+master_pi/socket_server/dataset/
+master_pi/socket_server/encodings.pickle

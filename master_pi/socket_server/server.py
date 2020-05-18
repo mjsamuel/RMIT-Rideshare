@@ -107,7 +107,7 @@ class Server:
 
         # Saving and encoding images
         fru.add_face(username, image)
-        fur.encode_faces()
+        fru.encode_faces()
 
         # Letting Agent Pi know that the process has completed
         self.__client.send("OK".encode())

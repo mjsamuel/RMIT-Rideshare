@@ -88,6 +88,6 @@ def add_face(client, username):
     if image is None:
         print("ERROR: Image does not exist")
     else:
-        print("Adding image to dataset")
+        print("Adding image to dataset and processing...")
         client.add_face(username, image)
-        print("Finished")
+        print("Finished!")
