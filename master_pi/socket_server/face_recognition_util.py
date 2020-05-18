@@ -114,6 +114,6 @@ class FaceRecognitionUtil:
         # loop over the recognized faces
         for name in names:
             # print to console, identified person
-            print("Person found: {}".format(name))
+            logging.info("Person found: {}".format(name))
             return name
         logging.info("No match found")

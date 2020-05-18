@@ -69,3 +69,43 @@ class TestSocketServer:
         response = socket_server.login()
 
         mock_connection.sendall.assert_called_with(api_response.encode())
+
+    @mock.patch('socket_server.server.socket.socket.accept')
+    @mock.patch('socket_server.server.Server.recieve_image_from_client')
+    @mock.patch('socket_server.face_recognition_util.cv2.imwrite')
+    def test_add_face(self, mock_cv2, mock_image, mock_connection, socket_server):
+        """Tests to make sure that images are being saved
+        """
+        # Setting up mock objects
+        mock_connection.return_value = (mock_connection, "127.0.0.1")
+        mock_image.return_value = {
+            "username": "test",
+            "image": "image"
+        }
+
+        # Code to be tested
+        socket_server.wait_for_connection()
+        socket_server.add_face()
+
+        # Making sure that the function to save to the dataset folder is called
+        mock_cv2.assert_called()
+
+    @mock.patch('socket_server.server.socket.socket.accept')
+    @mock.patch('socket_server.server.Server.recieve_image_from_client')
+    @mock.patch('socket_server.face_recognition_util.cv2.imwrite')
+    def test_add_face(self, mock_cv2, mock_image, mock_connection, socket_server):
+        """Tests to make sure that images are being saved
+        """
+        # Setting up mock objects
+        mock_connection.return_value = (mock_connection, "127.0.0.1")
+        mock_image.return_value = {
+            "username": "test",
+            "image": "image"
+        }
+
+        # Code to be tested
+        socket_server.wait_for_connection()
+        socket_server.add_face()
+
+        # Making sure that the function to save to the dataset folder is called
+        mock_cv2.assert_called()

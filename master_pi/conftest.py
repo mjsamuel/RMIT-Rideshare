@@ -1,4 +1,5 @@
-import os, pytest
+import os, pytest, sys
+sys.path.append('./socket_server/')
 
 from app import create_app, get_db
 
