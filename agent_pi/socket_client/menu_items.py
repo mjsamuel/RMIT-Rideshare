@@ -32,6 +32,13 @@ def menu(client, car_id):
                 print("Invalid selection")
 
 def login_menu(client):
+    """Displays a menu that users can select from to choose there login option
+
+    :param client: The socket connection to the Master Pi
+    :type client: Client
+    :return: The username of the logged in user if successful
+    :rtype: string
+    """
     user = None
     print("1. Login via text"
         + "\n2. Login via facial recognition")
@@ -53,6 +60,8 @@ def login_via_text(client):
 
     :param client: The socket connection to the Master Pi
     :type client: Client
+    :return: The username of the logged in user if successful
+    :rtype: string
     """
     user = None
 
@@ -69,6 +78,16 @@ def login_via_text(client):
     return user
 
 def login_via_face(client):
+    """Authenticates the user via their face to log in.\n
+    Gets the path to an image of the user's face, creates and image object and
+    sends it to the Master Pi. If recognised by the Master Pi as a user than the
+    username is returned.
+
+    :param client: The socket connection to the Master Pi
+    :type client: Client
+    :return: The username of the logged in user if successful
+    :rtype: string
+    """
     user = None
 
     # Getting to the path to the image of the user's face
@@ -93,6 +112,15 @@ def login_via_face(client):
     return user
 
 def add_face(client, username):
+    """Adds a logged in user's face to the Master Pi's dataset.\n
+    Gets the path to an image of the user's face, creates and image object and
+    sends it to the Master Pi for it to be stored
+
+    :param client: The socket connection to the Master Pi
+    :type client: Client
+    :param username: The username of the user who's face is being registered
+    :type username: string
+    """
     # Getting to the path to the image of the user's face
     img_path = input(
         "Enter path to an image of your face: "

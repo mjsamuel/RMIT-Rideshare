@@ -65,6 +65,18 @@ class Client:
         return response
 
     def login_via_face(self, image):
+        """Sends an image to the Master Pi to authenticate a user.
+        \nThe image is pickled and sent via the socket. As the data is too large
+        for the buffer size a terminating string is added to the end to indicate
+        that the image has finished being sent.\n
+        The client then waits for a response from the Master Pi of wether the
+        login was successful.
+
+        :param image: The omage of the user's face to be sent
+        :type image: numpy.ndarray
+        :return: A dictionary containing the response from the Master Pi
+        :rtype: dict
+        """
         message = "Login With Face"
         self.__server.sendall(message.encode())
 
@@ -81,6 +93,18 @@ class Client:
         return response
 
     def add_face(self, username, image):
+        """Sends an image and username to the Master Pi to register a users face.
+        \nThe image and username are pickled and sent via the socket. As the
+        data is too large for the buffer size a terminating string is added to
+        the end to indicate that the image has finished being sent.\n
+        The client then waits for an 'ok' response once the Master Pi has
+        finished processing and saving the image.
+
+        :param username: The user's usernmae
+        :type username: string
+        :param image: The omage of the user's face to be sent
+        :type image: numpy.ndarray
+        """
         # Indicating to Master Pi to add face
         message = "Add Face"
         self.__server.sendall(message.encode())

@@ -10,6 +10,15 @@ class FaceRecognitionUtil:
     __DETECTION_METHOD = "hog"
 
     def add_face(self, username, image):
+        """Saves an image to the dataset in the folder that corresponds to that
+        user's username
+
+        :param username: The user's usernmae
+        :type username: string
+        :param image: The omage of the user's face to be sent
+        :type image: numpy.ndarray
+        """
+        # Indicati
         logging.info("add_face() called")
 
         # Folder to store user images
@@ -26,6 +35,9 @@ class FaceRecognitionUtil:
         logging.info("created file {}".format(img_name))
 
     def encode_faces(self):
+        """Scans all the faces in the dataset and encodes them into a .pickles
+        file to be accessed later.
+        """
         logging.info("encode_faces() called")
 
         # grab the paths to the input images in our dataset
@@ -66,6 +78,14 @@ class FaceRecognitionUtil:
             f.write(pickle.dumps(data))
 
     def recognise_face(self, image):
+        """Looks through the encoded dataset and determines which user the
+        passed in image belongs to.
+
+        :param image: The omage of the user's face to be sent
+        :type image: numpy.ndarray
+        :return: The username of the first match
+        :rtype: string
+        """
         # load the known faces and embeddings
         logging.info("loading encodings...")
         data = pickle.loads(open(self.__ENCODINGS_PATH, "rb").read())

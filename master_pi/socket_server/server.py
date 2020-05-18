@@ -84,6 +84,11 @@ class Server:
         self.__client.sendall(api_response.encode())
 
     def add_face(self):
+        """Recieve an image from the Agent Pi and add it to the dataset.\n
+        This method recieves the image and username from the Agent Pi, encodes it
+        and adds it to the dataset. It sends an 'ok' response when the process
+        has completed.
+        """
         # Recieve username and image from Agent Pi
         message = self.recieve_image_from_client()
         username = message['username']
@@ -97,6 +102,12 @@ class Server:
         self.__client.send("OK".encode())
 
     def login_with_face(self):
+        """Recieve an image from the Agent Pi and checks wether it matches a
+        user in the dataset.\n
+        This method recieves the image from the Agent Pi and checks wether it
+        matches a user in the datset, it returns this information to the Agent
+        Pi, via sockets, as a dict.
+        """
         # Recieve image from Agent Pi
         image = self.recieve_image_from_client()
         # Getting the matching user
@@ -108,6 +119,13 @@ class Server:
         self.__client.send(response.encode())
 
     def recieve_image_from_client(self):
+        """Recieve an image from the Agent Pi via socketss.\n
+        This method recieves the image from the Agent Pi in chunks as the image
+        is too large to be sent in one go.
+
+        :return: The image that has been recieved
+        :rtype: numpy.ndarray
+        """
         # Recieving image as a pickle, which is a very large strin and thus is
         # the data is broken up and recieved in a loop
         data = []

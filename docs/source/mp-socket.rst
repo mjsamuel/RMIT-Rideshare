@@ -19,3 +19,10 @@ Server
    :members:
    :undoc-members:
    :show-inheritance:
+
+Face Recognition Util
+---------------------
+.. automodule:: socket_server.face_recognition_util
+   :members:
+   :undoc-members:
+   :show-inheritance:
