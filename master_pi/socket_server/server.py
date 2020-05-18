@@ -1,4 +1,5 @@
-import json, requests, socket
+import json, pickle, requests, socket
+from face_recognition_util import FaceRecognitionUtil
 
 class Server:
     """A class to represent a TCP socket server for a client to interact with
@@ -78,6 +79,41 @@ class Server:
 
         # Returning response to Agent Pi
         self.__client.sendall(api_response.encode())
+
+    def add_face(self):
+        fru = FaceRecognitionUtil()
+
+        # Recieving image as a pickle, which is a very large strin and thus is
+        # the data is broken up and recieved in a loop
+        data = []
+        recieving = True
+        while recieving:
+            packet = self.__client.recv(4096)
+            try:
+                # If the terminating string has been found in one of the pakcets
+                # then stop the loop and append whatever information is in that
+                # packet (besides the terminating string).
+                end_index = packet.index(b"\x80\x03X\x08\x00\x00\x00ENDIMAGEq\x00.")
+                data.append(packet[0:end_index])
+                recieving = False
+            except ValueError:
+                # The terminating string is not in the packet and should be add-
+                # ed to the data
+                data.append(packet)
+
+        message = pickle.loads(b"".join(data))
+        username = message['username']
+        image = message['image']
+
+        # Saving and encoding images
+        fru.add_face(username, image)
+        fur.encode_faces()
+
+        # Letting Agent Pi know that the process has completed
+        self.__client.send("OK".encode())
+
+    def login_with_face(self):
+        fru = FaceRecognitionUtil()
 
     def unlock_car(self):
         """Unlocks a car via the Flask API.

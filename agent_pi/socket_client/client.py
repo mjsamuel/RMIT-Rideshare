@@ -1,4 +1,4 @@
-import json, socket
+import cv2, json, pickle, os, socket, sys
 
 class Client:
     """A class to represent a TCP socket client that connects to a server and
@@ -71,3 +71,25 @@ class Client:
         :rtype: socket
         """
         return self.__server
+
+    def add_face(self, username, image):
+        # Indicating to Master Pi to add face
+        message = "Add Face"
+        self.__server.sendall(message.encode())
+
+        # Create pickle string of username and image
+        message = pickle.dumps({
+            "username": username,
+            "image": image
+        })
+
+        # Sending piickle to Master Pi
+        self.__server.send(message)
+        # Since the pickled image is too large for it to be sent in one go, it
+        # has to be recieved in parts and so a terminating string is added to
+        # indicate that the image has finished being sent
+        self.__server.send(b'\x80\x03X\x08\x00\x00\x00ENDIMAGEq\x00.')
+
+        # Wait for Master Pi to indicate that the image has been saved and
+        # encoded
+        data = self.__server.recv(4096)

@@ -16,11 +16,9 @@ def main():
     try:
         client.connect_to_server()
         print("Connected to Master Pi")
+        menu(client, car_id)
     except ConnectionRefusedError:
         print("Failed to connect to Master Pi\n")
-
-    try:
-        menu(client)
     except KeyboardInterrupt:
         pass
     finally:

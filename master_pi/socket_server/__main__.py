@@ -2,7 +2,6 @@ import logging
 
 from server import Server
 
-
 def main():
     """Main method to run necessary methods.\n
     This method starts a TCP socket, waits for and establishes a connection, and
@@ -48,10 +47,15 @@ def operations(server):
         elif instruction == "Return":
             logging.info("Return called")
             server.return_car()
+        elif instruction == "Add Face":
+            logging.info("Add face called")
+            server.add_face()
+        elif instruction == "Login With Face":
+            logging.info("Login with face called")
+            server.login_with_face()
         else:
             logging.info("Agent Pi disconnected")
             continue_loop = False
-
 
 if __name__ == "__main__":
     main()

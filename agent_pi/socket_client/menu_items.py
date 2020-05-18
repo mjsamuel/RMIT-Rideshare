@@ -1,10 +1,12 @@
-import getpass
+import cv2, getpass, os
 
-def menu(client):
+def menu(client, car_id):
     """Displays a menu that users can select from that calls other methods
 
     :param client: The socket connection to the Master Pi
     :type client: Client
+    :param car_id: The ID of the car that this Agent Pi corresponds to
+    :type car_id: string
     """
     user = None
     while True:
@@ -14,13 +16,16 @@ def menu(client):
         else:
             print("\n1. Unlock Car"
                 + "\n2. Return Car"
-                + "\n3. Logout")
-            selection = input("Make selection [1-3]: ")
+                + "\n3. Setup face recognition login"
+                + "\n4. Logout")
+            selection = input("Make selection [1-4]: ")
             if selection == "1":
                 unlock_car(client, car_id)
             elif selection == "2":
                 return_car(client, car_id)
             elif selection == "3":
+                add_face(client, user)
+            elif selection == "4":
                 user = None
             else:
                 print("Incorrect selection")
@@ -50,18 +55,39 @@ def login(client):
 
     return user
 
-def unlock_car(client):
+def unlock_car(client, car_id):
     """Sends a message via sockets to unlock the car this Pi corresponds to.
 
     :param client: The socket connection to the Master Pi
     :type client: Client
+    :param car_id: The ID of the car that this Agent Pi corresponds to
+    :type car_id: string
     """
     pass
 
-def return_car(client):
+def return_car(client, car_id):
     """Sends a message via sockets to return the car that this Pi corresponds to.
 
     :param client: The socket connection to the Master Pi
     :type client: Client
+    :param car_id: The ID of the car that this Agent Pi corresponds to
+    :type car_id: string
     """
     pass
+
+def add_face(client, username):
+    img_path = input(
+        "Enter path to an image of your face: "
+        +  str(os.path.expanduser('~'))
+        + "/")
+
+    path = os.path.join(os.path.expanduser('~'), img_path)
+    print(path)
+
+    image = cv2.imread(path)
+    if image is None:
+        print("ERROR: Image does not exist")
+    else:
+        print("Adding image to dataset")
+        client.add_face(username, image)
+        print("Finished")
