@@ -97,3 +97,26 @@ def get_cars():
         status = 200
 
     return response, status
+
+
+@car.route('/cars', methods=["POST"])
+def return_car():
+    
+    response = {
+        'message': '',
+        'cars': None
+    }
+    
+    status = None
+    car_id = request.json["car_id"]
+    car = Car.query.get(car_id)
+    car.is_booked = False
+    db.session.commit()
+
+    response['cars'] = car_schema.dump(car, many=True)
+    status = 200
+
+    return response, status
+
+    
+    

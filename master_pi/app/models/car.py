@@ -27,8 +27,9 @@ class Car(db.Model):
     no_seats = db.Column(db.Integer, unique=False, nullable=False)
     location = db.Column(db.String(128), unique=False, nullable=True)
     cost_per_hour = db.Column(db.Integer, unique=False, nullable=False)
+    is_booked = db.Column(db.Boolean, unique=False, nullable=False)
 
-    def __init__(self, make, body_type, colour, no_seats, cost_per_hour):
+    def __init__(self, make, body_type, colour, no_seats, cost_per_hour, is_booked):
         """Constructor method
         """
         self.make = make
@@ -36,6 +37,7 @@ class Car(db.Model):
         self.colour = colour
         self.no_seats = no_seats
         self.cost_per_hour = cost_per_hour
+        self.is_booked = is_booked
 
 class CarSchema(ma.SQLAlchemySchema):
     """A class to represent the schema for cars
@@ -50,5 +52,6 @@ class CarSchema(ma.SQLAlchemySchema):
     no_seats = fields.Int()
     location = fields.Str()
     cost_per_hour = fields.Int()
+    is_booked = fields.Boolean()
 
 car_schema = CarSchema()

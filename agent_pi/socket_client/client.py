@@ -133,3 +133,35 @@ class Client:
         :rtype: socket
         """
         return self.__server
+
+
+    def return_car(self, car_id):
+        
+        self.__car_id = car_id
+        message = "Return Car"
+        self.__server.sendall(message.encode())
+
+        message = json.dumps({
+            "car_id": car_id
+        })
+        self.__server.sendall(message.encode())
+
+        # Returning response from Master Pi
+        data = self.__server.recv(4096)
+        response = json.loads(data.decode())
+        return response
+
+    def unlock_car(self, car_id):
+       
+        message = "unlock_car"
+        self.__server.sendall(message.encode())
+
+        message = json.dumps({
+            "car_id": car_id
+        })
+        self.__server.sendall(message.encode())
+
+        # Returning response from Master Pi
+        data = self.__server.recv(4096)
+        response = json.loads(data.decode())
+        return response

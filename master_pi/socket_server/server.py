@@ -154,7 +154,27 @@ class Server:
     def return_car(self):
         """Returns a car via the Flask API.
         """
-        pass
+        # Getting message from Agent Pi
+        data = self.__client.recv(4096)
+        message = json.loads(data.decode())
+
+        try:
+            # Sending login info to API
+            api_response = requests.post(
+                'http://localhost:5000/api/car',
+                json = message).text
+        except :
+            # If connection to API fails then senda a generic error message
+            api_response = json.dumps({
+                "user": None,
+                "message": {
+                    "server": ["A server error occured."]
+                }})
+
+        # Returning response to Agent Pi
+        self.__client.sendall(api_response.encode())
+
+
 
     def get_server(self):
         """Returns the server socket object.
