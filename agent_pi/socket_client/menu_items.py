@@ -169,11 +169,13 @@ def return_car(client, car_id):
     client.return_car(car_id)
     response = client.return_car(car_id)
 
-    if response['car_return'] is None:
+    if response['return_car'] is None:
         print("The following error(s) occured:")
         for error in response['message']:
             print("- " + response['message'][error][0])
+            print("Car has failed to be returned")
     else:
         return_car = response['return_car']['car_id']
+        print("Car has been returned !")
 
     return return_car

@@ -137,10 +137,10 @@ class Client:
 
     def return_car(self, car_id):
         
-        self.__car_id = car_id
+        # Indicating to Master Pi to begin return car
         message = "Return Car"
         self.__server.sendall(message.encode())
-
+        # Sending car id to Master Pi
         message = json.dumps({
             "car_id": car_id
         })
