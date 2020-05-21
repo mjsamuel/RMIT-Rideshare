@@ -161,12 +161,12 @@ class Server:
         try:
             # Sending login info to API
             api_response = requests.post(
-                'http://localhost:5000/api/car',
+                'http://localhost:5000/api/cars',
                 json = message).text
         except :
             # If connection to API fails then senda a generic error message
             api_response = json.dumps({
-                "user": None,
+                "return_car": None,
                 "message": {
                     "server": ["A server error occured."]
                 }})

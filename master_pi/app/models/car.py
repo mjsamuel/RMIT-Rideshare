@@ -18,6 +18,8 @@ class Car(db.Model):
     :type location: string
     :param cost_per_hour: the cost per hour to hire the car
     :type cost_per_hour: int
+    :param is_booked: if the car is currently booked
+    :type is_booked: boolean
     """
 
     id = db.Column(db.Integer, primary_key=True)

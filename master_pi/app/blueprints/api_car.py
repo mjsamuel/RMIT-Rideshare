@@ -104,16 +104,18 @@ def return_car():
     
     response = {
         'message': '',
-        'cars': None
+        'return_car': None
     }
-    
+
     status = None
-    car_id = request.json["car_id"]
-    car = Car.query.get(car_id)
+    id = request.json["car_id"]
+    car = Car.query.get(id)
+    print("print test")
+    print(car)
     car.is_booked = False
     db.session.commit()
 
-    response['cars'] = car_schema.dump(car, many=True)
+    response['return_car'] = car_schema.dump(car)
     status = 200
 
     return response, status

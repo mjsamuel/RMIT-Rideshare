@@ -47,7 +47,7 @@ def operations(server):
         elif instruction == "Unlock":
             logging.info("Unlock called")
             server.unlock_car()
-        elif instruction == "Return":
+        elif instruction == "Return Car":
             logging.info("Return called")
             server.return_car()
         elif instruction == "Add Face":
@@ -56,9 +56,6 @@ def operations(server):
         elif instruction == "Login With Face":
             logging.info("Login with face called")
             server.login_with_face()
-        elif instruction == "Return Car":
-            logging.info("Return Car called")
-            server.return_car()
         else:
             logging.info("Agent Pi disconnected")
             continue_loop = False

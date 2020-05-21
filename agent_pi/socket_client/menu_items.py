@@ -144,6 +144,7 @@ def unlock_car(client, car_id):
     :param car_id: The ID of the car that this Agent Pi corresponds to
     :type car_id: string
     """
+
     client.unlock_car(car_id)
     response = client.unlock_car(car_id)
 
@@ -163,6 +164,8 @@ def return_car(client, car_id):
     :param car_id: The ID of the car that this Agent Pi corresponds to
     :type car_id: string
     """
+    return_car = None
+
     client.return_car(car_id)
     response = client.return_car(car_id)
 

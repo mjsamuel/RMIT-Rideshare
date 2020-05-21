@@ -46,6 +46,7 @@ def create_app(test_config = None):
     with app.app_context():
         db.create_all()
         db.session.commit()
+        
 
     # Registering blueprints
     app.register_blueprint(user)

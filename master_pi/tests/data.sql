@@ -3,7 +3,7 @@ VALUES
   ('dummy', '$2b$12$xIygz54Gi4G/FROikCKhfej.JmnI8lSzR6RPpqiErQRUvnjSikOjO', 'First', 'Last', 'dummyemail@gmail.com'),
   ('john', '$2b$12$pUSt0xQDEsdaHmXtNJ7BaOlN8NzqL5.tFucHTwyL6nf7o6KvAl9p', 'John', 'Doe', 'john.doe@outlook.com');
 
-INSERT INTO car (make, body_type, colour, no_seats, cost_per_hour, unlocked)
+INSERT INTO car (make, body_type, colour, no_seats, cost_per_hour, is_booked)
 VALUES
     ('Toyota', 'SUV', 'Black', 5, 15, True),
     ('Tesla', 'Pickup', 'Silver', 6, 25, True),
