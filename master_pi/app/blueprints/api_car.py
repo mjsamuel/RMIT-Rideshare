@@ -99,7 +99,7 @@ def get_cars():
     return response, status
 
 
-@car.route('/cars', methods=["POST"])
+@car.route('/return', methods=["POST"])
 def return_car():
     
     response = {
@@ -110,7 +110,7 @@ def return_car():
     status = None
     id = request.json["car_id"]
     car = Car.query.get(id)
-    print("print test")
+    print("Returning...")
     print(car)
     car.is_booked = False
     db.session.commit()
@@ -120,5 +120,25 @@ def return_car():
 
     return response, status
 
+@car.route('/unlock', methods=["POST"])
+def unlock_car():
+    
+    response = {
+        'message': '',
+        'unlock_car': None
+    }
+
+    status = None
+    id = request.json["car_id"]
+    car = Car.query.get(id)
+    print("unlocking...")
+    print(car)
+    car.is_locked = False
+    db.session.commit()
+
+    response['unlock_car'] = car_schema.dump(car)
+    status = 200
+
+    return response, status
     
     

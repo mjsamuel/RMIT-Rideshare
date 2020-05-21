@@ -144,6 +144,7 @@ def unlock_car(client, car_id):
     :param car_id: The ID of the car that this Agent Pi corresponds to
     :type car_id: string
     """
+    unlock_car = None
 
     client.unlock_car(car_id)
     response = client.unlock_car(car_id)

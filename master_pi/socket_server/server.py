@@ -149,7 +149,25 @@ class Server:
     def unlock_car(self):
         """Unlocks a car via the Flask API.
         """
-        pass
+        # Getting message from Agent Pi
+        data = self.__client.recv(4096)
+        message = json.loads(data.decode())
+
+        try:
+            # Sending login info to API
+            api_response = requests.post(
+                'http://localhost:5000/api/unlock',
+                json = message).text
+        except :
+            # If connection to API fails then send a generic error message
+            api_response = json.dumps({
+                "unlock_car": None,
+                "message": {
+                    "server": ["A server error occured."]
+                }})
+
+        # Returning response to Agent Pi
+        self.__client.sendall(api_response.encode())
 
     def return_car(self):
         """Returns a car via the Flask API.
@@ -161,10 +179,10 @@ class Server:
         try:
             # Sending login info to API
             api_response = requests.post(
-                'http://localhost:5000/api/cars',
+                'http://localhost:5000/api/return',
                 json = message).text
         except :
-            # If connection to API fails then senda a generic error message
+            # If connection to API fails then send a generic error message
             api_response = json.dumps({
                 "return_car": None,
                 "message": {
@@ -173,7 +191,6 @@ class Server:
 
         # Returning response to Agent Pi
         self.__client.sendall(api_response.encode())
-
 
 
     def get_server(self):

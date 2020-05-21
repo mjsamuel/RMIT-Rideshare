@@ -152,10 +152,10 @@ class Client:
         return response
 
     def unlock_car(self, car_id):
-       
-        message = "unlock_car"
+        # Indicating to Master Pi to begin unlock car
+        message = "Unlock Car"
         self.__server.sendall(message.encode())
-
+        # Sending car id to Master Pi
         message = json.dumps({
             "car_id": car_id
         })
