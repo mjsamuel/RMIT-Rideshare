@@ -1,3 +1,7 @@
+# PyCharm config
+.idea/
+*.iml
+
 # Config file
 config.ini
 
