@@ -48,9 +48,10 @@ class Client:
         :return: A dictionary containing the response from the Master Pi
         :rtype: dict
         """
-        # Indicating to Master Pi to begin login
+        # Indicating to Master Pi to begin login and wait for OK response
         message = "Login"
         self.__server.sendall(message.encode())
+        data = self.__server.recv(4096)
 
         # Sending login credentials to Master Pi
         message = json.dumps({
@@ -77,8 +78,11 @@ class Client:
         :return: A dictionary containing the response from the Master Pi
         :rtype: dict
         """
+        # Indicating to Master Pi to begin login with face procedure and wait
+        # for an OK response
         message = "Login With Face"
         self.__server.sendall(message.encode())
+        data = self.__server.recv(4096)
 
         # Sending piickle to Master Pi
         self.__server.send(pickle.dumps(image))
@@ -105,9 +109,11 @@ class Client:
         :param image: The omage of the user's face to be sent
         :type image: numpy.ndarray
         """
-        # Indicating to Master Pi to add face
+        # Indicating to Master Pi to begin the add face procedure and wait for
+        # an OK repsonse
         message = "Add Face"
         self.__server.sendall(message.encode())
+        data = self.__server.recv(4096)
 
         # Create pickle string of username and image
         message = pickle.dumps({
@@ -136,32 +142,35 @@ class Client:
 
 
     def return_car(self, car_id):
-        
-        # Indicating to Master Pi to begin return car
+        """
+        """
+        # Indicating to Master Pi to begin returning car process and wait for
+        # and OK response
         message = "Return Car"
         self.__server.sendall(message.encode())
-        # Sending car id to Master Pi
-        message = json.dumps({
-            "car_id": car_id
-        })
-        self.__server.sendall(message.encode())
+        data = self.__server.recv(4096)
+
+        # Sending car ID to Master Pi
+        self.__server.sendall(car_id.encode())
 
         # Returning response from Master Pi
         data = self.__server.recv(4096)
         response = json.loads(data.decode())
-        return response
+        return response['message']
 
     def unlock_car(self, car_id):
-        # Indicating to Master Pi to begin unlock car
+        """
+        """
+        # Indicating to Master Pi to begin the unlock car procedure and wait for
+        # an OK repsonse
         message = "Unlock Car"
         self.__server.sendall(message.encode())
+        data = self.__server.recv(4096)
+
         # Sending car id to Master Pi
-        message = json.dumps({
-            "car_id": car_id
-        })
-        self.__server.sendall(message.encode())
+        self.__server.sendall(car_id.encode())
 
         # Returning response from Master Pi
         data = self.__server.recv(4096)
         response = json.loads(data.decode())
-        return response
+        return response['message']

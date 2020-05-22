@@ -101,44 +101,50 @@ def get_cars():
 
 @car.route('/return', methods=["POST"])
 def return_car():
-    
+
     response = {
-        'message': '',
-        'return_car': None
+        'message': ''
     }
-
-    status = None
-    id = request.json["car_id"]
-    car = Car.query.get(id)
-    print("Returning...")
-    print(car)
-    car.is_booked = False
-    db.session.commit()
-
-    response['return_car'] = car_schema.dump(car)
     status = 200
+
+    # Getting car from database
+    car_id = request.json["car_id"]
+    car = Car.query.get(car_id)
+
+    if car is None:
+        print("Car doesnt exist with id '" + car_id + "'")
+
+    # Checking if already locked
+    if car.is_locked:
+        response['message'] = "ERROR: The car has already been returned"
+        status = 409
+    else:
+        car.is_locked = True
+        db.session.commit()
+        response['message'] = "Car has been returned"
 
     return response, status
 
 @car.route('/unlock', methods=["POST"])
 def unlock_car():
-    
+
     response = {
-        'message': '',
-        'unlock_car': None
+        'message': ''
     }
-
-    status = None
-    id = request.json["car_id"]
-    car = Car.query.get(id)
-    print("unlocking...")
-    print(car)
-    car.is_locked = False
-    db.session.commit()
-
-    response['unlock_car'] = car_schema.dump(car)
     status = 200
 
+    car_id = request.json["car_id"]
+    car = Car.query.get(car_id)
+
+    if car is None:
+        print("Car doesnt exist with id '" + car_id + "'")
+
+    if car.is_locked:
+        car.is_locked = False
+        db.session.commit()
+        response['message'] = "Car has been unlocked"
+    else:
+        response['message'] = "ERROR: The car is already unlocked"
+        status = 409
+
     return response, status
-    
-    

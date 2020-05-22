@@ -144,18 +144,8 @@ def unlock_car(client, car_id):
     :param car_id: The ID of the car that this Agent Pi corresponds to
     :type car_id: string
     """
-    unlock_car = None
-
-    client.unlock_car(car_id)
     response = client.unlock_car(car_id)
-
-    if response['unlock_car'] is None:
-        print("The following error(s) occured:")
-        for error in response['message']:
-            print("- " + response['message'][error][0])
-    else:
-        unlock_car = response['unlock_car']['car_id']
-    return unlock_car
+    print(response)
 
 def return_car(client, car_id):
     """Sends a message via sockets to return the car that this Pi corresponds to.
@@ -165,18 +155,5 @@ def return_car(client, car_id):
     :param car_id: The ID of the car that this Agent Pi corresponds to
     :type car_id: string
     """
-    return_car = None
-
-    client.return_car(car_id)
     response = client.return_car(car_id)
-
-    if response['return_car'] is None:
-        print("The following error(s) occured:")
-        for error in response['message']:
-            print("- " + response['message'][error][0])
-            print("Car has failed to be returned")
-    else:
-        return_car = response['return_car']['car_id']
-        print("Car has been returned !")
-
-    return return_car
+    print(response)

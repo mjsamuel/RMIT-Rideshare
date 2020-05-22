@@ -62,6 +62,8 @@ class Server:
         information to the Flask API and returns the response to the Agent Pi
         after encoding it.
         """
+        # Indicating to Agent Pi that the method has begun
+        self.__client.sendall("OK".encode())
 
         # Getting message from Agent Pi
         data = self.__client.recv(4096)
@@ -89,6 +91,9 @@ class Server:
         and adds it to the dataset. It sends an 'ok' response when the process
         has completed.
         """
+        # Indicating to Agent Pi that the method has begun
+        self.__client.sendall("OK".encode())
+
         # Recieve username and image from Agent Pi
         message = self.recieve_image_from_client()
         username = message['username']
@@ -108,6 +113,9 @@ class Server:
         matches a user in the datset, it returns this information to the Agent
         Pi, via sockets, as a dict.
         """
+        # Indicating to Agent Pi that the method has begun
+        self.__client.sendall("OK".encode())
+
         # Recieve image from Agent Pi
         image = self.recieve_image_from_client()
         # Getting the matching user
@@ -147,11 +155,16 @@ class Server:
         return pickle.loads(b"".join(data))
 
     def unlock_car(self):
-        """Unlocks a car via the Flask API.
+        """Returns a car via the Flask API.
         """
+        # Indicating to Agent Pi that the method has begun
+        self.__client.sendall("OK".encode())
+
         # Getting message from Agent Pi
         data = self.__client.recv(4096)
-        message = json.loads(data.decode())
+        message = {
+            "car_id": data.decode()
+        }
 
         try:
             # Sending login info to API
@@ -161,20 +174,24 @@ class Server:
         except :
             # If connection to API fails then send a generic error message
             api_response = json.dumps({
-                "unlock_car": None,
-                "message": {
-                    "server": ["A server error occured."]
-                }})
+                "message": "A server error occured."
+            })
 
         # Returning response to Agent Pi
         self.__client.sendall(api_response.encode())
 
+
     def return_car(self):
         """Returns a car via the Flask API.
         """
+        # Indicating to Agent Pi that the method has begun
+        self.__client.sendall("OK".encode())
+
         # Getting message from Agent Pi
         data = self.__client.recv(4096)
-        message = json.loads(data.decode())
+        message = {
+            "car_id": data.decode()
+        }
 
         try:
             # Sending login info to API
@@ -184,10 +201,8 @@ class Server:
         except :
             # If connection to API fails then send a generic error message
             api_response = json.dumps({
-                "return_car": None,
-                "message": {
-                    "server": ["A server error occured."]
-                }})
+                "message": "A server error occured."
+            })
 
         # Returning response to Agent Pi
         self.__client.sendall(api_response.encode())

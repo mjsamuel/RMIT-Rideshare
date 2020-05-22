@@ -18,8 +18,6 @@ class Car(db.Model):
     :type location: string
     :param cost_per_hour: the cost per hour to hire the car
     :type cost_per_hour: int
-    :param is_booked: if the car is currently booked
-    :type is_booked: boolean
     :param is_locked: if the car is currently booked
     :type is_locked: boolean
     """
@@ -31,10 +29,9 @@ class Car(db.Model):
     no_seats = db.Column(db.Integer, unique=False, nullable=False)
     location = db.Column(db.String(128), unique=False, nullable=True)
     cost_per_hour = db.Column(db.Integer, unique=False, nullable=False)
-    is_booked = db.Column(db.Boolean, unique=False, nullable=False)
     is_locked = db.Column(db.Boolean, unique=False, nullable=False)
 
-    def __init__(self, make, body_type, colour, no_seats, cost_per_hour, is_booked, is_locked):
+    def __init__(self, make, body_type, colour, no_seats, cost_per_hour, is_locked):
         """Constructor method
         """
         self.make = make
@@ -42,7 +39,6 @@ class Car(db.Model):
         self.colour = colour
         self.no_seats = no_seats
         self.cost_per_hour = cost_per_hour
-        self.is_booked = is_booked
         self.is_locked = is_locked
 
 class CarSchema(ma.SQLAlchemySchema):
