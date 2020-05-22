@@ -21,9 +21,9 @@ def menu(client, car_id):
                 + "\n4. Logout")
             selection = input("Make selection [1-4]: ")
             if selection == "1":
-                unlock_car(client, car_id)
+                change_lock_status(client, user, car_id, "unlock")
             elif selection == "2":
-                return_car(client, car_id)
+                change_lock_status(client, user, car_id, "return")
             elif selection == "3":
                 add_face(client, user)
             elif selection == "4":
@@ -136,24 +136,17 @@ def add_face(client, username):
         client.add_face(username, image)
         print("Finished!")
 
-def unlock_car(client, car_id):
-    """Sends a message via sockets to unlock the car this Pi corresponds to.
+def change_lock_status(client, username, car_id, method):
+    """Sends a message via sockets to unlock or return the car this Pi corresponds to.
 
     :param client: The socket connection to the Master Pi
     :type client: Client
+    :param username: The username of the user who is currently logged in
+    :type username: string
     :param car_id: The ID of the car that this Agent Pi corresponds to
     :type car_id: string
+    :param method: String to indicate wether the user wants to return or unlock
+    :type method: string
     """
-    response = client.unlock_car(car_id)
-    print(response)
-
-def return_car(client, car_id):
-    """Sends a message via sockets to return the car that this Pi corresponds to.
-
-    :param client: The socket connection to the Master Pi
-    :type client: Client
-    :param car_id: The ID of the car that this Agent Pi corresponds to
-    :type car_id: string
-    """
-    response = client.return_car(car_id)
+    response = client.change_lock_status(username, car_id, method)
     print(response)

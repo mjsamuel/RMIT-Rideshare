@@ -153,25 +153,25 @@ class Server:
 
         return pickle.loads(b"".join(data))
 
-    def unlock_car(self):
-        """Makes a call on the API to unlock a car.\n
-        This method recieves the ID of the car to be returned and makes a
-        request to the API to unlock the car corresponding to that ID. It then
-        sends the response from the API to the Agent Pi via TCP sockets.
+    def change_lock_status(self):
+        """Makes a call on the API to unlock or return a car.\n
+        This method recieves the ID of a car, the username of the of the user
+        that is sending the requet and what method is to be called.
+        It then makes a request to the API to unlock or return the car
+        corresponding to that ID. It then sends the response from the API to the
+        Agent Pi via TCP sockets.
         """
         # Indicating to Agent Pi that the method has begun
         self.__client.sendall("OK".encode())
 
         # Getting message from Agent Pi
         data = self.__client.recv(4096)
-        message = {
-            "car_id": data.decode()
-        }
+        message = json.loads(data.decode())
 
         try:
             # Sending login info to API
             api_response = requests.post(
-                'http://localhost:5000/api/unlock',
+                'http://localhost:5000/api/' + message['method'],
                 json = message).text
         except :
             # If connection to API fails then send a generic error message
@@ -181,37 +181,6 @@ class Server:
 
         # Returning response to Agent Pi
         self.__client.sendall(api_response.encode())
-
-
-    def return_car(self):
-        """Makes a call on the API to return a car.\n
-        This method recieves the ID of the car to be returned and makes a
-        request to the API to return the car corresponding to that ID. It then
-        sends the response from the API to the Agent Pi via TCP sockets.
-        """
-        # Indicating to Agent Pi that the method has begun
-        self.__client.sendall("OK".encode())
-
-        # Getting message from Agent Pi
-        data = self.__client.recv(4096)
-        message = {
-            "car_id": data.decode()
-        }
-
-        try:
-            # Sending login info to API
-            api_response = requests.post(
-                'http://localhost:5000/api/return',
-                json = message).text
-        except :
-            # If connection to API fails then send a generic error message
-            api_response = json.dumps({
-                "message": "A server error occured."
-            })
-
-        # Returning response to Agent Pi
-        self.__client.sendall(api_response.encode())
-
 
     def get_server(self):
         """Returns the server socket object.

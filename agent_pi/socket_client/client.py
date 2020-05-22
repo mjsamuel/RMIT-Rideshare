@@ -140,53 +140,36 @@ class Client:
         """
         return self.__server
 
-
-    def return_car(self, car_id):
-        """Sends the ID of the car that this Agent Pi corresponds to return the
-        car.\n
-        Sends the car ID the Master Pi via the TCPsocket.\n
+    def change_lock_status(self, username, car_id, method):
+        """Sends data to the Master Pi to change the lock status of car that
+        this Agent Pi corresponds to either unlock or return it.\n
+        Sends the car ID, username and method to the Master Pi via TCP sockets.\n
         The method then recieves a message from the Master Pi which is returned.
 
+        :param username: The username of the user who is currently logged in
+        :type username: string
         :param car_id: The ID of the car that this Agent Pi corresponds to
         :type car_id: string
+        :param method: String to indicate wether the user wants to return or unlock
+        :type method: string
         :return: The message returned from the Master Pi
         :rtype: string
         """
         # Indicating to Master Pi to begin returning car process and wait for
         # and OK response
-        message = "Return Car"
+        message = "Change Lock Status"
         self.__server.sendall(message.encode())
         data = self.__server.recv(4096)
 
         # Sending car ID to Master Pi
-        self.__server.sendall(car_id.encode())
-
-        # Returning response from Master Pi
-        data = self.__server.recv(4096)
-        response = json.loads(data.decode())
-        return response['message']
-
-    def unlock_car(self, car_id):
-        """Sends the ID of the car that this Agent Pi corresponds to unlock the
-        car.\n
-        Sends the car ID the Master Pi via the TCP socket.\n
-        The method then recieves a message from the Master Pi which is returned.
-
-        :param car_id: The ID of the car that this Agent Pi corresponds to
-        :type car_id: string
-        :return: The message returned from the Master Pi
-        :rtype: string
-        """
-        # Indicating to Master Pi to begin the unlock car procedure and wait for
-        # an OK repsonse
-        message = "Unlock Car"
+        message = json.dumps({
+            "username": username,
+            "car_id": car_id,
+            "method": method
+        })
         self.__server.sendall(message.encode())
-        data = self.__server.recv(4096)
 
-        # Sending car id to Master Pi
-        self.__server.sendall(car_id.encode())
-
-        # Returning response from Master Pi
+        # Getting response from Master Pi and returning it
         data = self.__server.recv(4096)
         response = json.loads(data.decode())
         return response['message']

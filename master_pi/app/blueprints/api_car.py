@@ -1,7 +1,9 @@
 from flask import Blueprint, request
+from datetime import datetime
 
 from app.extensions import db
 from app.models.car import Car, car_schema
+from app.models.booking import Booking
 
 car = Blueprint("car", __name__, url_prefix='/api')
 
@@ -138,6 +140,7 @@ def return_car():
             "message": "ERROR: The car has already been returned"
         }
 
+    :<json string username: the username of the person returning the car
     :<json string car_id: the id of the car being returned
     :>json message: repsonse information such as error information
     :resheader Content-Type: application/json
@@ -207,6 +210,7 @@ def unlock_car():
             "message": "ERROR: The car is already unlocked"
         }
 
+    :<json string username: the username of the person unlocking the car
     :<json string car_id: the id of the car being unlocked
     :>json message: repsonse information such as error information
     :resheader Content-Type: application/json
@@ -219,11 +223,22 @@ def unlock_car():
     }
     status = 200
 
+    username = request.json["username"]
     car_id = request.json["car_id"]
+    print(request.json)
     car = Car.query.get(car_id)
 
     if car is None:
         print("Car doesnt exist with id '" + car_id + "'")
+
+    # Getting the most recent booking for this car
+    booking = (Booking.query
+        .filter_by(car_id=car_id)
+        .order_by(Booking.book_time.desc())
+        .first())
+
+    if (booking is not None):
+        pass
 
     if car.is_locked:
         car.is_locked = False

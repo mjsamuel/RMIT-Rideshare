@@ -45,12 +45,9 @@ def operations(server):
         elif instruction == "Login With Face":
             logging.info("Login with face called")
             server.login_with_face()
-        elif instruction == "Return Car":
-            logging.info("Return car called")
-            server.return_car()
-        elif instruction == "Unlock Car":
-            logging.info("Unlock car called")
-            server.unlock_car()
+        elif instruction == "Change Lock Status":
+            logging.info("Change lock status called")
+            server.change_lock_status()
         elif instruction == "Add Face":
             logging.info("Add face called")
             server.add_face()
