@@ -16,7 +16,6 @@ class Server:
     __fru = FaceRecognitionUtil()
     """Used to call all the facial recognition functions"""
 
-
     def start_socket_server(self):
         """Starts the server and makes it listen on the specifed ip and port.
 

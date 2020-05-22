@@ -6,7 +6,7 @@ class TestApiCarEndpoints:
         """
 
         response = client.get('/api/cars')
-        expected_data = b'{"cars":[{"body_type":"SUV","colour":"Black","cost_per_hour":15,"id":1,"location":null,"make":"Toyota","no_seats":5},{"body_type":"Pickup","colour":"Silver","cost_per_hour":25,"id":2,"location":null,"make":"Tesla","no_seats":6},{"body_type":"Hatchback","colour":"Black","cost_per_hour":15,"id":3,"location":null,"make":"Toyota","no_seats":5}],"message":""}\n'
+        expected_data = b'{"cars":[{"body_type":"SUV","colour":"Black","cost_per_hour":15,"id":1,"is_locked":true,"location":null,"make":"Toyota","no_seats":5},{"body_type":"Pickup","colour":"Silver","cost_per_hour":25,"id":2,"is_locked":true,"location":null,"make":"Tesla","no_seats":6},{"body_type":"Hatchback","colour":"Black","cost_per_hour":15,"id":3,"is_locked":true,"location":null,"make":"Toyota","no_seats":5}],"message":""}\n'
 
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
@@ -16,7 +16,7 @@ class TestApiCarEndpoints:
         """
 
         response = client.get('/api/cars?body_type=SUV')
-        expected_data = b'{"cars":[{"body_type":"SUV","colour":"Black","cost_per_hour":15,"id":1,"location":null,"make":"Toyota","no_seats":5}],"message":""}\n'
+        expected_data = b'{"cars":[{"body_type":"SUV","colour":"Black","cost_per_hour":15,"id":1,"is_locked":true,"location":null,"make":"Toyota","no_seats":5}],"message":""}\n'
 
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
@@ -26,7 +26,7 @@ class TestApiCarEndpoints:
         """
 
         response = client.get('/api/cars?colour=black')
-        expected_data = b'{"cars":[{"body_type":"SUV","colour":"Black","cost_per_hour":15,"id":1,"location":null,"make":"Toyota","no_seats":5},{"body_type":"Hatchback","colour":"Black","cost_per_hour":15,"id":3,"location":null,"make":"Toyota","no_seats":5}],"message":""}\n'
+        expected_data = b'{"cars":[{"body_type":"SUV","colour":"Black","cost_per_hour":15,"id":1,"is_locked":true,"location":null,"make":"Toyota","no_seats":5},{"body_type":"Hatchback","colour":"Black","cost_per_hour":15,"id":3,"is_locked":true,"location":null,"make":"Toyota","no_seats":5}],"message":""}\n'
 
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
@@ -36,7 +36,7 @@ class TestApiCarEndpoints:
         """
 
         response = client.get('/api/cars?cost_per_hour=25')
-        expected_data = b'{"cars":[{"body_type":"Pickup","colour":"Silver","cost_per_hour":25,"id":2,"location":null,"make":"Tesla","no_seats":6}],"message":""}\n'
+        expected_data = b'{"cars":[{"body_type":"Pickup","colour":"Silver","cost_per_hour":25,"id":2,"is_locked":true,"location":null,"make":"Tesla","no_seats":6}],"message":""}\n'
 
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
@@ -46,7 +46,7 @@ class TestApiCarEndpoints:
         """
 
         response = client.get('/api/cars?cost_per_hour=25')
-        expected_data = b'{"cars":[{"body_type":"Pickup","colour":"Silver","cost_per_hour":25,"id":2,"location":null,"make":"Tesla","no_seats":6}],"message":""}\n'
-
+        expected_data = b'{"cars":[{"body_type":"Pickup","colour":"Silver","cost_per_hour":25,"id":2,"is_locked":true,"location":null,"make":"Tesla","no_seats":6}],"message":""}\n'
+        
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
