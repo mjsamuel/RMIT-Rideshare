@@ -145,6 +145,7 @@ def return_car():
     :>json message: repsonse information such as error information
     :resheader Content-Type: application/json
     :status 200: return was successful
+    :status 403: the user is not booked to ride in this car
     :status 409: car is already returned
     """
 
@@ -153,21 +154,34 @@ def return_car():
     }
     status = 200
 
-    # Getting car from database
+    username = request.json["username"]
     car_id = request.json["car_id"]
     car = Car.query.get(car_id)
 
-    if car is None:
-        print("Car doesnt exist with id '" + car_id + "'")
+    # Getting the most recent booking for this car
+    booking = (Booking.query
+        .filter_by(car_id=car_id)
+        .order_by(Booking.book_time.desc())
+        .first())
 
-    # Checking if already locked
-    if car.is_locked:
-        response['message'] = "ERROR: The car has already been returned"
-        status = 409
+    if (booking is not None):
+        # Checking if the user requesting to return the car is the last person
+        # to ride in it
+        if booking.username == username:
+            # Checking if already locked
+            if car.is_locked:
+                response['message'] = "ERROR: The car has already been returned"
+                status = 409
+            else:
+                car.is_locked = True
+                db.session.commit()
+                response['message'] = "Car has been returned"
+        else:
+            response['message'] = "ERROR: You have not booked this car"
+            status = 403
     else:
-        car.is_locked = True
-        db.session.commit()
-        response['message'] = "Car has been returned"
+        response['message'] = "ERROR: You have not booked this car"
+        status = 403
 
     return response, status
 
@@ -215,6 +229,7 @@ def unlock_car():
     :>json message: repsonse information such as error information
     :resheader Content-Type: application/json
     :status 200: unlock was successful
+    :status 403: the user is not booked to ride in this car
     :status 409: car is already unlocked
     """
 
@@ -225,11 +240,7 @@ def unlock_car():
 
     username = request.json["username"]
     car_id = request.json["car_id"]
-    print(request.json)
     car = Car.query.get(car_id)
-
-    if car is None:
-        print("Car doesnt exist with id '" + car_id + "'")
 
     # Getting the most recent booking for this car
     booking = (Booking.query
@@ -238,14 +249,23 @@ def unlock_car():
         .first())
 
     if (booking is not None):
-        pass
-
-    if car.is_locked:
-        car.is_locked = False
-        db.session.commit()
-        response['message'] = "Car has been unlocked"
+        # Checking if the user requesting to unlock the car is currently booked
+        # to ride in it.
+        current_time = datetime.utcnow()
+        if (booking.username == username) and (current_time < booking.get_end_time()):
+            # Checking if the car is already unlocked
+            if car.is_locked:
+                car.is_locked = False
+                db.session.commit()
+                response['message'] = "Car has been unlocked"
+            else:
+                response['message'] = "ERROR: The car is already unlocked"
+                status = 409
+        else:
+            response['message'] = "ERROR: You have not booked this car"
+            status = 403
     else:
-        response['message'] = "ERROR: The car is already unlocked"
-        status = 409
+        response['message'] = "ERROR: You have not booked this car"
+        status = 403
 
     return response, status
