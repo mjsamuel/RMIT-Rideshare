@@ -18,7 +18,7 @@ class Car(db.Model):
     :type location: string
     :param cost_per_hour: the cost per hour to hire the car
     :type cost_per_hour: int
-    :param is_locked: if the car is currently booked
+    :param is_locked: indicates if the car is currently locked
     :type is_locked: boolean
     """
 

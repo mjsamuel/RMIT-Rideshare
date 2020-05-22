@@ -142,7 +142,15 @@ class Client:
 
 
     def return_car(self, car_id):
-        """
+        """Sends the ID of the car that this Agent Pi corresponds to return the
+        car.\n
+        Sends the car ID the Master Pi via the TCPsocket.\n
+        The method then recieves a message from the Master Pi which is returned.
+
+        :param car_id: The ID of the car that this Agent Pi corresponds to
+        :type car_id: string
+        :return: The message returned from the Master Pi
+        :rtype: string
         """
         # Indicating to Master Pi to begin returning car process and wait for
         # and OK response
@@ -159,7 +167,15 @@ class Client:
         return response['message']
 
     def unlock_car(self, car_id):
-        """
+        """Sends the ID of the car that this Agent Pi corresponds to unlock the
+        car.\n
+        Sends the car ID the Master Pi via the TCP socket.\n
+        The method then recieves a message from the Master Pi which is returned.
+
+        :param car_id: The ID of the car that this Agent Pi corresponds to
+        :type car_id: string
+        :return: The message returned from the Master Pi
+        :rtype: string
         """
         # Indicating to Master Pi to begin the unlock car procedure and wait for
         # an OK repsonse

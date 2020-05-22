@@ -154,7 +154,10 @@ class Server:
         return pickle.loads(b"".join(data))
 
     def unlock_car(self):
-        """Returns a car via the Flask API.
+        """Makes a call on the API to unlock a car.\n
+        This method recieves the ID of the car to be returned and makes a
+        request to the API to unlock the car corresponding to that ID. It then
+        sends the response from the API to the Agent Pi via TCP sockets.
         """
         # Indicating to Agent Pi that the method has begun
         self.__client.sendall("OK".encode())
@@ -181,7 +184,10 @@ class Server:
 
 
     def return_car(self):
-        """Returns a car via the Flask API.
+        """Makes a call on the API to return a car.\n
+        This method recieves the ID of the car to be returned and makes a
+        request to the API to return the car corresponding to that ID. It then
+        sends the response from the API to the Agent Pi via TCP sockets.
         """
         # Indicating to Agent Pi that the method has begun
         self.__client.sendall("OK".encode())

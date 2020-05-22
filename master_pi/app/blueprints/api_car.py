@@ -101,6 +101,49 @@ def get_cars():
 
 @car.route('/return', methods=["POST"])
 def return_car():
+    """Return a car by changing the locked status of a car that has been unlocked
+
+    .. :quickref: Car; Return a car that is booked.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        POST /api/return HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "car_id": 1,
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Car has been returned"
+        }
+
+    .. sourcecode:: http
+
+        HTTP/1.1 409 CONFLICT
+        Content-Type: application/json
+
+        {
+            "message": "ERROR: The car has already been returned"
+        }
+
+    :<json string car_id: the id of the car being returned
+    :>json message: repsonse information such as error information
+    :resheader Content-Type: application/json
+    :status 200: return was successful
+    :status 409: car is already returned
+    """
 
     response = {
         'message': ''
@@ -127,6 +170,49 @@ def return_car():
 
 @car.route('/unlock', methods=["POST"])
 def unlock_car():
+    """Unlock a car by changing the locked status of a car
+
+    .. :quickref: Car; Unlock a car that is booked.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        POST /api/return HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "car_id": 1,
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Car has been unlocked"
+        }
+
+    .. sourcecode:: http
+
+        HTTP/1.1 409 CONFLICT
+        Content-Type: application/json
+
+        {
+            "message": "ERROR: The car is already unlocked"
+        }
+
+    :<json string car_id: the id of the car being unlocked
+    :>json message: repsonse information such as error information
+    :resheader Content-Type: application/json
+    :status 200: unlock was successful
+    :status 409: car is already unlocked
+    """
 
     response = {
         'message': ''
