@@ -38,27 +38,28 @@ def operations(server):
     while continue_loop:
         logging.info("Waiting for instruction...")
         instruction = server.wait_for_instruction()
+
         if instruction == "Login":
             logging.info("Login called")
             server.login()
         elif instruction == "Login With Face":
             logging.info("Login with face called")
             server.login_with_face()
-        elif instruction == "Unlock":
-            logging.info("Unlock called")
-            server.unlock_car()
-        elif instruction == "Return":
-            logging.info("Return called")
-            server.return_car()
+        elif instruction == "Change Lock Status":
+            logging.info("Change lock status called")
+            server.change_lock_status()
         elif instruction == "Add Face":
             logging.info("Add face called")
             server.add_face()
         elif instruction == "Login With Face":
             logging.info("Login with face called")
             server.login_with_face()
-        else:
-            logging.info("Agent Pi disconnected")
+        elif instruction == "":
+            logging.warning("Agent Pi disconnected")
             continue_loop = False
+        else:
+            logging.info("Invalid instruction: " + instruction)
+
 
 if __name__ == "__main__":
     main()

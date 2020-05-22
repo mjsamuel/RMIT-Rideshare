@@ -1,7 +1,9 @@
 from flask import Blueprint, request
+from datetime import datetime
 
 from app.extensions import db
 from app.models.car import Car, car_schema
+from app.models.booking import Booking
 
 car = Blueprint("car", __name__, url_prefix='/api')
 
@@ -95,5 +97,175 @@ def get_cars():
             cars = Car.query.all()
         response['cars'] = car_schema.dump(cars, many=True)
         status = 200
+
+    return response, status
+
+
+@car.route('/return', methods=["POST"])
+def return_car():
+    """Return a car by changing the locked status of a car that has been unlocked
+
+    .. :quickref: Car; Return a car that is booked.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        POST /api/return HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "car_id": 1,
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Car has been returned"
+        }
+
+    .. sourcecode:: http
+
+        HTTP/1.1 409 CONFLICT
+        Content-Type: application/json
+
+        {
+            "message": "ERROR: The car has already been returned"
+        }
+
+    :<json string username: the username of the person returning the car
+    :<json string car_id: the id of the car being returned
+    :>json message: repsonse information such as error information
+    :resheader Content-Type: application/json
+    :status 200: return was successful
+    :status 403: the user is not booked to ride in this car
+    :status 409: car is already returned
+    """
+
+    response = {
+        'message': ''
+    }
+    status = 200
+
+    username = request.json["username"]
+    car_id = request.json["car_id"]
+    car = Car.query.get(car_id)
+
+    # Getting the most recent booking for this car
+    booking = (Booking.query
+        .filter_by(car_id=car_id)
+        .order_by(Booking.book_time.desc())
+        .first())
+
+    if (booking is not None):
+        # Checking if the user requesting to return the car is the last person
+        # to ride in it
+        if booking.username == username:
+            # Checking if already locked
+            if car.is_locked:
+                response['message'] = "ERROR: The car has already been returned"
+                status = 409
+            else:
+                car.is_locked = True
+                db.session.commit()
+                response['message'] = "Car has been returned"
+        else:
+            response['message'] = "ERROR: You have not booked this car"
+            status = 403
+    else:
+        response['message'] = "ERROR: You have not booked this car"
+        status = 403
+
+    return response, status
+
+@car.route('/unlock', methods=["POST"])
+def unlock_car():
+    """Unlock a car by changing the locked status of a car
+
+    .. :quickref: Car; Unlock a car that is booked.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        POST /api/return HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "car_id": 1,
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Car has been unlocked"
+        }
+
+    .. sourcecode:: http
+
+        HTTP/1.1 409 CONFLICT
+        Content-Type: application/json
+
+        {
+            "message": "ERROR: The car is already unlocked"
+        }
+
+    :<json string username: the username of the person unlocking the car
+    :<json string car_id: the id of the car being unlocked
+    :>json message: repsonse information such as error information
+    :resheader Content-Type: application/json
+    :status 200: unlock was successful
+    :status 403: the user is not booked to ride in this car
+    :status 409: car is already unlocked
+    """
+
+    response = {
+        'message': ''
+    }
+    status = 200
+
+    username = request.json["username"]
+    car_id = request.json["car_id"]
+    car = Car.query.get(car_id)
+
+    # Getting the most recent booking for this car
+    booking = (Booking.query
+        .filter_by(car_id=car_id)
+        .order_by(Booking.book_time.desc())
+        .first())
+
+    if (booking is not None):
+        # Checking if the user requesting to unlock the car is currently booked
+        # to ride in it.
+        current_time = datetime.utcnow()
+        if (booking.username == username) and (current_time < booking.get_end_time()):
+            # Checking if the car is already unlocked
+            if car.is_locked:
+                car.is_locked = False
+                db.session.commit()
+                response['message'] = "Car has been unlocked"
+            else:
+                response['message'] = "ERROR: The car is already unlocked"
+                status = 409
+        else:
+            response['message'] = "ERROR: You have not booked this car"
+            status = 403
+    else:
+        response['message'] = "ERROR: You have not booked this car"
+        status = 403
 
     return response, status

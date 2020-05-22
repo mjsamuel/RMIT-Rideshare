@@ -16,7 +16,6 @@ class Server:
     __fru = FaceRecognitionUtil()
     """Used to call all the facial recognition functions"""
 
-
     def start_socket_server(self):
         """Starts the server and makes it listen on the specifed ip and port.
 
@@ -62,6 +61,8 @@ class Server:
         information to the Flask API and returns the response to the Agent Pi
         after encoding it.
         """
+        # Indicating to Agent Pi that the method has begun
+        self.__client.sendall("OK".encode())
 
         # Getting message from Agent Pi
         data = self.__client.recv(4096)
@@ -89,6 +90,9 @@ class Server:
         and adds it to the dataset. It sends an 'ok' response when the process
         has completed.
         """
+        # Indicating to Agent Pi that the method has begun
+        self.__client.sendall("OK".encode())
+
         # Recieve username and image from Agent Pi
         message = self.recieve_image_from_client()
         username = message['username']
@@ -108,6 +112,9 @@ class Server:
         matches a user in the datset, it returns this information to the Agent
         Pi, via sockets, as a dict.
         """
+        # Indicating to Agent Pi that the method has begun
+        self.__client.sendall("OK".encode())
+
         # Recieve image from Agent Pi
         image = self.recieve_image_from_client()
         # Getting the matching user
@@ -146,15 +153,34 @@ class Server:
 
         return pickle.loads(b"".join(data))
 
-    def unlock_car(self):
-        """Unlocks a car via the Flask API.
+    def change_lock_status(self):
+        """Makes a call on the API to unlock or return a car.\n
+        This method recieves the ID of a car, the username of the of the user
+        that is sending the requet and what method is to be called.
+        It then makes a request to the API to unlock or return the car
+        corresponding to that ID. It then sends the response from the API to the
+        Agent Pi via TCP sockets.
         """
-        pass
+        # Indicating to Agent Pi that the method has begun
+        self.__client.sendall("OK".encode())
 
-    def return_car(self):
-        """Returns a car via the Flask API.
-        """
-        pass
+        # Getting message from Agent Pi
+        data = self.__client.recv(4096)
+        message = json.loads(data.decode())
+
+        try:
+            # Sending login info to API
+            api_response = requests.post(
+                'http://localhost:5000/api/' + message['method'],
+                json = message).text
+        except :
+            # If connection to API fails then send a generic error message
+            api_response = json.dumps({
+                "message": "A server error occured."
+            })
+
+        # Returning response to Agent Pi
+        self.__client.sendall(api_response.encode())
 
     def get_server(self):
         """Returns the server socket object.

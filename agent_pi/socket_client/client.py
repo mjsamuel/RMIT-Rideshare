@@ -48,9 +48,10 @@ class Client:
         :return: A dictionary containing the response from the Master Pi
         :rtype: dict
         """
-        # Indicating to Master Pi to begin login
+        # Indicating to Master Pi to begin login and wait for OK response
         message = "Login"
         self.__server.sendall(message.encode())
+        data = self.__server.recv(4096)
 
         # Sending login credentials to Master Pi
         message = json.dumps({
@@ -77,8 +78,11 @@ class Client:
         :return: A dictionary containing the response from the Master Pi
         :rtype: dict
         """
+        # Indicating to Master Pi to begin login with face procedure and wait
+        # for an OK response
         message = "Login With Face"
         self.__server.sendall(message.encode())
+        data = self.__server.recv(4096)
 
         # Sending piickle to Master Pi
         self.__server.send(pickle.dumps(image))
@@ -105,9 +109,11 @@ class Client:
         :param image: The omage of the user's face to be sent
         :type image: numpy.ndarray
         """
-        # Indicating to Master Pi to add face
+        # Indicating to Master Pi to begin the add face procedure and wait for
+        # an OK repsonse
         message = "Add Face"
         self.__server.sendall(message.encode())
+        data = self.__server.recv(4096)
 
         # Create pickle string of username and image
         message = pickle.dumps({
@@ -133,3 +139,37 @@ class Client:
         :rtype: socket
         """
         return self.__server
+
+    def change_lock_status(self, username, car_id, method):
+        """Sends data to the Master Pi to change the lock status of car that
+        this Agent Pi corresponds to either unlock or return it.\n
+        Sends the car ID, username and method to the Master Pi via TCP sockets.\n
+        The method then recieves a message from the Master Pi which is returned.
+
+        :param username: The username of the user who is currently logged in
+        :type username: string
+        :param car_id: The ID of the car that this Agent Pi corresponds to
+        :type car_id: string
+        :param method: String to indicate wether the user wants to return or unlock
+        :type method: string
+        :return: The message returned from the Master Pi
+        :rtype: string
+        """
+        # Indicating to Master Pi to begin returning car process and wait for
+        # and OK response
+        message = "Change Lock Status"
+        self.__server.sendall(message.encode())
+        data = self.__server.recv(4096)
+
+        # Sending car ID to Master Pi
+        message = json.dumps({
+            "username": username,
+            "car_id": car_id,
+            "method": method
+        })
+        self.__server.sendall(message.encode())
+
+        # Getting response from Master Pi and returning it
+        data = self.__server.recv(4096)
+        response = json.loads(data.decode())
+        return response['message']

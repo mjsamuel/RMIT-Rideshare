@@ -18,6 +18,8 @@ class Car(db.Model):
     :type location: string
     :param cost_per_hour: the cost per hour to hire the car
     :type cost_per_hour: int
+    :param is_locked: indicates if the car is currently locked
+    :type is_locked: boolean
     """
 
     id = db.Column(db.Integer, primary_key=True)
@@ -27,8 +29,9 @@ class Car(db.Model):
     no_seats = db.Column(db.Integer, unique=False, nullable=False)
     location = db.Column(db.String(128), unique=False, nullable=True)
     cost_per_hour = db.Column(db.Integer, unique=False, nullable=False)
+    is_locked = db.Column(db.Boolean, unique=False, nullable=False)
 
-    def __init__(self, make, body_type, colour, no_seats, cost_per_hour):
+    def __init__(self, make, body_type, colour, no_seats, cost_per_hour, is_locked):
         """Constructor method
         """
         self.make = make
@@ -36,6 +39,7 @@ class Car(db.Model):
         self.colour = colour
         self.no_seats = no_seats
         self.cost_per_hour = cost_per_hour
+        self.is_locked = is_locked
 
 class CarSchema(ma.SQLAlchemySchema):
     """A class to represent the schema for cars
@@ -50,5 +54,7 @@ class CarSchema(ma.SQLAlchemySchema):
     no_seats = fields.Int()
     location = fields.Str()
     cost_per_hour = fields.Int()
+    is_booked = fields.Boolean()
+    is_locked = fields.Boolean()
 
 car_schema = CarSchema()
