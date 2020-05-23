@@ -1,5 +1,6 @@
 import cv2, getpass, os
 
+
 def menu(client, car_id):
     """Displays a menu that users can select from that calls other methods
 
@@ -10,26 +11,30 @@ def menu(client, car_id):
     """
     user = None
     while True:
-        if user == None:
+        if user is None:
             print("\nYou will need to log in to continue")
             user = login_menu(client)
         else:
             print("\nLogged in as - " + user)
             print("1. Unlock Car"
-                + "\n2. Return Car"
-                + "\n3. Setup facial recognition login"
-                + "\n4. Logout")
-            selection = input("Make selection [1-4]: ")
+                  + "\n2. Return Car"
+                  + "\n3. Set Location"
+                  + "\n4. Setup facial recognition login"
+                  + "\n5. Logout")
+            selection = input("Make selection [1-5]: ")
             if selection == "1":
                 change_lock_status(client, user, car_id, "unlock")
             elif selection == "2":
                 change_lock_status(client, user, car_id, "return")
             elif selection == "3":
-                add_face(client, user)
+                set_location(client, user, car_id)
             elif selection == "4":
+                add_face(client, user)
+            elif selection == "5":
                 user = None
             else:
                 print("Invalid selection")
+
 
 def login_menu(client):
     """Displays a menu that users can select from to choose there login option
@@ -41,7 +46,7 @@ def login_menu(client):
     """
     user = None
     print("1. Login via text"
-        + "\n2. Login via facial recognition")
+          + "\n2. Login via facial recognition")
     selection = input("Make selection [1-2]: ")
     if selection == "1":
         user = login_via_text(client)
@@ -50,6 +55,7 @@ def login_menu(client):
     else:
         print("Invalid selection")
     return user
+
 
 def login_via_text(client):
     """Gets user credentials to log in user.\n
@@ -77,6 +83,7 @@ def login_via_text(client):
 
     return user
 
+
 def login_via_face(client):
     """Authenticates the user via their face to log in.\n
     Gets the path to an image of the user's face, creates and image object and
@@ -93,7 +100,7 @@ def login_via_face(client):
     # Getting to the path to the image of the user's face
     img_path = input(
         "Enter path to an image of your face: "
-        +  str(os.path.expanduser('~'))
+        + str(os.path.expanduser('~'))
         + "/")
     path = os.path.join(os.path.expanduser('~'), img_path)
 
@@ -111,6 +118,7 @@ def login_via_face(client):
 
     return user
 
+
 def add_face(client, username):
     """Adds a logged in user's face to the Master Pi's dataset.\n
     Gets the path to an image of the user's face, creates and image object and
@@ -124,7 +132,7 @@ def add_face(client, username):
     # Getting to the path to the image of the user's face
     img_path = input(
         "Enter path to an image of your face: "
-        +  str(os.path.expanduser('~'))
+        + str(os.path.expanduser('~'))
         + "/")
     path = os.path.join(os.path.expanduser('~'), img_path)
 
@@ -135,6 +143,7 @@ def add_face(client, username):
         print("Processing image and adding to dataset...")
         client.add_face(username, image)
         print("Finished!")
+
 
 def change_lock_status(client, username, car_id, method):
     """Sends a message via sockets to unlock or return the car this Pi corresponds to.
@@ -150,3 +159,32 @@ def change_lock_status(client, username, car_id, method):
     """
     response = client.change_lock_status(username, car_id, method)
     print(response)
+
+
+def set_location(client, username, car_id):
+    """Sends a message via sockets to change location of the car this Pi corresponds to.
+
+    :param client: The socket connection to the Master Pi
+    :type client: Client
+    :param username: The username of the user who is currently logged in
+    :type username: string
+    :param car_id: The ID of the car that this Agent Pi corresponds to
+    :type car_id: string
+    :param location: String that indicates the longitude and latitude of car
+    :type location: string
+    """
+
+    # Get exact location of car from engineer
+    print("Please provide exact longitude and latitude for car.")
+    print("Note: 6 digits of precision are required.")
+    print("Example: -37.790162,145.001738")
+
+    location = input("Location: ")
+    if location is None:
+        print("ERROR: No location specified.")
+    else:
+        print("Updating cars location now...")
+        # Update car location method
+        response = client.set_location(username, car_id, location)
+        print(response)
+        print("Finished!")

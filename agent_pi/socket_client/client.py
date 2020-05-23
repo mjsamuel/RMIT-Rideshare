@@ -173,3 +173,40 @@ class Client:
         data = self.__server.recv(4096)
         response = json.loads(data.decode())
         return response['message']
+
+    def set_location(self, username, car_id, location):
+        """Sends data to the Master Pi to update the location of car that
+        his Agent Pi corresponds to.\n
+        Sends the car ID, username and location to the Master Pi via TCP sockets.\n
+        The method then recieves a message from the Master Pi which is returned.
+
+        :param username: The username of the user who is currently logged in
+        :type username: string
+        :param car_id: The ID of the car that this Agent Pi corresponds to
+        :type car_id: string
+        :param location: String to indicate new car location
+        :type location: string
+        :return: The message returned from the Master Pi
+        :rtype: string
+        """
+        # Indicating to Master Pi to begin setting location process and wait for
+        # and OK response
+        message = "Change Car Location"
+        self.__server.sendall(message.encode())
+        data = self.__server.recv(4096)
+
+        # Sending car ID to Master Pi
+        message = json.dumps({
+            "username": username,
+            "car_id": car_id,
+            "location": location
+        })
+        self.__server.sendall(message.encode())
+
+        # Getting response from Master Pi and returning it
+        data = self.__server.recv(4096)
+        response = json.loads(data.decode())
+        return response['message']
+
+
+

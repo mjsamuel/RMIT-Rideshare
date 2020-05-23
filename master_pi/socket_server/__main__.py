@@ -2,12 +2,13 @@ import logging
 
 from server import Server
 
+
 def main():
     """Main method to run necessary methods.\n
     This method starts a TCP socket, waits for and establishes a connection, and
     then starts the menu that awaits for commands.
     """
-    #Setting logging level
+    # Setting logging level
     logging.basicConfig(level=logging.INFO)
 
     # Starting TCP socket server
@@ -22,11 +23,12 @@ def main():
             client_address = server.wait_for_connection()
             logging.info("Connected to Agent Pi on {}".format(client_address))
             operations(server)
-    except (KeyboardInterrupt):
+    except KeyboardInterrupt:
         logging.info("Server shutdown via keyboard interrupt")
     finally:
         logging.info("Goodbye")
         server.stop_socket_server()
+
 
 def operations(server):
     """Menu to indicate to the server what operation the Agent Pi wants to do.
@@ -48,6 +50,9 @@ def operations(server):
         elif instruction == "Change Lock Status":
             logging.info("Change lock status called")
             server.change_lock_status()
+        elif instruction == "Change Car Location":
+            logging.info("Change car location called")
+            server.change_car_location()
         elif instruction == "Add Face":
             logging.info("Add face called")
             server.add_face()
