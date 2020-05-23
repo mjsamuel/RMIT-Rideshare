@@ -35,3 +35,9 @@ form #error-message {
   width: 100%;
   text-align: left;
 }
+
+.car-loc-frame {
+  padding-top: 35px;
+  display: block;
+  text-align: center;
+}
