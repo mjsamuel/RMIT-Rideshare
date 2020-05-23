@@ -91,7 +91,7 @@ class TestSocketServer:
         mock_cv2.assert_called()
 
     @mock.patch('socket_server.server.socket.socket.accept')
-    @mock.patch('socket_server.server.Server.recieve_image_from_client')
+    @mock.patch('socket_server.server.Server.receive_image_from_client')
     @mock.patch('socket_server.face_recognition_util.cv2.imwrite')
     def test_add_face(self, mock_cv2, mock_image, mock_connection, socket_server):
         """Tests to make sure that images are being saved

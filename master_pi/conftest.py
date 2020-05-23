@@ -18,12 +18,7 @@ def app():
         db.session.execute(_data_sql)
         db.session.commit()
 
-    yield app
-
-    # Dropping database
-    with app.app_context():
-        get_db().drop_all()
-
+    return app
 
 @pytest.fixture
 def client(app):
