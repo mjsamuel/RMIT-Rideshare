@@ -185,8 +185,7 @@ class Server:
 
     def change_car_location(self):
         """Makes a call on the API to update a cars location.\n
-        This method receives the ID of a car, the username of the of the user
-        that is sending the request and what method is to be called.
+        This method receives the ID of a car and location is to be set.
         It then makes a request to the API to update the cars location
         corresponding to that ID. It then sends the response from the API to the
         Agent Pi via TCP sockets.
@@ -201,7 +200,7 @@ class Server:
         try:
             # Sending login info to API
             api_response = requests.post(
-                'http://localhost:5000/api/' + message['method'],
+                'http://localhost:5000/api/setlocation',
                 json=message).text
         except:
             # If connection to API fails then send a generic error message

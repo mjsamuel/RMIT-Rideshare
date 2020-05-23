@@ -7,6 +7,7 @@ from app.models.booking import Booking
 
 car = Blueprint("car", __name__, url_prefix='/api')
 
+
 @car.route('/cars', methods=["GET"])
 def get_cars():
     """Gets a single car or collection of cars based on the search criteria
@@ -70,7 +71,7 @@ def get_cars():
     }
     status = None
 
-    if (request.args.get('id') is not None):
+    if request.args.get('id') is not None:
         id = request.args.get('id')
         car = Car.query.get(id)
 
@@ -78,19 +79,19 @@ def get_cars():
         status = 200
     else:
         cars = None
-        if (request.args.get('make') is not None):
+        if request.args.get('make') is not None:
             make = request.args.get('make')
             cars = Car.query.filter_by(make=make).all()
-        elif (request.args.get('body_type') is not None):
+        elif request.args.get('body_type') is not None:
             body_type = request.args.get('body_type')
             cars = Car.query.filter_by(body_type=body_type).all()
-        elif (request.args.get('colour') is not None):
+        elif request.args.get('colour') is not None:
             colour = request.args.get('colour')
             cars = Car.query.filter_by(colour=colour).all()
-        elif (request.args.get('no_seats') is not None):
+        elif request.args.get('no_seats') is not None:
             no_seats = request.args.get('no_seats')
             cars = Car.query.filter_by(no_seats=no_seats).all()
-        elif (request.args.get('cost_per_hour') is not None):
+        elif request.args.get('cost_per_hour') is not None:
             cost_per_hour = request.args.get('cost_per_hour')
             cars = Car.query.filter_by(cost_per_hour=cost_per_hour).all()
         else:
@@ -160,9 +161,9 @@ def return_car():
 
     # Getting the most recent booking for this car
     booking = (Booking.query
-        .filter_by(car_id=car_id)
-        .order_by(Booking.book_time.desc())
-        .first())
+               .filter_by(car_id=car_id)
+               .order_by(Booking.book_time.desc())
+               .first())
 
     if (booking is not None):
         # Checking if the user requesting to return the car is the last person
@@ -184,6 +185,7 @@ def return_car():
         status = 403
 
     return response, status
+
 
 @car.route('/unlock', methods=["POST"])
 def unlock_car():
@@ -244,11 +246,11 @@ def unlock_car():
 
     # Getting the most recent booking for this car
     booking = (Booking.query
-        .filter_by(car_id=car_id)
-        .order_by(Booking.book_time.desc())
-        .first())
+               .filter_by(car_id=car_id)
+               .order_by(Booking.book_time.desc())
+               .first())
 
-    if (booking is not None):
+    if booking is not None:
         # Checking if the user requesting to unlock the car is currently booked
         # to ride in it.
         current_time = datetime.utcnow()
@@ -269,3 +271,72 @@ def unlock_car():
         status = 403
 
     return response, status
+
+
+@car.route('/setlocation', methods=["POST"])
+def change_car_location():
+    """Set a given cars location
+
+    .. :quickref: Car; Change a cars location.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        POST /api/return HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "car_id": 1,
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Car location updated"
+        }
+
+    .. sourcecode:: http
+
+        HTTP/1.1 403 CONFLICT
+        Content-Type: application/json
+
+        {
+            "message": "ERROR: Car location not updated. Location given error."
+        }
+
+    :<json string username: the username of the person unlocking the car
+    :<json string car_id: the id of the car being unlocked
+    :>json message: response information such as error information
+    :resheader Content-Type: application/json
+    :status 200: update was successful
+    :status 403: the car does not exist
+    """
+
+    response = {
+        'message': ''
+    }
+    status = 200
+
+    car_id = request.json["car_id"]
+    location = request.json["location"]
+    car = Car.query.get(car_id)
+
+    # Check location is valid
+    if car is not None:
+        car.location = location
+        db.session.commit()
+        response['message'] = "Car location updated"
+    else:
+        response['message'] = "ERROR: Car does not exist"
+        status = 403
+
+    return response, status
+

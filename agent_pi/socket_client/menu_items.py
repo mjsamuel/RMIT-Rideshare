@@ -27,7 +27,7 @@ def menu(client, car_id):
             elif selection == "2":
                 change_lock_status(client, user, car_id, "return")
             elif selection == "3":
-                set_location(client, user, car_id)
+                set_location(client, car_id)
             elif selection == "4":
                 add_face(client, user)
             elif selection == "5":
@@ -161,17 +161,13 @@ def change_lock_status(client, username, car_id, method):
     print(response)
 
 
-def set_location(client, username, car_id):
+def set_location(client, car_id):
     """Sends a message via sockets to change location of the car this Pi corresponds to.
 
     :param client: The socket connection to the Master Pi
     :type client: Client
-    :param username: The username of the user who is currently logged in
-    :type username: string
     :param car_id: The ID of the car that this Agent Pi corresponds to
     :type car_id: string
-    :param location: String that indicates the longitude and latitude of car
-    :type location: string
     """
 
     # Get exact location of car from engineer
@@ -182,9 +178,36 @@ def set_location(client, username, car_id):
     location = input("Location: ")
     if location is None:
         print("ERROR: No location specified.")
-    else:
+    elif validate_location(location):
         print("Updating cars location now...")
         # Update car location method
-        response = client.set_location(username, car_id, location)
+        response = client.set_location(car_id, location)
         print(response)
         print("Finished!")
+    else:
+        print("ERROR: Invalid location provided.")
+
+
+def validate_location(loc):
+    """Validates the users location input.
+
+    :param loc: The location to be validated
+    :type loc: String
+    :return: True if input is valid
+    :rtype: boolean
+    """
+    # First check loc can be split into long and lat
+    try:
+        result = loc.split(',', 1)
+    except:
+        return False
+
+    # Now check long/lat can be converted to float
+    try:
+        float(result[0])
+        float(result[1])
+    except:
+        return False
+
+    # If passes both, can assume valid location
+    return True
