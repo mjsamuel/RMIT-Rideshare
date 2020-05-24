@@ -312,12 +312,12 @@ def change_car_location():
             "message": "ERROR: Car location not updated. Location given error."
         }
 
-    :<json string username: the username of the person unlocking the car
     :<json string car_id: the id of the car being unlocked
+    :<json string location: the latitude and longitude of the new location
     :>json message: response information such as error information
     :resheader Content-Type: application/json
     :status 200: update was successful
-    :status 403: the car does not exist
+    :status 404: the car does not exist
     """
 
     response = {
@@ -336,7 +336,6 @@ def change_car_location():
         response['message'] = "Car location updated"
     else:
         response['message'] = "ERROR: Car does not exist"
-        status = 403
+        status = 404
 
     return response, status
-

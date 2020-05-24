@@ -1,4 +1,4 @@
-import pytest
+import pytest, json
 
 class TestApiCarEndpoints:
     def test_search(self, client):
@@ -116,7 +116,7 @@ class TestApiCarEndpoints:
             }
         )
         expected_data = b'{"message":"ERROR: You have not booked this car"}\n'
-        
+
         assert (response.status == '403 FORBIDDEN')
         assert (response.data == expected_data)
 
@@ -205,4 +205,37 @@ class TestApiCarEndpoints:
         expected_data = b'{"message":"ERROR: You have not booked this car"}\n'
 
         assert (response.status == '403 FORBIDDEN')
+        assert (response.data == expected_data)
+
+    def test_change_car_location(self, client):
+        """Testing that changin a car's location succeeds
+        """
+        location = "32.426998,-81.754753"
+        post_response = client.post(
+            '/api/setlocation',
+            json={
+                "car_id": "1",
+                "location": location
+            }
+        )
+        expected_post_response = b'{"message":"Car location updated"}\n'
+        get_response = json.loads(client.get('/api/cars?id=1').data)
+
+        assert (post_response.status == '200 OK')
+        assert (post_response.data == expected_post_response)
+        assert (get_response['cars']['location'] == location)
+
+    def test_change_car_fail_invalid_id(self, client):
+        """Testing that changin a car's location fails due to an invalid id
+        """
+        response = client.post(
+            '/api/setlocation',
+            json={
+                "car_id": "245",
+                "location": "32.426998,-81.754753"
+            }
+        )
+        expected_data = b'{"message":"ERROR: Car does not exist"}\n'
+
+        assert (response.status == '404 NOT FOUND')
         assert (response.data == expected_data)
