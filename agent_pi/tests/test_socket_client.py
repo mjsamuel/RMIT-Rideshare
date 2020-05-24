@@ -41,10 +41,42 @@ class TestSocketClient:
     def test_disconnect(self, mock_connection, socket_client):
         # Setting up mock object
         mock_connection.return_value = mock_connection
-        
+
         # Code to be tested
         socket_client.connect_to_server()
         socket_client.disconnect_from_server()
 
         # Checking values are as expected
         mock_connection.close.assert_called()
+
+    @mock.patch('socket_client.client.socket.socket')
+    def test_change_lock_status(self, mock_connection, socket_client):
+        server_response = {
+            'message': 'Car has been returned',
+        }
+        # Setting up mock object
+        mock_connection.return_value = mock_connection
+        mock_connection.recv.return_value = json.dumps(server_response).encode()
+
+        # Code to be tested
+        socket_client.connect_to_server()
+        response = socket_client.change_lock_status("test", 1, "unlock")
+
+        # Checking values are as expected
+        assert(response == server_response['message'])
+
+    @mock.patch('socket_client.client.socket.socket')
+    def test_set_location(self, mock_connection, socket_client):
+        server_response = {
+            'message': 'Location has been updated',
+        }
+        # Setting up mock object
+        mock_connection.return_value = mock_connection
+        mock_connection.recv.return_value = json.dumps(server_response).encode()
+
+        # Code to be tested
+        socket_client.connect_to_server()
+        response = socket_client.set_location(1, "32.426998,-81.754753")
+
+        # Checking values are as expected
+        assert(response == server_response['message'])
