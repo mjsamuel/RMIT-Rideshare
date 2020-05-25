@@ -1,11 +1,10 @@
-
-
 <div align="center">
   <h1>
     <br>
      <img src="https://i.imgur.com/0EqVtUO.png" alt="Showoff Icon" height="125">
     <br>
-    Programming Internet of Things<br> Assignment 2
+    Programming Internet of Things<br> Assignment 3<br>
+    <img src="https://travis-ci.com/matt-samuel-s3717393/IoT-Assignment3.svg?token=8bnx6syKrM5BbM1FTCfx&branch=develop"/>
    <br>
   </h1>
   <strong>Car Share IoT application</strong><br>
