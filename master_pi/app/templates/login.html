@@ -2,7 +2,6 @@
 
 {% block content %}
   <script>
-
     function submitClicked() {
       var data = {
         username: document.getElementById('username').value,
@@ -21,7 +20,10 @@
         .then(data => {
           if (data.user != null) {
             sessionStorage.setItem('username', data.user.username);
-            window.location.href = "/";
+            if (data.user.role == "admin") window.location.href = "/admin";
+            else if (data.user.role == "engineer") window.location.href = "/manager";
+            else if (data.user.role == "engineer") window.location.href = "/engineer";
+            else (data.user.role == "default") window.location.href = "/";
           } else {
             let errorBanner = document.getElementById("error-message");
             errors = outputErrors(data.message);
@@ -51,5 +53,4 @@
       <button type="button" class="btn btn-secondary" onclick='registerClicked()'>Register</button>
     </div>
   </form>
-
 {% endblock %}

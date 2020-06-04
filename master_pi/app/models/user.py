@@ -8,7 +8,11 @@ class Role(enum.Enum):
     """
     default = 1
     admin = 2
-    engineer = 3
+    manager = 3
+    engineer = 4
+
+    def __str__(self):
+        return self.name
 
 class User(db.Model):
     """Class to represent a basic user that can hire vehicles
@@ -53,5 +57,6 @@ class UserSchema(ma.SQLAlchemySchema):
         model = User
 
     username = fields.Str()
+    role = fields.Str()
 
 user_schema = UserSchema()

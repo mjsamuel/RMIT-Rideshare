@@ -13,7 +13,24 @@ class TestApiUserEndpoints:
             }
         )
 
-        expected_data = b'{"message":"Logged in successfully","user":{"username":"dummy"}}\n'
+        expected_data = b'{"message":"Logged in successfully","user":{"role":"default","username":"dummy"}}\n'
+
+        assert (response.status == '200 OK')
+        assert (response.data == expected_data)
+
+    def test_login_success_admin(self, client):
+        """Testing for a sucessful login for an admin account
+        """
+
+        response = client.post(
+            '/api/login',
+            json={
+                "username": "admin",
+                "password": "test"
+            }
+        )
+
+        expected_data = b'{"message":"Logged in successfully","user":{"role":"admin","username":"admin"}}\n'
 
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
@@ -249,7 +266,7 @@ class TestApiUserEndpoints:
 
     def test_user_get_success(self, client):
         response = client.get('/api/user?username=dummy')
-        expected_data = b'{"message":"User found","user":{"username":"dummy"}}\n'
+        expected_data = b'{"message":"User found","user":{"role":"default","username":"dummy"}}\n'
 
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
