@@ -1,6 +1,14 @@
+import enum
 from marshmallow import fields, validates_schema, ValidationError
 
 from app.extensions import db, ma
+
+class Role(enum.Enum):
+    """Enums to indicate what permissions a user has
+    """
+    default = 1
+    admin = 2
+    engineer = 3
 
 class User(db.Model):
     """Class to represent a basic user that can hire vehicles
@@ -15,6 +23,8 @@ class User(db.Model):
     :type l_name: string
     :param email: The user's email
     :type email: string
+    :param role: The user's permission role
+    :type role: app.model.user.Role
     :param google_credentials: Google authentication information
     :type username: credentials
     """
@@ -23,9 +33,10 @@ class User(db.Model):
     f_name = db.Column(db.String(32), unique=False, nullable=False)
     l_name = db.Column(db.String(32), unique=False, nullable=False)
     email = db.Column(db.String(64), unique=False, nullable=False)
+    role = db.Column(db.Enum(Role), unique=False, nullable=True)
     google_credentials = db.Column(db.PickleType(), unique=False, nullable=True)
 
-    def __init__(self, username, password, f_name, l_name, email):
+    def __init__(self, username, password, f_name, l_name, email, role=Role.default):
         """Constructor method
         """
         self.username = username
@@ -33,6 +44,7 @@ class User(db.Model):
         self.f_name = f_name
         self.l_name = l_name
         self.email = email
+        self.role = role
 
 class UserSchema(ma.SQLAlchemySchema):
     """A class to represent the schema for users

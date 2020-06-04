@@ -1,17 +1,9 @@
-
--- Clear tables and repopulate with dummy data
-
-TRUNCATE booking;
-TRUNCATE car;
-TRUNCATE user;
-
 -- Add dummy users
 
-INSERT INTO user (username, password, f_name, l_name, email)
+INSERT INTO user (username, password, f_name, l_name, email, role)
 VALUES
-  ('dummy', '$2b$12$xIygz54Gi4G/FROikCKhfej.JmnI8lSzR6RPpqiErQRUvnjSikOjO', 'First', 'Last', 'dummyemail@gmail.com'),
-  ('john', '$2b$12$pUSt0xQDEsdaHmXtNJ7BaOlN8NzqL5.tFucHTwyL6nf7o6KvAl9p', 'John', 'Doe', 'john.doe@outlook.com');
-
+  ('dummy', '$2b$12$xIygz54Gi4G/FROikCKhfej.JmnI8lSzR6RPpqiErQRUvnjSikOjO', 'First', 'Last', 'dummyemail@gmail.com', 'default'),
+  ('john', '$2b$12$pUSt0xQDEsdaHmXtNJ7BaOlN8NzqL5.tFucHTwyL6nf7o6KvAl9p', 'John', 'Doe', 'john.doe@outlook.com', 'default');
 
 -- Add 10 Demo Cars
 
