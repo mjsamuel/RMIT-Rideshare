@@ -61,11 +61,6 @@
           updateBookings();
         });
     }
-
-    function logoutClicked() {
-      sessionStorage.removeItem('username')
-      window.location.href = "/login"
-    }
   </script>
 
   <table class="table">
@@ -83,7 +78,7 @@
 
   <div class="btn-group">
     <button type="button" class="btn btn-primary" onclick='bookCarsClicked()'>Book a car</button>
-    <button type="button" class="btn btn-secondary" onclick='logoutClicked()'>Logout</button>
+    <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
   </div>
   <div class="btn-group">
     <button type="button" class="btn btn-success" onclick='linkAccountClicked()'>Link Google account</button>

@@ -38,17 +38,11 @@
     }
 
     function rowClicked(carId) {
-      let admin = "{{ admin }}"
-      if (admin == "True") window.location.href = "/edit-car?id=" + carId
-      else window.location.href = "/car?id=" + carId
+      window.location.href = "/car?id=" + carId
     }
 
     function backClicked() {
       window.location.href = "/"
-    }
-
-    function newCarClicked() {
-      window.location.href = "/new-car"
     }
   </script>
 
@@ -88,11 +82,6 @@
   </table>
 
   <div class="btn-group">
-    {% if admin %}
-      <button type="button" class="btn btn-success" onclick='newCarClicked()'>New Car</button>
-      <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
-    {% else %}
-      <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
-    {% endif %}
+    <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
   </div>
 {% endblock %}

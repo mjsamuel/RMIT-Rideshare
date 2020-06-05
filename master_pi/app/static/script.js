@@ -5,6 +5,11 @@ function isLoggedIn() {
     }
 }
 
+function logout() {
+  sessionStorage.removeItem('username')
+  window.location.href = "/login"
+}
+
 function outputErrors(errors) {
   var output = "<strong>Error:</strong><ul>\n"
   for (e in errors) {

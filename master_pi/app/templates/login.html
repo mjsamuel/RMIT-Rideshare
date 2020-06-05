@@ -20,10 +20,12 @@
         .then(data => {
           if (data.user != null) {
             sessionStorage.setItem('username', data.user.username);
-            if (data.user.role == "admin") window.location.href = "/admin";
-            else if (data.user.role == "engineer") window.location.href = "/manager";
-            else if (data.user.role == "engineer") window.location.href = "/engineer";
-            else (data.user.role == "default") window.location.href = "/";
+
+            if (data.user.role == "admin") window.location.href = "/admin-console";
+            else if (data.user.role == "manager") window.location.href = "/manager-console";
+            else if (data.user.role == "engineer") window.location.href = "/engineer-console";
+            else window.location.href = "/";
+
           } else {
             let errorBanner = document.getElementById("error-message");
             errors = outputErrors(data.message);

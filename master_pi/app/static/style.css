@@ -41,3 +41,11 @@ form #error-message {
   display: block;
   text-align: center;
 }
+
+.form-row {
+  padding-bottom: 12px;
+}
+
+label {
+  font-weight: bold;
+}

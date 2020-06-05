@@ -34,3 +34,16 @@ def book_car():
 @site.route('/google-account')
 def link_google_account():
     return render_template('link_google_account.html', title='Link Your Google Account')
+
+# Admin specific routes
+@site.route('/admin-console')
+def admin_console():
+    return render_template('search_cars.html', title='Admin Console', admin=True)
+
+@site.route('/edit-car')
+def edit_car():
+    carId = request.args.get('id')
+    response = requests.get('http://localhost:5000/api/cars?id=' + carId)
+    data = json.loads(response.text)
+
+    return render_template('edit_car.html', title="Edit Car", car=data['cars'])
