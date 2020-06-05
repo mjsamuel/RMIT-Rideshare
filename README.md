@@ -55,13 +55,17 @@ Navigate to the `/master_pi` folder and run the server by typing:
 $ python socket_server
 ```
 
-#### Compiling Sphinx documentation
-Navigate to the `/docs` folder and compile the documentation by typing:
+#### Populating The Database
+Navigate to the `/master_pi` folder and populate the database by typing:
 ```
-$ make html
+$ flask init-db
 ```
-From there you can view the docs by running the Flask application and going to the app's adress followed by `/docs/index.html`
-E.g. `192.168.1.235:5000/docs/index.html`
+
+#### Clearing The Database
+Navigate to the `/master_pi` folder and clear the database by typing:
+```
+$ flask clear-db
+```
 
 #### Running Unit Tests
 Navigate to the `/master_pi` folder and run the unit tests by typing:
@@ -82,3 +86,11 @@ Navigate to the `/agent_pi` folder and run the unit tests by typing:
 ```
 $ pytest
 ```
+
+### Compiling Sphinx documentation
+Navigate to the `/docs` folder and compile the documentation by typing:
+```
+$ make html
+```
+From there you can view the docs by running the Flask application and going to the app's adress followed by `/docs/index.html`
+E.g. `192.168.1.235:5000/docs/index.html`

@@ -1,6 +1,6 @@
 import os
 
-import configparser
+import click, configparser
 from flask import Flask
 
 from app.extensions import db, ma, bcrypt
@@ -53,6 +53,25 @@ def create_app(test_config = None):
     app.register_blueprint(booking)
     app.register_blueprint(site)
     app.register_blueprint(docs)
+
+    @app.cli.command("init-db")
+    def init_db():
+        print("Initializing databse...")
+        sql_data_path = os.path.join(
+            os.path.dirname(__file__),
+            os.pardir, 'tests',
+            'data.sql')
+        with open(sql_data_path, 'rb') as file:
+            sql_commands = file.read().decode('utf8')
+        db.session.execute(sql_commands)
+        db.session.commit()
+        print("Done!")
+
+    @app.cli.command("clear-db")
+    def init_db():
+        print("Clearing databse...")
+        db.drop_all()
+        print("Done!")
 
     return app
 
