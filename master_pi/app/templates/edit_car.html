@@ -37,8 +37,38 @@
 
         make_request(data, "DELETE")
       }
-    {% endif %}
 
+      updateBookings()
+
+      function updateBookings() {
+        fetch("api/booking?car_id={{ car.id }}")
+          .then(response => response.json())
+          .then(data => {
+            document.getElementById("table-data").innerHTML = displayBookings(data.bookings)
+          });
+      }
+
+      function displayBookings(bookings) {
+        var output = ""
+        for (var i = 0; i < bookings.length; ++i) {
+          // Formatting booking date and time
+          let bookTime = moment.utc(bookings[i].book_time).toDate()
+          let formattedBookTime = moment(bookTime).format('DD/MM/YY, hh:mm A');
+
+          // Formatting the prefix for the duration column
+          let duration = bookings[i].duration
+          var durationPrefix = "hours"
+          if (duration == 1) durationPrefix = "hour"
+
+          output += "<tr>\n"
+              + "<td>" + bookings[i].username + "</td>\n"
+              + "<td>" + formattedBookTime + "</td>\n"
+              + "<td>" + duration + " " + durationPrefix + "</td>\n"
+            + "</tr>\n"
+        }
+        return output;
+      }
+    {% endif %}
 
     function make_request(data, method) {
       fetch('/api/car', {
@@ -104,7 +134,27 @@
     <div class="alert alert-danger" id="error-message"></div>
   </form>
 
+
   {% if car is not none %}
+      <div class="btn-group">
+        <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseTable" aria-expanded="false" aria-controls="collapseTable">
+          Booking history
+        </button>
+      </div>
+    <div class="collapse" id="collapseTable">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Time</th>
+            <th>Duration</th>
+          </tr>
+        </thead>
+        <tbody id='table-data'>
+        </tbody>
+      </table>
+    </div>
+
     <div class="btn-group">
       <button type="button" class="btn btn-warning" onclick='reportIssueClicked()'>Report an issue</button>
     </div>
@@ -115,13 +165,7 @@
   {% endif %}
 
   <div class="btn-group">
-    <button type="button" class="btn btn-primary" onclick='submitClicked()'>
-      {% if car is not none %}
-        Update
-      {% else %}
-        Submit
-      {% endif %}
-    </button>
+    <button type="button" class="btn btn-primary" onclick='submitClicked()'>Submit</button>
     <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
   </div>
 {% endblock %}

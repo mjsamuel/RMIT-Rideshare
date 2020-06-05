@@ -15,15 +15,21 @@ booking = Blueprint("booking", __name__, url_prefix='/api')
 
 @booking.route('/booking', methods=['GET'])
 def get_bookings():
-    """Get a collection of bookings a user has made
+    """Get a collection of bookings a user has made or for a specific car
 
-    .. :quickref: Booking; Get bookings for a user.
+    .. :quickref: Booking; Get bookings for a user or car.
 
     **Example request**:
 
     .. sourcecode:: http
 
         GET /api/booking?username=dummy HTTP/1.1
+        Host: localhost
+        Accept: application/json
+
+    .. sourcecode:: http
+
+        GET /api/booking?car_id=1 HTTP/1.1
         Host: localhost
         Accept: application/json
 
@@ -59,19 +65,29 @@ def get_bookings():
         'bookings': None
     }
 
-    # Getting bookings ordered from most recent, to least recent
     username = request.args.get('username')
-    bookings = (Booking.query
-        .filter_by(username=username)
-        .order_by(Booking.book_time.desc())
-        .all())
+    car_id = request.args.get('car_id')
+    if username is not None:
+        # Getting bookings ordered from most recent, to least recent
+        bookings = (Booking.query
+            .filter_by(username=username)
+            .order_by(Booking.book_time.desc())
+            .all())
 
-    # Adding the the car associated with the bookings to be searlized along
-    # with them
-    for booking in bookings:
-        booking.car = Car.query.get(booking.car_id)
+        # Adding the the car associated with the bookings to be searlized along
+        # with them
+        for booking in bookings:
+            booking.car = Car.query.get(booking.car_id)
 
-    response['bookings'] = booking_schema.dump(bookings, many=True)
+        response['bookings'] = booking_schema.dump(bookings, many=True)
+    elif car_id is not None:
+        # Getting bookings ordered from most recent, to least recent
+        bookings = (Booking.query
+            .filter_by(car_id=str(car_id))
+            .order_by(Booking.book_time.desc())
+            .all())
+
+        response['bookings'] = booking_schema.dump(bookings, many=True)
 
     return response, 200
 
