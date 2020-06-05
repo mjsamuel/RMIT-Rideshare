@@ -84,8 +84,8 @@ class BookCarFormSchema(Schema):
 
 
 class EditCarFormSchema(Schema):
-    car_id = fields.Int(required=True)
-    username =  fields.Str(required=True)
+    car_id = fields.Int(required=False)
+    username = fields.Str(required=True)
     make = fields.Str(required=True)
     body_type = fields.Str(required=True)
     colour = fields.Str(required=True)

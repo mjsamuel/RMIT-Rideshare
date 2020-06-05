@@ -101,6 +101,7 @@ def login():
 
     return response, status
 
+
 @user.route('/user', methods=["POST"])
 def register_user():
     """Creates a user account that does not already exist
@@ -202,6 +203,7 @@ def register_user():
 
     return response, status
 
+
 @user.route('/user', methods=["GET"])
 def get_user():
     """Gets a user from the database
@@ -266,6 +268,7 @@ def get_user():
 
     return response, status
 
+
 @user.route('/googleauth', methods=['GET'])
 def get_auth_link():
     """Retirieves a url to link a user's google account to this application
@@ -307,6 +310,7 @@ def get_auth_link():
     response['auth_url'] = auth_url
 
     return response, 200
+
 
 @user.route('/googleauth', methods=['POST'])
 def add_auth_credentials():

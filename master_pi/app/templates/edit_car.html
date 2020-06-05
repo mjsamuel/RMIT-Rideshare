@@ -6,7 +6,6 @@
 
     function submitClicked() {
       var data = {
-        car_id: {{ car.id }},
         username: sessionStorage.getItem('username'),
         make: document.getElementById('make').value,
         body_type: document.getElementById('body-type').value,
@@ -16,8 +15,14 @@
         cost_per_hour: document.getElementById('cost-per-hour').value
       };
 
+      var method = "POST";
+      {% if car is not none %}
+        data["car_id"] = {{ car.id }}
+        method = "PUT"
+      {% endif %}
+
       fetch('/api/car', {
-          method: "PUT",
+          method: method,
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -27,7 +32,7 @@
         .then(response => response.json())
         .then(data => {
           if (data.message == "Success") {
-            // window.location.href = "/"
+            window.location.href = "/admin-console"
           } else {
             let errorBanner = document.getElementById("error-message");
             errors = outputErrors(data.message);
@@ -80,10 +85,17 @@
   </form>
 
   <div class="btn-group">
-    <button type="button" class="btn btn-primary" onclick='submitClicked()'>Update</button>
+    <button type="button" class="btn btn-primary" onclick='submitClicked()'>
+      {% if car is not none %}
+        Update
+      {% else %}
+        Submit
+      {% endif %}
+    </button>
     <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
-    <button type="button" class="btn btn-warning" onclick='backClicked()'>Report</button>
-    <button type="button" class="btn btn-danger" onclick='backClicked()'>Delete</button>
+    {% if car is not none %}
+      <button type="button" class="btn btn-warning" onclick='backClicked()'>Report</button>
+      <button type="button" class="btn btn-danger" onclick='backClicked()'>Delete</button>
+    {% endif %}
   </div>
-
 {% endblock %}

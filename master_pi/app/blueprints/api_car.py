@@ -9,9 +9,104 @@ from app.forms import EditCarFormSchema
 
 car = Blueprint("car", __name__, url_prefix='/api')
 
+@car.route('/car', methods=["POST"])
+def new_car():
+    """Registers a new car if the user making the request is an admin
+
+    .. :quickref: Car; Register a new car.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        POST /api/car HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "username": "admin",
+            "make": "Toyota",
+            "body_type": "SUV",
+            "colour": "Black",
+            "no_seats": 5,
+            "location": "-37.808880,144.965179",
+            "cost_per_hour": 15
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Success"
+        }
+
+    .. sourcecode:: http
+
+        HTTP/1.1 401 UNAUTHORIZED
+        Content-Type: application/json
+
+        {
+            "message": {
+                "user": ["User is not an admin."]
+            }
+        }
+
+    :<json string username: the username of the person updating the car
+    :<json string make: the make of the car being updated
+    :<json string body_type: the body_type of the car being updated
+    :<json string colour: the colour of the car being updated
+    :<json string no_seats: the no_seats of the car being updated
+    :<json string location: the location of the car being updated
+    :<json string cost_per_hour: the cost_per_hour of the car being updated
+    :>json message: repsonse information such as error information
+    :resheader Content-Type: application/json
+    :status 200: return was successful
+    :status 400: missing or invalid fields
+    :status 401: user is not an admin
+    """
+
+    response = {
+        'message': '',
+    }
+    status = 200
+
+    form_schema = EditCarFormSchema()
+    form_errors = form_schema.validate(request.json)
+    if form_errors:
+        response['message'] = form_errors
+        status = 400
+    else:
+        # Checking if user requesting update is an admin
+        user = User.query.get(request.json["username"])
+        if user.role is not Role.admin:
+            response['message'] = {
+                'user': ['User is not an admin.']
+            }
+            status = 401
+        else:
+            make = request.json["make"]
+            body_type = request.json["body_type"]
+            colour = request.json["colour"]
+            no_seats = request.json["no_seats"]
+            location = request.json["location"]
+            cost_per_hour = request.json["cost_per_hour"]
+
+            car = Car(make, body_type, colour, no_seats, cost_per_hour, location)
+            db.session.add(car)
+            db.session.commit()
+            response['message'] = "Success"
+
+    return response, status
+
+
 @car.route('/car', methods=["PUT"])
 def put_car():
-    """Updates the data of a single car only if you are an admin
+    """Updates the data of a single car only if the user making the request is an admin
 
     .. :quickref: Car; Update a car.
 
@@ -68,7 +163,7 @@ def put_car():
     :>json message: repsonse information such as error information
     :resheader Content-Type: application/json
     :status 200: return was successful
-    :status 400: missing or invalid data
+    :status 400: missing or invalid fields
     :status 401: user is not an admin
     """
 
@@ -102,6 +197,7 @@ def put_car():
             response['message'] = "Success"
 
     return response, status
+
 
 @car.route('/cars', methods=["GET"])
 def get_cars():

@@ -31,7 +31,7 @@ class Car(db.Model):
     cost_per_hour = db.Column(db.Integer, unique=False, nullable=False)
     is_locked = db.Column(db.Boolean, unique=False, nullable=False)
 
-    def __init__(self, make, body_type, colour, no_seats, cost_per_hour, is_locked):
+    def __init__(self, make, body_type, colour, no_seats, cost_per_hour, location=None):
         """Constructor method
         """
         self.make = make
@@ -39,7 +39,8 @@ class Car(db.Model):
         self.colour = colour
         self.no_seats = no_seats
         self.cost_per_hour = cost_per_hour
-        self.is_locked = is_locked
+        self.location = location
+        self.is_locked = True
 
 class CarSchema(ma.SQLAlchemySchema):
     """A class to represent the schema for cars

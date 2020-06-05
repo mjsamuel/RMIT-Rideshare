@@ -253,7 +253,51 @@ class TestApiCarEndpoints:
         assert (response.data == expected_data)
 
 
-    def test_put_car(self, client):
+    def test_new_car(self, client):
+        """Testing that registering a new car succeeds when called with the cor-
+        rect information
+        """
+        response = client.post(
+            '/api/car',
+            json={
+                "username": "admin",
+                "make": "Toyota",
+                "body_type": "SUV",
+                "colour": "Black",
+                "no_seats": 5,
+                "location": "32.426998,-81.754753",
+                "cost_per_hour": 20
+            }
+        )
+        expected_data = b'{"message":"Success"}\n'
+
+        assert (response.status == '200 OK')
+        assert (response.data == expected_data)
+
+
+    def test_new_car_fail_invalid_role(self, client):
+        """Testing that registering a new car succeeds when called with the cor-
+        rect information
+        """
+        response = client.post(
+            '/api/car',
+            json={
+                "username": "dummy",
+                "make": "Toyota",
+                "body_type": "SUV",
+                "colour": "Black",
+                "no_seats": 5,
+                "location": "32.426998,-81.754753",
+                "cost_per_hour": 20
+            }
+        )
+        expected_data = b'{"message":{"user":["User is not an admin."]}}\n'
+
+        assert (response.status == '401 UNAUTHORIZED')
+        assert (response.data == expected_data)
+
+
+    def test_put_car_success(self, client):
         """Testing that updating a car's information succeeds with the correct
         information
         """
