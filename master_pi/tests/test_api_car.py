@@ -253,7 +253,7 @@ class TestApiCarEndpoints:
         assert (response.data == expected_data)
 
 
-    def test_new_car(self, client):
+    def test_new_car_success(self, client):
         """Testing that registering a new car succeeds when called with the cor-
         rect information
         """
@@ -407,4 +407,37 @@ class TestApiCarEndpoints:
         expected_data = b'{"message":{"body_type":["Missing body type."],"colour":["Missing colour."],"cost_per_hour":["Cost per hour must be a positive integer."],"location":["Missing location."],"make":["Missing make."],"no_seats":["Number of seats must be a positive integer."]}}\n'
 
         assert (response.status == '400 BAD REQUEST')
+        assert (response.data == expected_data)
+
+
+    def test_delete_car_success(self, client):
+        """Testing that updating a car's information succeeds with the correct
+        information
+        """
+        response = client.delete(
+            '/api/car',
+            json={
+                "car_id": "1",
+                "username": "admin"
+            }
+        )
+        expected_data = b'{"message":"Success"}\n'
+
+        assert (response.status == '200 OK')
+        assert (response.data == expected_data)
+
+    def test_delete_car_fail_invalid_role(self, client):
+        """Testing that updating a car fails when not the user requesting then
+        update is not an admin
+        """
+        response = client.delete(
+            '/api/car',
+            json={
+                "car_id": "1",
+                "username": "dummy"
+            }
+        )
+        expected_data = b'{"message":{"user":["User is not an admin."]}}\n'
+
+        assert (response.status == '401 UNAUTHORIZED')
         assert (response.data == expected_data)

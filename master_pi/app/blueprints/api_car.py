@@ -65,7 +65,7 @@ def new_car():
     :<json string cost_per_hour: the cost_per_hour of the car being updated
     :>json message: repsonse information such as error information
     :resheader Content-Type: application/json
-    :status 200: return was successful
+    :status 200: creating a new car was successful
     :status 400: missing or invalid fields
     :status 401: user is not an admin
     """
@@ -81,7 +81,7 @@ def new_car():
         response['message'] = form_errors
         status = 400
     else:
-        # Checking if user requesting update is an admin
+        # Checking if user making the request is an admin
         user = User.query.get(request.json["username"])
         if user.role is not Role.admin:
             response['message'] = {
@@ -162,7 +162,7 @@ def put_car():
     :<json string cost_per_hour: the cost_per_hour of the car being updated
     :>json message: repsonse information such as error information
     :resheader Content-Type: application/json
-    :status 200: return was successful
+    :status 200: updating car was successful
     :status 400: missing or invalid fields
     :status 401: user is not an admin
     """
@@ -171,14 +171,14 @@ def put_car():
         'message': '',
     }
     status = 200
-
+    
     form_schema = EditCarFormSchema()
     form_errors = form_schema.validate(request.json)
     if form_errors:
         response['message'] = form_errors
         status = 400
     else:
-        # Checking if user requesting update is an admin
+        # Checking if user making the request is an admin
         user = User.query.get(request.json["username"])
         if user.role is not Role.admin:
             response['message'] = {
@@ -195,6 +195,78 @@ def put_car():
             car.cost_per_hour = request.json["cost_per_hour"]
             db.session.commit()
             response['message'] = "Success"
+
+    return response, status
+
+
+@car.route('/car', methods=["DELETE"])
+def delete_car():
+    """Delete a car from the databaseonly if the user making the request is an admin
+
+    .. :quickref: Car; Delete a car.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        DELETE /api/car HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "car_id": 1,
+            "username": "admin"
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Success"
+        }
+
+    .. sourcecode:: http
+
+        HTTP/1.1 401 UNAUTHORIZED
+        Content-Type: application/json
+
+        {
+            "message": {
+                "user": ["User is not an admin."]
+            }
+        }
+
+    :<json string car_id: the id of the car being updated
+    :<json string username: the username of the person updating the car
+    :>json message: repsonse information such as error information
+    :resheader Content-Type: application/json
+    :status 200: return was successful
+    :status 400: missing or invalid fields
+    :status 401: user is not an admin
+    """
+
+    response = {
+        'message': '',
+    }
+    status = 200
+
+    # Checking if user making the request is an admin
+    user = User.query.get(request.json["username"])
+    if user.role is not Role.admin:
+        response['message'] = {
+            'user': ['User is not an admin.']
+        }
+        status = 401
+    else:
+        car = Car.query.get(request.json["car_id"])
+        db.session.delete(car)
+        db.session.commit()
+        response['message'] = "Success"
 
     return response, status
 

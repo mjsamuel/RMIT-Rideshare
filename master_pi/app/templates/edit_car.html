@@ -21,6 +21,22 @@
         method = "PUT"
       {% endif %}
 
+      make_request(data, method)
+    }
+
+    {% if car is not none %}
+      function deleteClicked() {
+        var data = {
+          car_id: {{ car.id }},
+          username: sessionStorage.getItem('username')
+        }
+
+        make_request(data, "DELETE")
+      }
+    {% endif %}
+
+
+    function make_request(data, method) {
       fetch('/api/car', {
           method: method,
           headers: {
@@ -93,9 +109,10 @@
       {% endif %}
     </button>
     <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
-    {% if car is not none %}
-      <button type="button" class="btn btn-warning" onclick='backClicked()'>Report</button>
-      <button type="button" class="btn btn-danger" onclick='backClicked()'>Delete</button>
-    {% endif %}
   </div>
+  {% if car is not none %}
+    <div class="btn-group">
+      <button type="button" class="btn btn-danger" onclick='deleteClicked()'>Delete</button>
+    </div>
+  {% endif %}
 {% endblock %}
