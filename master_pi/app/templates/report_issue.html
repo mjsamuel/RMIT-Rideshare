@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <script>
+    isLoggedIn();
+
+    function submitClicked() {
+      var data = {
+        car_id: {{ car.id }},
+        username: sessionStorage.getItem('username'),
+        details: document.getElementById('details').value,
+      };
+
+      fetch('/api/issue', {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.message == "Success") {
+            window.location.href = "/admin-console"
+          } else {
+            let errorBanner = document.getElementById("error-message");
+            errors = outputErrors(data.message);
+            errorBanner.innerHTML = errors;
+            errorBanner.style.display = "block";
+          }
+        });
+    }
+
+    function backClicked() {
+      window.location.href = "/edit-car?id={{ car.id }}" 
+    }
+  </script>
+
+  <h4>{{ car.colour }}, {{ car.make }} {{ car.body_type }}</h4><br>
+
+  <form>
+    <div class="form-group">
+      <label for="details">Issue details:</label>
+      <textarea class="form-control" id="details" rows="4"></textarea>
+    </div>
+    <div class="alert alert-danger" id="error-message"></div>
+  </form>
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary" onclick='submitClicked()'>Submit</button>
+    <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
+  </div>
+{% endblock %}

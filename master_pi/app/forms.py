@@ -130,3 +130,14 @@ class EditCarFormSchema(Schema):
             raise ValidationError("Missing cost per hour.")
         if value < 1:
             raise ValidationError("Cost per hour must be a positive integer.")
+
+
+class ReportIssueFormSchema(Schema):
+    car_id = fields.Int(required=False)
+    username = fields.Str(required=True)
+    details = fields.Str(required=True)
+
+    @validates('details')
+    def validate_details(self, value):
+        if value == "":
+            raise ValidationError("Missing details.")

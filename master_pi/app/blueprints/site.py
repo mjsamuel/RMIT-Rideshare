@@ -60,3 +60,12 @@ def edit_car():
     data = json.loads(response.text)
 
     return render_template('edit_car.html', title="Edit Car", car=data['cars'])
+
+
+@site.route('/report-issue')
+def report_issue():
+    carId = request.args.get('id')
+    response = requests.get('http://localhost:5000/api/cars?id=' + carId)
+    data = json.loads(response.text)
+
+    return render_template('report_issue.html', title="Report Issue", car=data['cars'])

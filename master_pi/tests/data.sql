@@ -8,18 +8,18 @@ VALUES
 
 -- Add 10 Demo Cars
 
-INSERT INTO car (make, body_type, colour, no_seats, cost_per_hour, is_locked)
+INSERT INTO car (make, body_type, colour, no_seats, cost_per_hour, location, is_locked)
 VALUES
-    ('Toyota', 'SUV', 'Black', 5, 15, True),
-    ('Tesla', 'Pickup', 'Silver', 6, 25, True),
-    ('Toyota', 'Hatchback', 'Black', 5, 15, True),
-    ('Honda', 'Sedan', 'Green', 5, 25, True),
-    ('Mercedes', 'Hatchback', 'Black', 5, 40, True),
-    ('Ferrari', 'Supercar', 'Red', 2, 65, True),
-    ('Mazda', 'Coupe', 'White', 4, 25, True),
-    ('BMW', 'Cabriolet', 'Black', 5, 30, True),
-    ('Renault', 'Sedan', 'Yellow', 5, 35, True),
-    ('Porsche', 'Truck', 'Black', 2, 65, True);
+    ('Toyota', 'SUV', 'Black', 5, 15, "-37.808880,144.965179", True),
+    ('Tesla', 'Pickup', 'Silver', 6, 25, "-37.810219,144.961395", True),
+    ('Toyota', 'Hatchback', 'Black', 5, 15, NULL, True),
+    ('Honda', 'Sedan', 'Green', 5, 25, NULL, True),
+    ('Mercedes', 'Hatchback', 'Black', 5, 40, NULL, True),
+    ('Ferrari', 'Supercar', 'Red', 2, 65, NULL, True),
+    ('Mazda', 'Coupe', 'White', 4, 25, NULL, True),
+    ('BMW', 'Cabriolet', 'Black', 5, 30, NULL, True),
+    ('Renault', 'Sedan', 'Yellow', 5, 35, NULL, True),
+    ('Porsche', 'Truck', 'Black', 2, 65, NULL, True);
 
 -- Add dummy bookings
 

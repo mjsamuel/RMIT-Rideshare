@@ -6,7 +6,7 @@ class TestApiCarEndpoints:
         """
 
         response = client.get('/api/cars')
-        expected_data = b'{"cars":[{"body_type":"SUV","colour":"Black","cost_per_hour":15,"id":1,"is_locked":true,"location":null,"make":"Toyota","no_seats":5},{"body_type":"Pickup","colour":"Silver","cost_per_hour":25,"id":2,"is_locked":true,"location":null,"make":"Tesla","no_seats":6},{"body_type":"Hatchback","colour":"Black","cost_per_hour":15,"id":3,"is_locked":true,"location":null,"make":"Toyota","no_seats":5},{"body_type":"Sedan","colour":"Green","cost_per_hour":25,"id":4,"is_locked":true,"location":null,"make":"Honda","no_seats":5},{"body_type":"Hatchback","colour":"Black","cost_per_hour":40,"id":5,"is_locked":true,"location":null,"make":"Mercedes","no_seats":5},{"body_type":"Supercar","colour":"Red","cost_per_hour":65,"id":6,"is_locked":true,"location":null,"make":"Ferrari","no_seats":2},{"body_type":"Coupe","colour":"White","cost_per_hour":25,"id":7,"is_locked":true,"location":null,"make":"Mazda","no_seats":4},{"body_type":"Cabriolet","colour":"Black","cost_per_hour":30,"id":8,"is_locked":true,"location":null,"make":"BMW","no_seats":5},{"body_type":"Sedan","colour":"Yellow","cost_per_hour":35,"id":9,"is_locked":true,"location":null,"make":"Renault","no_seats":5},{"body_type":"Truck","colour":"Black","cost_per_hour":65,"id":10,"is_locked":true,"location":null,"make":"Porsche","no_seats":2}],"message":""}\n'
+        expected_data = b'{"cars":[{"body_type":"SUV","colour":"Black","cost_per_hour":15,"id":1,"is_locked":true,"location":"-37.808880,144.965179","make":"Toyota","no_seats":5},{"body_type":"Pickup","colour":"Silver","cost_per_hour":25,"id":2,"is_locked":true,"location":"-37.810219,144.961395","make":"Tesla","no_seats":6},{"body_type":"Hatchback","colour":"Black","cost_per_hour":15,"id":3,"is_locked":true,"location":null,"make":"Toyota","no_seats":5},{"body_type":"Sedan","colour":"Green","cost_per_hour":25,"id":4,"is_locked":true,"location":null,"make":"Honda","no_seats":5},{"body_type":"Hatchback","colour":"Black","cost_per_hour":40,"id":5,"is_locked":true,"location":null,"make":"Mercedes","no_seats":5},{"body_type":"Supercar","colour":"Red","cost_per_hour":65,"id":6,"is_locked":true,"location":null,"make":"Ferrari","no_seats":2},{"body_type":"Coupe","colour":"White","cost_per_hour":25,"id":7,"is_locked":true,"location":null,"make":"Mazda","no_seats":4},{"body_type":"Cabriolet","colour":"Black","cost_per_hour":30,"id":8,"is_locked":true,"location":null,"make":"BMW","no_seats":5},{"body_type":"Sedan","colour":"Yellow","cost_per_hour":35,"id":9,"is_locked":true,"location":null,"make":"Renault","no_seats":5},{"body_type":"Truck","colour":"Black","cost_per_hour":65,"id":10,"is_locked":true,"location":null,"make":"Porsche","no_seats":2}],"message":""}\n'
 
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
@@ -17,7 +17,7 @@ class TestApiCarEndpoints:
         """
 
         response = client.get('/api/cars?body_type=SUV')
-        expected_data = b'{"cars":[{"body_type":"SUV","colour":"Black","cost_per_hour":15,"id":1,"is_locked":true,"location":null,"make":"Toyota","no_seats":5}],"message":""}\n'
+        expected_data = b'{"cars":[{"body_type":"SUV","colour":"Black","cost_per_hour":15,"id":1,"is_locked":true,"location":"-37.808880,144.965179","make":"Toyota","no_seats":5}],"message":""}\n'
 
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
@@ -28,7 +28,7 @@ class TestApiCarEndpoints:
         """
 
         response = client.get('/api/cars?colour=black')
-        expected_data = b'{"cars":[{"body_type":"SUV","colour":"Black","cost_per_hour":15,"id":1,"is_locked":true,"location":null,"make":"Toyota","no_seats":5},{"body_type":"Hatchback","colour":"Black","cost_per_hour":15,"id":3,"is_locked":true,"location":null,"make":"Toyota","no_seats":5},{"body_type":"Hatchback","colour":"Black","cost_per_hour":40,"id":5,"is_locked":true,"location":null,"make":"Mercedes","no_seats":5},{"body_type":"Cabriolet","colour":"Black","cost_per_hour":30,"id":8,"is_locked":true,"location":null,"make":"BMW","no_seats":5},{"body_type":"Truck","colour":"Black","cost_per_hour":65,"id":10,"is_locked":true,"location":null,"make":"Porsche","no_seats":2}],"message":""}\n'
+        expected_data = b'{"cars":[{"body_type":"SUV","colour":"Black","cost_per_hour":15,"id":1,"is_locked":true,"location":"-37.808880,144.965179","make":"Toyota","no_seats":5},{"body_type":"Hatchback","colour":"Black","cost_per_hour":15,"id":3,"is_locked":true,"location":null,"make":"Toyota","no_seats":5},{"body_type":"Hatchback","colour":"Black","cost_per_hour":40,"id":5,"is_locked":true,"location":null,"make":"Mercedes","no_seats":5},{"body_type":"Cabriolet","colour":"Black","cost_per_hour":30,"id":8,"is_locked":true,"location":null,"make":"BMW","no_seats":5},{"body_type":"Truck","colour":"Black","cost_per_hour":65,"id":10,"is_locked":true,"location":null,"make":"Porsche","no_seats":2}],"message":""}\n'
 
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
@@ -39,7 +39,7 @@ class TestApiCarEndpoints:
         """
 
         response = client.get('/api/cars?cost_per_hour=25')
-        expected_data = b'{"cars":[{"body_type":"Pickup","colour":"Silver","cost_per_hour":25,"id":2,"is_locked":true,"location":null,"make":"Tesla","no_seats":6},{"body_type":"Sedan","colour":"Green","cost_per_hour":25,"id":4,"is_locked":true,"location":null,"make":"Honda","no_seats":5},{"body_type":"Coupe","colour":"White","cost_per_hour":25,"id":7,"is_locked":true,"location":null,"make":"Mazda","no_seats":4}],"message":""}\n'
+        expected_data = b'{"cars":[{"body_type":"Pickup","colour":"Silver","cost_per_hour":25,"id":2,"is_locked":true,"location":"-37.810219,144.961395","make":"Tesla","no_seats":6},{"body_type":"Sedan","colour":"Green","cost_per_hour":25,"id":4,"is_locked":true,"location":null,"make":"Honda","no_seats":5},{"body_type":"Coupe","colour":"White","cost_per_hour":25,"id":7,"is_locked":true,"location":null,"make":"Mazda","no_seats":4}],"message":""}\n'
 
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
@@ -50,7 +50,7 @@ class TestApiCarEndpoints:
         """
 
         response = client.get('/api/cars?cost_per_hour=25')
-        expected_data = b'{"cars":[{"body_type":"Pickup","colour":"Silver","cost_per_hour":25,"id":2,"is_locked":true,"location":null,"make":"Tesla","no_seats":6},{"body_type":"Sedan","colour":"Green","cost_per_hour":25,"id":4,"is_locked":true,"location":null,"make":"Honda","no_seats":5},{"body_type":"Coupe","colour":"White","cost_per_hour":25,"id":7,"is_locked":true,"location":null,"make":"Mazda","no_seats":4}],"message":""}\n'
+        expected_data = b'{"cars":[{"body_type":"Pickup","colour":"Silver","cost_per_hour":25,"id":2,"is_locked":true,"location":"-37.810219,144.961395","make":"Tesla","no_seats":6},{"body_type":"Sedan","colour":"Green","cost_per_hour":25,"id":4,"is_locked":true,"location":null,"make":"Honda","no_seats":5},{"body_type":"Coupe","colour":"White","cost_per_hour":25,"id":7,"is_locked":true,"location":null,"make":"Mazda","no_seats":4}],"message":""}\n'
 
         assert (response.status == '200 OK')
         assert (response.data == expected_data)

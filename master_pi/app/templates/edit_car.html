@@ -25,6 +25,10 @@
     }
 
     {% if car is not none %}
+      function reportIssueClicked() {
+        window.location.href = "/report-issue?id={{ car.id }}"
+      }
+
       function deleteClicked() {
         var data = {
           car_id: {{ car.id }},
@@ -100,6 +104,16 @@
     <div class="alert alert-danger" id="error-message"></div>
   </form>
 
+  {% if car is not none %}
+    <div class="btn-group">
+      <button type="button" class="btn btn-warning" onclick='reportIssueClicked()'>Report an issue</button>
+    </div>
+
+    <div class="btn-group">
+      <button type="button" class="btn btn-danger" onclick='deleteClicked()'>Delete</button>
+    </div>
+  {% endif %}
+
   <div class="btn-group">
     <button type="button" class="btn btn-primary" onclick='submitClicked()'>
       {% if car is not none %}
@@ -110,9 +124,4 @@
     </button>
     <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
   </div>
-  {% if car is not none %}
-    <div class="btn-group">
-      <button type="button" class="btn btn-danger" onclick='deleteClicked()'>Delete</button>
-    </div>
-  {% endif %}
 {% endblock %}

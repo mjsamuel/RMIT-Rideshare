@@ -60,9 +60,9 @@ def new_car():
     :<json string make: the make of the car being updated
     :<json string body_type: the body_type of the car being updated
     :<json string colour: the colour of the car being updated
-    :<json string no_seats: the no_seats of the car being updated
+    :<json int no_seats: the no_seats of the car being updated
     :<json string location: the location of the car being updated
-    :<json string cost_per_hour: the cost_per_hour of the car being updated
+    :<json int cost_per_hour: the cost_per_hour of the car being updated
     :>json message: repsonse information such as error information
     :resheader Content-Type: application/json
     :status 200: creating a new car was successful
@@ -157,9 +157,9 @@ def put_car():
     :<json string make: the make of the car being updated
     :<json string body_type: the body_type of the car being updated
     :<json string colour: the colour of the car being updated
-    :<json string no_seats: the no_seats of the car being updated
+    :<json int no_seats: the no_seats of the car being updated
     :<json string location: the location of the car being updated
-    :<json string cost_per_hour: the cost_per_hour of the car being updated
+    :<json int cost_per_hour: the cost_per_hour of the car being updated
     :>json message: repsonse information such as error information
     :resheader Content-Type: application/json
     :status 200: updating car was successful
@@ -171,7 +171,7 @@ def put_car():
         'message': '',
     }
     status = 200
-    
+
     form_schema = EditCarFormSchema()
     form_errors = form_schema.validate(request.json)
     if form_errors:
@@ -381,6 +381,7 @@ def return_car():
         Content-Type: application/json
 
         {
+            "username": "dummy",
             "car_id": 1
         }
 
@@ -405,7 +406,7 @@ def return_car():
         }
 
     :<json string username: the username of the person returning the car
-    :<json string car_id: the id of the car being returned
+    :<json int car_id: the id of the car being returned
     :>json message: repsonse information such as error information
     :resheader Content-Type: application/json
     :status 200: return was successful
@@ -466,6 +467,7 @@ def unlock_car():
         Content-Type: application/json
 
         {
+            "username": "dummy",
             "car_id": 1
         }
 
@@ -552,7 +554,8 @@ def change_car_location():
         Content-Type: application/json
 
         {
-            "car_id": 1
+            "car_id": 1,
+            "location": "-37.808880,144.965179"
         }
 
     **Example response**:
@@ -564,15 +567,6 @@ def change_car_location():
 
         {
             "message": "Car location updated"
-        }
-
-    .. sourcecode:: http
-
-        HTTP/1.1 403 CONFLICT
-        Content-Type: application/json
-
-        {
-            "message": "ERROR: Car location not updated. Location given error."
         }
 
     :<json string car_id: the id of the car being unlocked

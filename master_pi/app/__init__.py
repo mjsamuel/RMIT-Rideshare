@@ -7,6 +7,7 @@ from app.extensions import db, ma, bcrypt
 from app.blueprints.api_user import user
 from app.blueprints.api_car import car
 from app.blueprints.api_booking import booking
+from app.blueprints.api_issue import issue
 from app.blueprints.site import site
 from app.blueprints.docs import docs
 
@@ -51,6 +52,7 @@ def create_app(test_config = None):
     app.register_blueprint(user)
     app.register_blueprint(car)
     app.register_blueprint(booking)
+    app.register_blueprint(issue)
     app.register_blueprint(site)
     app.register_blueprint(docs)
 
