@@ -4,7 +4,7 @@ from datetime import datetime
 from app.extensions import db
 from app.models.user import User, Role
 from app.models.car import Car
-from app.models.issue import Issue
+from app.models.issue import Issue, issue_schema
 from app.forms import ReportIssueFormSchema
 
 issue = Blueprint("issue", __name__, url_prefix='/api')
@@ -90,3 +90,79 @@ def new_issue():
             response['message'] = "Success"
 
     return response, status
+
+
+@issue.route('/issue', methods=["GET"])
+def get_issues():
+    """Get a collection of issues or s specific issue
+
+    .. :quickref: Issue; Get bookings for a user or car.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        GET /api/issue?id=1 HTTP/1.1
+        Host: localhost
+        Accept: application/json
+
+    .. sourcecode:: http
+
+        GET /api/issue HTTP/1.1
+        Host: localhost
+        Accept: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "issues": [
+                {
+                    "id": 4,
+                    "car_id": 1,
+                    "username": "dummy",
+                    "book_time": "2020-05-09T13:38:17",
+                    "duration": 2,
+                    "car": {
+                        "make": "Tesla,",
+                        "body_type", "Pickup"
+                        "...": "..."
+                    }
+                }
+            ]
+        }
+
+    :>json issues: an array of issues
+    :query id: the id of the issue
+    :resheader Content-Type: application/json
+    :status 200: bookings found
+    """
+    response = {
+        'issues': None
+    }
+
+    if request.args.get('id') is not None:
+        id = request.args.get('id')
+        issue = Issue.query.get(id)
+        issue.car = Car.query.get(issue.car_id)
+
+        response['issues'] = issue_schema.dump(issue)
+    else:
+        # Getting all isssues ordered from most recent, to least recent
+        issues = (Issue.query
+            .order_by(Issue.time.desc())
+            .limit(25)
+            .all())
+
+        # Adding the the car associated with the issue to be searlized along
+        # with them
+        for issue in issues:
+            issue.car = Car.query.get(issue.car_id)
+
+        response['issues'] = issue_schema.dump(issues, many=True)
+
+    return response, 200
