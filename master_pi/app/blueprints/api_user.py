@@ -5,7 +5,12 @@ from googleapiclient.discovery import build
 from app.extensions import db, bcrypt
 from app.models.user import User, user_schema
 from app.models.booking import Booking, booking_schema
-from app.forms import LoginFormSchema, RegisterFormSchema, AuthenticationFormSchema
+from app.forms import (
+    LoginFormSchema,
+    RegisterFormSchema,
+    AuthenticationFormSchema,
+    PushbulletFormSchema
+)
 
 user = Blueprint("user", __name__, url_prefix='/api')
 
@@ -383,5 +388,61 @@ def add_auth_credentials():
                 'error': ['Google authentication error occured.']
             }
             status = 500
+
+    return response, status
+
+
+@user.route('/pushbullet', methods=['POST'])
+def add_pusbullet_token():
+    """Add a Pushbullet token to a user to send notifications
+
+    .. :quickref: Pushbullet; Link a Pushbullet account to user account.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        POST /api/pushbullet HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "username": "engineer",
+            "token": "o.mDE4vPEjzvuoYSAasdoqC1FmWg2VASEhkB"
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Success"
+        }
+
+    :<json string username: username that will be linked to the Google account
+    :<json string token: access token to allow notifications to be sent
+    :>json message: repsonse information such as error information
+    :status 200: succesfully added credentials
+    """
+
+    response = {
+        'message': None
+    }
+    status = 200
+
+    form_schema = PushbulletFormSchema()
+    form_errors = form_schema.validate(request.json)
+    if form_errors:
+        response['message'] = form_errors
+        status = 400
+    else:
+        user = User.query.get(request.json["username"])
+        user.pb_token = request.json["token"]
+        db.session.commit()
+        response['message'] = "Success"
 
     return response, status

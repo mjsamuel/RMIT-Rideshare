@@ -85,3 +85,8 @@ def issue():
     title = "Issue - #" + str(data['issues']['id'])
 
     return render_template('issue.html', title=title, issue=data['issues'])
+
+
+@site.route('/pushbullet-account')
+def link_pushbullet_account():
+    return render_template('link_pushbullet_account.html', title='Link Your Pushbullet Account')
