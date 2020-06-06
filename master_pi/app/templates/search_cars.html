@@ -29,10 +29,11 @@
     function addRows(cars){
       var output = ""
       for (var i = 0; i < cars.length; ++i) {
-        output += "data.addRows([[ "+ cars[i].make + "'test', 1]]);"
+        output += data.addRows([[cars[i].make + 'test', 1]]);
       }
       return output;
     }
+
     function submitClicked() {
       var searchBy = document.getElementById('search-by').value;
       var searchTerm = document.getElementById('search-term').value;
