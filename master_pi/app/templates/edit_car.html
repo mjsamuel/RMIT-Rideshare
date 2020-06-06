@@ -96,12 +96,12 @@
       window.location.href = "/admin-console"
     }
 
-        fetch("api/booking?car_id={{ car.id }}")
-          .then(response => response.json())
-          .then(data => {
-        showCharts(data.bookings)
+    fetch("api/booking?car_id={{ car.id }}")
+        .then(response => response.json())
+        .then(data => {
+          showCharts(data.bookings)
       });
-    function showCharts(cars){
+    function showCharts(bookings){
       alert(bookings.length);
       google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(drawChart);
