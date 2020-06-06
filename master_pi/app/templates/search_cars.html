@@ -9,6 +9,7 @@
       .then(response => response.json())
       .then(data => {
         document.getElementById("table-data").innerHTML = displayCars(data.cars)
+        document.getElementById("addrows").innerHTML = addRows(data.cars)
       });
 
     function displayCars(cars) {
@@ -25,6 +26,13 @@
       return output;
     }
 
+    function addRows(cars){
+      var output = ""
+      for (var i = 0; i < cars.length; ++i) {
+        output += "data.addRows([[ "+ cars[i].make + "'test', 1]]);"
+      }
+      return output;
+    }
     function submitClicked() {
       var searchBy = document.getElementById('search-by').value;
       var searchTerm = document.getElementById('search-term').value;
@@ -98,23 +106,20 @@
   <script type="text/javascript">
   // lets just get a chart drawing first 
     // Load google charts
-    fetch("api/cars")
-      .then(response => response.json())
-      .then(data => {
     google.charts.load('current', {'packages':['corechart']});
-    google.charts.setOnLoadCallback(drawChart(data.cars));
-    });
+    google.charts.setOnLoadCallback(drawChart);
     document.write("test");
     document.write(cars.length);
     // Draw the chart and set the chart values
-    function drawChart(cars) {
+    function drawChart() {
       var data = new google.visualization.DataTable();
       
       data.addColumn('string', 'Make');
       data.addColumn('number', 'Populartiy');
-      
-      for (var i = 0; i < cars.length; ++i) {
-        data.addRows([['test', 1]]);
+
+      <div id="addrows"></div>
+    
+    
       }
       // Optional; add a title and set the width and height of the chart
       var options = {'title':'My Average Day', 'width':550, 'height':400};
@@ -122,7 +127,7 @@
       // Display the chart inside the <div> element with id="piechart"
       var chart = new google.visualization.PieChart(document.getElementById('piechart'));
       chart.draw(data, options);
-    }
+    
     </script>
     {% else %}
       <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
