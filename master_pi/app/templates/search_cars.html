@@ -93,8 +93,8 @@ function drawChart() {
     function drawChart() {
       var data = new google.visualization.DataTable();
       data.addColumn('string', 'Make');
-      data.addColumn('number', 'Populartiy');
-      data.addRow('test', 2);
+      data.addColumn('number', 'count');
+      data.addRow(cars[i].make, 1);
     
       }
       // Optional; add a title and set the width and height of the chart
