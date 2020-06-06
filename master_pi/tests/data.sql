@@ -4,7 +4,8 @@ INSERT INTO user (username, password, f_name, l_name, email, role)
 VALUES
   ('dummy', '$2b$12$xIygz54Gi4G/FROikCKhfej.JmnI8lSzR6RPpqiErQRUvnjSikOjO', 'First', 'Last', 'dummyemail@gmail.com', 'default'),
   ('john', '$2b$12$pUSt0xQDEsdaHmXtNJ7BaOlN8NzqL5.tFucHTwyL6nf7o6KvAl9p', 'John', 'Doe', 'john.doe@outlook.com', 'default'),
-  ('admin', '$2b$12$xIygz54Gi4G/FROikCKhfej.JmnI8lSzR6RPpqiErQRUvnjSikOjO', 'First', 'Last', 'admin@gmail.com', 'admin');
+  ('admin', '$2b$12$xIygz54Gi4G/FROikCKhfej.JmnI8lSzR6RPpqiErQRUvnjSikOjO', 'First', 'Last', 'admin@gmail.com', 'admin'),
+  ('engineer', '$2b$12$xIygz54Gi4G/FROikCKhfej.JmnI8lSzR6RPpqiErQRUvnjSikOjO', 'First', 'Last', 'engineer@gmail.com', 'engineer');
 
 -- Add 10 Demo Cars
 
@@ -27,3 +28,11 @@ INSERT INTO booking (car_id, username, duration, book_time)
 VALUES
     (2, 'dummy', 1, '2020-05-09 02:22:51'),
     (1, 'dummy', 3, '2020-05-09 10:22:51');
+
+-- Add dummy issues
+
+INSERT INTO issue (car_id, time, details, resolved)
+VALUES
+    (1, '2020-05-09 02:22:51', "Broken tail light", True),
+    (2, '2020-05-07 02:22:51', "Battery is dead", True),
+    (1, '2020-06-01 02:22:51', "Flat tire", False);
