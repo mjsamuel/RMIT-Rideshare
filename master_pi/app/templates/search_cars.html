@@ -52,8 +52,12 @@
       window.location.href = "/new-car"
     }
 
-
-    function showCharts(){
+    fetch("api/cars")
+      .then(response => response.json())
+      .then(data => {
+        displayCars(data.cars)
+      });
+    function showCharts(cars){
       alert(cars.length);
       google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(drawChart);
@@ -76,7 +80,8 @@ function drawChart() {
   chart.draw(data, options);
 }
 
-    }
+}
+
   // lets just get a chart drawing first 
     // Load google charts
     src="https://www.gstatic.com/charts/loader.js">
