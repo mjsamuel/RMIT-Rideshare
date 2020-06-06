@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from datetime import datetime
+import requests, json
 
 from app.extensions import db
 from app.models.user import User, Role
@@ -11,7 +12,9 @@ issue = Blueprint("issue", __name__, url_prefix='/api')
 
 @issue.route('/issue', methods=["POST"])
 def new_issue():
-    """Report an issue with a car if the user making the report is an admin
+    """Report an issue with a car if the user making the report is an admin.
+    Also send notifications to all engineers via pushbullet that an issue has
+    been reported
 
     .. :quickref: Issue; Report a new issue.
 
@@ -88,6 +91,28 @@ def new_issue():
             db.session.add(issue)
             db.session.commit()
             response['message'] = "Success"
+
+    if response['message'] == "Success":
+        # Notifying every engineer via Pushbullet if they have a token
+        engineers = (User.query
+            .filter(User.role == Role.engineer)
+            .filter(User.pb_token != None)
+            .all())
+        for engineer in engineers:
+            data = {
+                "type": "note",
+                "title": "Issue with car #" + str(car_id),
+                "body": details
+            }
+            # Making request to pushbullet API
+            requests.post(
+                'https://api.pushbullet.com/v2/pushes',
+                data=json.dumps(data),
+                headers= {
+                    'Authorization': 'Bearer ' + engineer.pb_token,
+                    'Content-Type': 'application/json'
+                }
+            )
 
     return response, status
 
