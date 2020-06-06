@@ -65,15 +65,15 @@ google.charts.setOnLoadCallback(drawChart);
 // Draw the chart and set the chart values
 function drawChart() {
   var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Pizza');
-      data.addColumn('number', 'Populartiy');
+      data.addColumn('string', 'Car Make');
+      data.addColumn('number', 'Count');
       for (var i = 0; i < cars.length; ++i) {
       data.addRows([
-        ['test', 1]
+        [cars[i].make, 1]
       ]);
       }
   // Optional; add a title and set the width and height of the chart
-  var options = {'title':'My Average Day', 'width':550, 'height':400};
+  var options = {'title':'Car Makes', 'width':550, 'height':400};
 
   // Display the chart inside the <div> element with id="piechart"
   var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -81,29 +81,6 @@ function drawChart() {
 }
 
 }
-
-  // lets just get a chart drawing first 
-    // Load google charts
-    src="https://www.gstatic.com/charts/loader.js">
-    google.charts.load('current', {'packages':['corechart']});
-    google.charts.setOnLoadCallback(drawChart);
-    document.write("test");
-    document.write(cars.length);
-    // Draw the chart and set the chart values
-    function drawChart() {
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Make');
-      data.addColumn('number', 'count');
-      data.addRow(cars[i].make, 1);
-    
-      }
-      // Optional; add a title and set the width and height of the chart
-      var options = {'title':'Car Makes', 'width':550, 'height':400};
-    
-      // Display the chart inside the <div> element with id="piechart"
-      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-      chart.draw(data, options);
-    
 
   </script>
 
