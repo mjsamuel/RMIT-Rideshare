@@ -54,6 +54,8 @@
 
 
     function showCharts(){
+      document.write("test");
+      document.write(cars.length);
       google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(drawChart);
 
@@ -64,7 +66,7 @@ function drawChart() {
       data.addColumn('number', 'Populartiy');
       for (var i = 0; i < cars.length; ++i) {
       data.addRows([
-        [cars[i].body_type, 1]
+        ['test', 1]
       ]);
       }
   // Optional; add a title and set the width and height of the chart
