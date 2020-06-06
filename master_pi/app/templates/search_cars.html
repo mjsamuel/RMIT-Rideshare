@@ -54,6 +54,7 @@
 
   // lets just get a chart drawing first 
     // Load google charts
+    src="https://www.gstatic.com/charts/loader.js">
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(drawChart);
     document.write("test");
@@ -61,7 +62,6 @@
     // Draw the chart and set the chart values
     function drawChart() {
       var data = new google.visualization.DataTable();
-      
       data.addColumn('string', 'Make');
       data.addColumn('number', 'Populartiy');
       data.addRow('test', 2);
@@ -119,7 +119,6 @@
     </div>
       <h1>testing piechart</h1>
   <div id="piechart"></div>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   
     {% else %}
       <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
