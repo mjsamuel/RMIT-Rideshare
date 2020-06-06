@@ -58,7 +58,8 @@
 google.charts.setOnLoadCallback(drawChart);
 
 // Draw the chart and set the chart values
-var data = new google.visualization.DataTable();
+function drawChart() {
+  var data = new google.visualization.DataTable();
       data.addColumn('string', 'Pizza');
       data.addColumn('number', 'Populartiy');
       data.addRows([
@@ -91,7 +92,6 @@ var data = new google.visualization.DataTable();
       data.addColumn('string', 'Make');
       data.addColumn('number', 'Populartiy');
       data.addRow('test', 2);
-      data.addRow('other test', 3);
     
       }
       // Optional; add a title and set the width and height of the chart
