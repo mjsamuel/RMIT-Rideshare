@@ -104,7 +104,8 @@
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(drawChart(data.cars));
     });
-    
+    document.write("test");
+    document.write(cars.length);
     // Draw the chart and set the chart values
     function drawChart(cars) {
       var data = new google.visualization.DataTable();
