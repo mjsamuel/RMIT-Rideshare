@@ -55,7 +55,7 @@
     fetch("api/cars")
       .then(response => response.json())
       .then(data => {
-        displayCars(data.cars)
+        showCharts(data.cars)
       });
     function showCharts(cars){
       alert(cars.length);
