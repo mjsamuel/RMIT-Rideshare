@@ -52,6 +52,8 @@
       window.location.href = "/new-car"
     }
 
+
+    function showCharts(){
   // lets just get a chart drawing first 
     // Load google charts
     src="https://www.gstatic.com/charts/loader.js">
@@ -73,7 +75,7 @@
       // Display the chart inside the <div> element with id="piechart"
       var chart = new google.visualization.PieChart(document.getElementById('piechart'));
       chart.draw(data, options);
-
+    }
 
   </script>
 
@@ -116,6 +118,7 @@
     {% if admin %}
       <button type="button" class="btn btn-success" onclick='newCarClicked()'>New Car</button>
       <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
+      <button type="button" class="btn btn-success" onclick='showCharts()'>show chart</button>
     </div>
       <h1>testing piechart</h1>
   <div id="piechart"></div>
