@@ -69,3 +69,7 @@ def report_issue():
     data = json.loads(response.text)
 
     return render_template('report_issue.html', title="Report Issue", car=data['cars'])
+
+@site.route('/admin-dashboard')
+def admin_dashboard():
+    return render_template('dashboard.html', title='Admin Dashboard', admin=True)
