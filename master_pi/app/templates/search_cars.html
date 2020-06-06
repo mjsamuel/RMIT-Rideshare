@@ -62,8 +62,12 @@ function drawChart() {
   var data = new google.visualization.DataTable();
       data.addColumn('string', 'Pizza');
       data.addColumn('number', 'Populartiy');
-      for (var i = 0; i < cars.length; ++i) {
-      data.addRows([[cars[i].make, 1]
+      data.addRows([
+        ['Pepperoni', 33],
+        ['Hawaiian', 26],
+        ['Mushroom', 22],
+        ['Sausage', 10], 
+        ['Anchovies', 9]
       ]);
 
   // Optional; add a title and set the width and height of the chart
