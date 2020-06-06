@@ -91,12 +91,8 @@
     {% if admin %}
       <button type="button" class="btn btn-success" onclick='newCarClicked()'>New Car</button>
       <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
-    {% else %}
-      <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
-    {% endif %}
-  </div>
-  {% if admin %}
-  <h1>testing piechart</h1>
+    </div>
+      <h1>testing piechart</h1>
   <div id="piechart"></div>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
@@ -126,5 +122,7 @@
     }
     </script>
     {% else %}
-    
+      <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
+    {% endif %}
+  </div>
 {% endblock %}
