@@ -95,6 +95,44 @@
     function backClicked() {
       window.location.href = "/admin-console"
     }
+
+
+
+///////////////////////////
+
+
+function updateBookings() {
+        fetch("api/booking?car_id={{ car.id }}")
+          .then(response => response.json())
+          .then(data => {
+        showCharts(data.bookings)
+      });
+    function showCharts(cars){
+      alert(bookings.length);
+      google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+// Draw the chart and set the chart values
+function drawChart() {
+  var data = new google.visualization.DataTable();
+      data.addColumn('string', 'user');
+      data.addColumn('number', 'timebooked');
+      for (var i = 0; i < bookings.length; ++i) {
+      data.addRows([
+        [bookings[i].username, duration]
+      ]);
+      }
+  // Optional; add a title and set the width and height of the chart
+  var options = {'title':'user time booked', 'width':550, 'height':400};
+
+  // Display the chart inside the <div> element with id="piechart"
+  var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+  chart.draw(data, options);
+}
+}
+
+
+
   </script>
 
   <form>
@@ -153,6 +191,9 @@
         <tbody id='table-data'>
         </tbody>
       </table>
+      <h1>testing piechart</h1>
+      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <div id="piechart"></div>
     </div>
 
     <div class="btn-group">
