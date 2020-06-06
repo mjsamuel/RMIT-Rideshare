@@ -98,17 +98,21 @@
   <script type="text/javascript">
   // lets just get a chart drawing first 
     // Load google charts
+    fetch("api/cars")
+      .then(response => response.json())
+      .then(data => {
     google.charts.load('current', {'packages':['corechart']});
-    google.charts.setOnLoadCallback(drawChart);
+    google.charts.setOnLoadCallback(drawChart(data.cars));
+    });
     
     // Draw the chart and set the chart values
-    function drawChart() {
+    function drawChart(cars) {
       var data = new google.visualization.DataTable();
       
       data.addColumn('string', 'Make');
       data.addColumn('number', 'Populartiy');
       
-      for (var i = 0; i < 3; ++i) {
+      for (var i = 0; i < cars.length; ++i) {
         data.addRows([['test', 1]]);
       }
       // Optional; add a title and set the width and height of the chart
