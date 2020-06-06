@@ -96,12 +96,6 @@
       window.location.href = "/admin-console"
     }
 
-
-
-///////////////////////////
-
-
-function updateBookings() {
         fetch("api/booking?car_id={{ car.id }}")
           .then(response => response.json())
           .then(data => {
@@ -119,7 +113,7 @@ function drawChart() {
       data.addColumn('number', 'timebooked');
       for (var i = 0; i < bookings.length; ++i) {
       data.addRows([
-        [bookings[i].username, 1]
+        [bookings[i].username, bookings[i].duration]
       ]);
       }
   // Optional; add a title and set the width and height of the chart
@@ -129,7 +123,7 @@ function drawChart() {
   var chart = new google.visualization.PieChart(document.getElementById('piechart'));
   chart.draw(data, options);
 }
-}
+    }
 
   </script>
 
