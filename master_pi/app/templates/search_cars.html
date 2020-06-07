@@ -148,8 +148,11 @@ function drawChart() {
       <div class="btn-group"></div>
       <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
       <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
-      
+    
+    {% else %} 
+      <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
+      </div>
+
     {% endif %}
-    <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
-    </div>
+    
 {% endblock %}
