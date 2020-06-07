@@ -74,7 +74,16 @@ function drawChart() {
       ]);
       }
   // Optional; add a title and set the width and height of the chart
-  var options = {'title':'Car Makes', 'width':550, 'height':400};
+  var options = {
+    title: 'Correlation between number of seats in car and cost per hour of that car',
+    hAxis: {title: 'Number Of Seats'},
+    vAxis: {title: 'Cost Per Hour'},
+    bubble: {
+      textStyle: {
+        auraColor: 'none'
+      }
+    }
+  };
 
   // Display the chart inside the <div> element with id="piechart"
   var chart = new google.visualization.BubbleChart(document.getElementById('piechart'));
