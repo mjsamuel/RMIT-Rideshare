@@ -127,12 +127,13 @@ function drawChart() {
     }
 
     function showTimeline(bookings){
-      alert("timeline called")
+     // alert("timeline called")
       google.charts.load('current', {'packages':['timeline']});
 google.charts.setOnLoadCallback(drawChart);
 
 // Draw the chart and set the chart values
 function drawChart() {
+  alert("drawchart called")
   var container = document.getElementById('timeline');
   var chart = new google.visualization.Timeline(container);
   var dataTable = new google.visualization.DataTable();
