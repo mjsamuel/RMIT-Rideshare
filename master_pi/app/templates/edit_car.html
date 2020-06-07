@@ -127,6 +127,7 @@ function drawChart() {
     }
 
     function showTimeline(bookings){
+      alert("timeline called")
       google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(drawChart2);
 
@@ -217,6 +218,7 @@ function drawChart2() {
       <h1>User Time Booked</h1>
       <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
       <div id="piechart"></div>
+      <h1>Booking Timeline</h1>
       <div id="timeline"></div>
     </div>
     <div class="btn-group">
