@@ -123,19 +123,12 @@
                 [ bookings[i].username, new Date(fa, fb, fc, fd, fg), new Date(fea, feb, fec, fed, feg) ]
                 ]);
                 }
-                var options = {
-                'title': 'A timeline of all bookings made on this car',
-                'width': 500,
-                'height': 500,
-                chartArea:{
-                    left:10,
-                    right:10, // !!! works !!!
-                    bottom:20,  // !!! works !!!
-                    top:20,
-                    width:"100%",
-                    height:"100%"
-                    }
-                };
+                var options = {'title': 'How Much Pizza I Ate Last Night',
+               'width': 350,
+               'height': 400,
+               'chartArea': {'width': '100%', 'height': '80%'},
+               'legend': {'position': 'bottom'}
+    };
                 if (bookings.length > 0) {
                 chart.draw(dataTable, options);
                 }
