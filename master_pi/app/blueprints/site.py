@@ -91,10 +91,12 @@ def issue():
 def link_pushbullet_account():
     return render_template('link_pushbullet_account.html', title='Link Your Pushbullet Account')
 
+
 # Manager specific routes
 @site.route('/manager-console')
 def manager_console():
     return render_template('search_cars.html', title='Manager Console', manager=True)
+
 
 @site.route('/statistics-car')
 def statistics_car():

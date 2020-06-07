@@ -101,7 +101,7 @@
   <form>
     <div class="form-row">
       <div class="col">
-        <label for="make">Make: </label>
+        <label for="make">Make:</label>
         <input type="text" class="form-control" id="make" placeholder="Make" value="{{ car.make }}"/>
       </div>
       <div class="col">
@@ -135,7 +135,6 @@
     <div class="alert alert-danger" id="error-message"></div>
   </form>
 
-
   {% if car is not none %}
       <div class="btn-group">
         <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseTable" aria-expanded="false" aria-controls="collapseTable">
@@ -155,6 +154,7 @@
         </tbody>
       </table>
     </div>
+
     <div class="btn-group">
       <button type="button" class="btn btn-warning" onclick='reportIssueClicked()'>Report an issue</button>
     </div>
