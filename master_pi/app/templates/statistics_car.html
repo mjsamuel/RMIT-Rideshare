@@ -68,7 +68,7 @@
         }
         return output;
       }
-      {% if car is not none %}
+      
       fetch("api/booking?car_id={{ car.id }}")
         .then(response => response.json())
         .then(data => {
