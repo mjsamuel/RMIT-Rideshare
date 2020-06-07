@@ -86,6 +86,7 @@
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
         if (bookings.length > 0) {
         chart.draw(data, options);
+        document.getElementById("pieinfo").innerHTML = "RMIT RIDESHARE Users who booked this car.";
         }
         }
             }
@@ -133,7 +134,7 @@
     };
                 if (bookings.length > 0) {
                 chart.draw(dataTable, options);
-                document.getElementById("timelineinfo").innerHTML = "testing";
+                document.getElementById("timelineinfo").innerHTML = "Timeline Displaying All Booking History of this Car.";
                 }
             }
         }
@@ -200,6 +201,7 @@
         </tbody>
       </table>
       <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <p id="pieinfo"></p>
       <div id="piechart"></div>
       <p id="timelineinfo"></p>
       <div id="timeline"></div>
