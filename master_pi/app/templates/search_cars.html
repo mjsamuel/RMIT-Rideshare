@@ -58,7 +58,7 @@
     function newCarClicked() {
       window.location.href = "/new-car"
     }
-
+//gets data
     fetch("api/cars")
       .then(response => response.json())
       .then(data => {
@@ -80,7 +80,7 @@ function drawChart() {
         ['', cars[i].no_seats, cars[i].cost_per_hour,  cars[i].make]
       ]);
       }
-  // Optional; add a title and set the width and height of the chart
+  // setting our options for the chart
   var options = {
     'width':500, 'height':800,
     title: 'Correlation between number of seats in a car and the cost per hour of that car',
@@ -92,9 +92,9 @@ function drawChart() {
       }
     }
   };
-
-  // Display the chart inside the <div> element with id="piechart"
+  // Display the chart inside the <div> element with id="bubblechart"
   var chart = new google.visualization.BubbleChart(document.getElementById('bubblechart'));
+  //makes sure there are cars before it draws graph
   if (cars.length > 0) {
   chart.draw(data, options);
   }
