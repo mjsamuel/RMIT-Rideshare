@@ -141,9 +141,9 @@ function drawChart() {
     DataTable.addColumn({ type: 'string', role: 'tooltip' });
     DataTable.addColumn({ type: 'date', id: 'Start' });
     DataTable.addColumn({ type: 'date', id: 'End' });
+    alert("colums added")
       for (var i = 0; i < bookings.length; ++i) {
         let bookTime = moment.utc(bookings[i].book_time).toDate()
-        alert("bookTime called")
         let formattedBookTime = moment(bookTime).format('YYYY, MM, DD hh, mm');
         let bookTimeEnd = moment.utc(bookings[i].book_time).toDate().add(bookings[i].duration, 'hours');
         let formattedBookTimeEnd = moment(bookTime).format('YYYY, MM, DD hh, mm');
