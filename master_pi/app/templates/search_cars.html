@@ -146,8 +146,13 @@ function drawChart() {
   <div id="bubblechart"></div>
   </div>
 
-    {% else %}
+    {% else if manager %}
       <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
+      <h1>Visual Data</h1>
+  <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <div id="bubblechart"></div>
+  </div>
     {% endif %}
   </div>
 {% endblock %}
