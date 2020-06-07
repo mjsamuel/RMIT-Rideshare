@@ -128,11 +128,11 @@ function drawChart() {
 
     function showTimeline(bookings){
       alert("timeline called")
-      google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart2);
+      google.charts.load('current', {'packages':['timeline']});
+google.charts.setOnLoadCallback(drawChart);
 
 // Draw the chart and set the chart values
-function drawChart2() {
+function drawChart() {
   var container = document.getElementById('timeline');
   var chart = new google.visualization.Timeline(container);
   var dataTable = new google.visualization.DataTable();
@@ -151,7 +151,7 @@ function drawChart2() {
       ]);
       }
 
-  chart.draw(data, options);
+  chart.draw(dataTable);
 }
     }
 
