@@ -82,9 +82,8 @@ function drawChart() {
       }
   // setting our options for the chart
   var options = {
-    'width':450, 'height':800,
-    title: 'Correlation between number of seats in a car ' + 
-           'and the cost per hour of that car',
+    'width':450,
+    'height':800,
     hAxis: {title: 'Number Of Seats'},
     vAxis: {title: 'Cost Per Hour'},
     bubble: {
@@ -98,6 +97,7 @@ function drawChart() {
   //makes sure there are cars before it draws graph
   if (cars.length > 0) {
   chart.draw(data, options);
+  document.getElementById("bubbleinfo").innerHTML = "Correlation between number of seats in a car and the cost per hour of that car";
   }
 }
 }
@@ -153,6 +153,7 @@ function drawChart() {
   <div class="collapse" id="collapseTable">
 
       <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <p id="bubbleinfo"></p>
       <div id="bubblechart"></div>
   </div>
       <div class="btn-group"></div>
