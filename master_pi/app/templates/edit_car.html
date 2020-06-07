@@ -159,15 +159,8 @@ function drawChart() {
         dataTable.addRows([
           [ bookings[i].username, new Date(fa, fb, fc, fd, fg), new Date(fea, feb, fec, fed, feg) ]
           ]);
-
-          var options = {
-        height: 450,
-        width: 450
         }
-      };
-
-        }
-        chart.draw(dataTable, options);
+        chart.draw(dataTable);
       }
     }
 //      // alert("timeline called")
