@@ -14,6 +14,8 @@ class Issue(db.Model):
     :type time: datetime
     :param details: details of the car's issue
     :type details: string
+    :param resolved: indicates wether the issue has been resolved
+    :type resolved: boolean
     :param car: variable to easily serialize issue along with a car object (not stored in database), optional
     :type car: app.model.car.Car
     """
@@ -21,7 +23,8 @@ class Issue(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     car_id = db.Column(db.Integer, unique=False, nullable=False)
     time = db.Column(db.DateTime, unique=False, nullable=False)
-    details = db.Column(db.String(128), unique=False, nullable=True)
+    details = db.Column(db.String(128), unique=False, nullable=False)
+    resolved = db.Column(db.Boolean, unique=False, nullable=False)
     car = None
 
     def __init__(self, car_id, time, details):
@@ -30,9 +33,10 @@ class Issue(db.Model):
         self.car_id = car_id
         self.time = time
         self.details = details
+        self.resolved = False
 
 class IssueSchema(ma.SQLAlchemySchema):
-    """A class to represent the schema for a issue
+    """A class to represent the schema for an issue
     """
     class Meta:
         model = Issue
@@ -41,6 +45,7 @@ class IssueSchema(ma.SQLAlchemySchema):
     car_id = fields.Int()
     time = fields.DateTime()
     details = fields.Str()
+    resolved = fields.Boolean()
     car = fields.Nested(CarSchema)
 
 issue_schema = IssueSchema()

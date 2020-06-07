@@ -72,6 +72,21 @@ class AuthenticationFormSchema(Schema):
             raise ValidationError("Missing code.")
 
 
+class PushbulletFormSchema(Schema):
+    username = fields.Str(required=True)
+    token = fields.Str(required=True)
+
+    @validates('username')
+    def username_empty(self, value):
+        if value == "":
+            raise ValidationError("Missing username.")
+
+    @validates('token')
+    def username_empty(self, value):
+        if value == "":
+            raise ValidationError("Missing token.")
+
+
 class BookCarFormSchema(Schema):
     car_id = fields.Int(required=True)
     username = fields.Str(required=True)

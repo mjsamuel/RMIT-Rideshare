@@ -10,7 +10,6 @@ from app.models.car import Car, car_schema
 from app.models.booking import Booking, booking_schema
 from app.forms import BookCarFormSchema
 
-
 booking = Blueprint("booking", __name__, url_prefix='/api')
 
 @booking.route('/booking', methods=['GET'])
@@ -57,6 +56,7 @@ def get_bookings():
             ]
         }
 
+    :>json bookings: an array of bookings
     :query username: the username to filter by for bookings
     :resheader Content-Type: application/json
     :status 200: bookings found
