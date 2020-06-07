@@ -1,8 +1,11 @@
 import pytest
 
+
 class TestApiUserEndpoints:
+
+
     def test_login_success(self, client):
-        """Testing for a sucessful login with an already registered user
+        """Testing for a successful login with an already registered user
         """
 
         response = client.post(
@@ -17,6 +20,43 @@ class TestApiUserEndpoints:
 
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
+
+
+    def test_login_bluetooth_success(self, client):
+        """Testing for a successful bluetooth login with an already registered user
+        """
+
+        response = client.post(
+            '/api/login_bluetooth',
+            json={
+                "username": "dummy",
+                "mac_address": "18:F1:D8:E2:E9:6B"
+            }
+        )
+
+        expected_data = b'{"message":"Logged in successfully","user":{"role":"default","username":"dummy"}}\n'
+
+        assert (response.status == '200 OK')
+        assert (response.data == expected_data)
+
+
+    def test_login_bluetooth_fail(self, client):
+        """Testing for a successful bluetooth login with an already registered user
+        """
+
+        response = client.post(
+            '/api/login_bluetooth',
+            json={
+                "username": "dummy",
+                "mac_address": "37:F4:C8:E2:E5:9B"
+            }
+        )
+
+        expected_data = b'{"message":{"user":["MAC Address either not set, or does not match received."]},"user":null}\n'
+
+        assert (response.status == '401 UNAUTHORIZED')
+        assert (response.data == expected_data)
+
 
     def test_login_success_admin(self, client):
         """Testing for a sucessful login for an admin account
@@ -35,6 +75,9 @@ class TestApiUserEndpoints:
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
 
+
+
+
     def test_login_fail_missing_username(self, client):
         """Testing for a unsucessful login due to a missing username
         """
@@ -51,6 +94,7 @@ class TestApiUserEndpoints:
         assert (response.status == '400 BAD REQUEST')
         assert (response.data == expected_data)
 
+
     def test_login_fail_missing_password(self, client):
         """Testing for a unsucessful login due to a missing password
         """
@@ -66,6 +110,7 @@ class TestApiUserEndpoints:
 
         assert (response.status == '400 BAD REQUEST')
         assert (response.data == expected_data)
+
 
     def test_login_fail_wrong_password(self, client):
         """Testing for a unsucessful login due to a missing password
@@ -84,8 +129,9 @@ class TestApiUserEndpoints:
         assert (response.status == '401 UNAUTHORIZED')
         assert (response.data == expected_data)
 
+
     def test_register_success(self, app, client):
-        """Testing for a sucessful registration
+        """Testing for a successful registration
         """
 
         response = client.post(
@@ -101,6 +147,21 @@ class TestApiUserEndpoints:
         )
 
         expected_data = b'{"message":"Registered user successfully","user":{"username":"newuser"}}\n'
+
+
+    def test_register_bluetooth_success(self, app, client):
+        """Testing for successful bluetooth registration.
+        """
+
+        response = client.post(
+            '/api/register_bluetooth',
+            json={
+                "username": "dummy",
+                "mac_address": "18:F1:D8:E2:E9:6B"
+            }
+        )
+
+        expected_data = b'{"message":"User MAC Address updated","user":{"username":"dummy"}}\n'
 
     def test_register_fail_password(self, app, client):
         """Testing for a unsucessful registration due to passwords not matching
@@ -123,6 +184,7 @@ class TestApiUserEndpoints:
         assert (response.status == '400 BAD REQUEST')
         assert (response.data == expected_data)
 
+
     def test_register_fail_missing_username(self, app, client):
         """Testing for a unsucessful registration due to missing username
         """
@@ -142,6 +204,7 @@ class TestApiUserEndpoints:
 
         assert (response.status == '400 BAD REQUEST')
         assert (response.data == expected_data)
+
 
     def test_register_fail_missing_f_name(self, app, client):
         """Testing for a unsucessful registration due to missing first name
@@ -163,6 +226,7 @@ class TestApiUserEndpoints:
         assert (response.status == '400 BAD REQUEST')
         assert (response.data == expected_data)
 
+
     def test_register_fail_missing_l_name(self, app, client):
         """Testing for a unsucessful registration due to missing last name
         """
@@ -183,6 +247,7 @@ class TestApiUserEndpoints:
         assert (response.status == '400 BAD REQUEST')
         assert (response.data == expected_data)
 
+
     def test_register_fail_missing_email(self, app, client):
         """Testing for a unsucessful registration due to missing email
         """
@@ -202,6 +267,7 @@ class TestApiUserEndpoints:
 
         assert (response.status == '400 BAD REQUEST')
         assert (response.data == expected_data)
+
 
     def test_register_fail_bad_email(self, app, client):
         """Testing for a unsucessful registration due to email not being in the correct format
@@ -224,6 +290,7 @@ class TestApiUserEndpoints:
         assert (response.status == '400 BAD REQUEST')
         assert (response.data == expected_data)
 
+
     def test_register_fail_missing_password(self, app, client):
         """Testing for a unsucessful registration due to missing password
         """
@@ -243,6 +310,7 @@ class TestApiUserEndpoints:
 
         assert (response.status == '400 BAD REQUEST')
         assert (response.data == expected_data)
+
 
     def test_user_register_fail_missing_confirmed_password(self, app, client):
         """Testing for a unsucessful registration due to missing confirmed password
@@ -264,12 +332,14 @@ class TestApiUserEndpoints:
         assert (response.status == '400 BAD REQUEST')
         assert (response.data == expected_data)
 
+
     def test_user_get_success(self, client):
         response = client.get('/api/user?username=dummy')
         expected_data = b'{"message":"User found","user":{"role":"default","username":"dummy"}}\n'
 
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
+
 
     def test_user_get_fail(self, client):
         response = client.get('/api/user?username=unregistered_user')

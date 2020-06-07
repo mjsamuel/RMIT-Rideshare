@@ -47,6 +47,9 @@ def operations(server):
         elif instruction == "Login With Face":
             logging.info("Login with face called")
             server.login_with_face()
+        elif instruction == "Login With Bluetooth":
+            logging.info("Login with bluetooth called")
+            server.login_with_bluetooth()
         elif instruction == "Change Lock Status":
             logging.info("Change lock status called")
             server.change_lock_status()
@@ -56,9 +59,9 @@ def operations(server):
         elif instruction == "Add Face":
             logging.info("Add face called")
             server.add_face()
-        elif instruction == "Login With Face":
-            logging.info("Login with face called")
-            server.login_with_face()
+        elif instruction == "Add Bluetooth":
+            logging.info("Add bluetooth called")
+            server.add_bluetooth()
         elif instruction == "":
             logging.warning("Agent Pi disconnected")
             continue_loop = False

@@ -7,6 +7,8 @@ def socket_client():
     return socket_client
 
 class TestSocketClient:
+
+
     @mock.patch('socket_client.client.socket.socket')
     def test_start(self, mock_connection, socket_client):
         # Setting up mock object
@@ -19,6 +21,7 @@ class TestSocketClient:
         # Checking values are as expected
         mock_connection.connect.assert_called_with(address)
         assert(socket_client.get_server() is not None)
+
 
     @mock.patch('socket_client.client.socket.socket')
     def test_login(self, mock_connection, socket_client):
@@ -37,6 +40,7 @@ class TestSocketClient:
         # Checking values are as expected
         assert(response == server_response)
 
+
     @mock.patch('socket_client.client.socket.socket')
     def test_disconnect(self, mock_connection, socket_client):
         # Setting up mock object
@@ -48,6 +52,7 @@ class TestSocketClient:
 
         # Checking values are as expected
         mock_connection.close.assert_called()
+
 
     @mock.patch('socket_client.client.socket.socket')
     def test_change_lock_status(self, mock_connection, socket_client):
@@ -64,6 +69,7 @@ class TestSocketClient:
 
         # Checking values are as expected
         assert(response == server_response['message'])
+
 
     @mock.patch('socket_client.client.socket.socket')
     def test_set_location(self, mock_connection, socket_client):

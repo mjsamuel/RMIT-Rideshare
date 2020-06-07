@@ -39,6 +39,7 @@ class User(db.Model):
     email = db.Column(db.String(64), unique=False, nullable=False)
     role = db.Column(db.Enum(Role), unique=False, nullable=True)
     google_credentials = db.Column(db.PickleType(), unique=False, nullable=True)
+    mac_address = db.Column(db.String(128), unique=False, nullable=True)
     pb_token = db.Column(db.String(128), unique=False, nullable=True)
 
     def __init__(self, username, password, f_name, l_name, email, role=Role.default):
