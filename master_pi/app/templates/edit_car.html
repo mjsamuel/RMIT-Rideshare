@@ -145,10 +145,10 @@ function drawChart() {
           let fb = moment(bookTime).format('M');
           let fc = moment(bookTime).format('D');
           let fd = moment(bookTime).format('h');
-          let fd = moment(bookTime).format('m');
+          let fg = moment(bookTime).format('m');
           alert(fa)
         dataTable.addRows([
-          [ bookings[i].username, new Date(startdate), new Date(1797, 2, 4, 0, 0) ]
+          [ bookings[i].username, new Date(fa, fb, fc, fd, fg), new Date(1797, 2, 4, 0, 0) ]
           ]);
         }
         chart.draw(dataTable);
