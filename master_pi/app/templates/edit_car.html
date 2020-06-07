@@ -140,7 +140,7 @@ function drawChart() {
         for (var i = 0; i < bookings.length; ++i) {
 
           let bookTime = moment.utc(bookings[i].book_time).toDate()
-          let formattedBookTime = moment(bookTime).format('YYYY, MM, DD, hh, mm');
+          let formattedBookTime = moment(bookTime).format('YYYY, M, D, h, m');
           alert(formattedBookTime)
         dataTable.addRows([
           [ bookings[i].username, new Date(formattedBookTime), new Date(1797, 2, 4, 0, 0) ]
