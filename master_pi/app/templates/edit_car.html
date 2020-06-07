@@ -137,10 +137,13 @@ function drawChart() {
         dataTable.addColumn({ type: 'string', id: 'President' });
         dataTable.addColumn({ type: 'date', id: 'Start' });
         dataTable.addColumn({ type: 'date', id: 'End' });
-        dataTable.addRows([
-          [ 'Washington', new Date(1789, 3, 30), new Date(1797, 2, 4) ],
-          [ 'Adams',      new Date(1797, 2, 4),  new Date(1801, 2, 4) ],
-          [ 'Jefferson',  new Date(1801, 2, 4),  new Date(1809, 2, 4) ]]);
+        for (var i = 0; i < bookings.length; ++i) {
+        let bookTime = moment.utc(bookings[i].book_time).toDate()
+        let formattedBookTime = moment(bookTime).format('YYYY, MM, DD hh, mm');
+        let bookTimeEnd = moment.utc(bookings[i].book_time).toDate().add(bookings[i].duration, 'hours');
+        let formattedBookTimeEnd = moment(bookTime).format('YYYY, MM, DD hh, mm');
+        DataTable.addRows([
+          [ 'Washington', new Date(formattedBookTime), new Date(2021, 2, 4) ]]);
 
         chart.draw(dataTable);
       }
