@@ -144,10 +144,17 @@ function drawChart() {
       <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
       </div>
     {% elif manager %}
+    <div class="btn-group">
+      <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseTable" aria-expanded="false" aria-controls="collapseTable">
+        View Graph
+      </button>
+    </div>
+  <div class="collapse" id="collapseTable">
+
       <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
       <div id="bubblechart"></div>
+  </div>
       <div class="btn-group"></div>
-      <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
       <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
       </div>
     {% else %} 
