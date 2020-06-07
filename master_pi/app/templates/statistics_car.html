@@ -24,6 +24,29 @@
       make_request(data, method)
     }
 
+    {% if car is not none %}
+      function reportIssueClicked() {
+        window.location.href = "/report-issue?id={{ car.id }}"
+      }
+
+      function deleteClicked() {
+        var data = {
+          car_id: {{ car.id }},
+          username: sessionStorage.getItem('username')
+        }
+
+        make_request(data, "DELETE")
+      }
+
+      updateBookings()
+
+      function updateBookings() {
+        fetch("api/booking?car_id={{ car.id }}")
+          .then(response => response.json())
+          .then(data => {
+            document.getElementById("table-data").innerHTML = displayBookings(data.bookings)
+          });
+      }
 
       function displayBookings(bookings) {
         var output = ""
