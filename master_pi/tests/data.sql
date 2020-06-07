@@ -1,9 +1,3 @@
--- Clear the database for testing
-
-TRUNCATE TABLE user;
- TRUNCATE TABLE car;
- TRUNCATE TABLE booking;
-
 -- Add dummy users
 
 INSERT INTO user (username, password, f_name, l_name, email, role, mac_address)
