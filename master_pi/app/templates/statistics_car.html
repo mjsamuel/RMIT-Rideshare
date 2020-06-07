@@ -25,18 +25,6 @@
     }
 
     {% if car is not none %}
-      function reportIssueClicked() {
-        window.location.href = "/report-issue?id={{ car.id }}"
-      }
-
-      function deleteClicked() {
-        var data = {
-          car_id: {{ car.id }},
-          username: sessionStorage.getItem('username')
-        }
-
-        make_request(data, "DELETE")
-      }
 
       updateBookings()
 
