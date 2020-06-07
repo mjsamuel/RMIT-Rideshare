@@ -25,7 +25,6 @@
       return output;
     }
 
-
     function submitClicked() {
       var searchBy = document.getElementById('search-by').value;
       var searchTerm = document.getElementById('search-term').value;
@@ -39,66 +38,12 @@
     }
 
     function rowClicked(carId) {
-      let admin = "{{ admin }}"
-      let manager = "{{ manager }}"
-      if (admin == "True"){ window.location.href = "/edit-car?id=" + carId
-      }
-      else if (manager == "True"){
-        window.location.href = "/statistics-car?id=" + carId
-      }
-      else {
-        window.location.href = "/car?id=" + carId
-      }
+      window.location.href = "/car?id=" + carId
     }
 
     function backClicked() {
       window.location.href = "/"
     }
-
-    function newCarClicked() {
-      window.location.href = "/new-car"
-    }
-
-    fetch("api/cars")
-      .then(response => response.json())
-      .then(data => {
-        showCharts(data.cars)
-      });
-    function showCharts(cars){
-      google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-// Draw the chart and set the chart values
-function drawChart() {
-  var data = new google.visualization.DataTable();
-      data.addColumn('string', 'ID');
-      data.addColumn('number', 'number of seats');
-      data.addColumn('number', 'cost per hour');
-      data.addColumn('string', 'Make');
-      for (var i = 0; i < cars.length; ++i) {
-      data.addRows([
-        ['', cars[i].no_seats, cars[i].cost_per_hour,  cars[i].make]
-      ]);
-      }
-  // Optional; add a title and set the width and height of the chart
-  var options = {
-    'width':500, 'height':800,
-    title: 'Correlation between number of seats in car and cost per hour of that car',
-    hAxis: {title: 'Number Of Seats'},
-    vAxis: {title: 'Cost Per Hour'},
-    bubble: {
-      textStyle: {
-        auraColor: 'none'
-      }
-    }
-  };
-
-  // Display the chart inside the <div> element with id="piechart"
-  var chart = new google.visualization.BubbleChart(document.getElementById('bubblechart'));
-  chart.draw(data, options);
-}
-}
-
   </script>
 
   <form>
@@ -137,20 +82,7 @@ function drawChart() {
   </table>
 
   <div class="btn-group">
-    {% if admin %}
-      <button type="button" class="btn btn-success" onclick='newCarClicked()'>New Car</button>
-      <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
-    
-      
-  {% if manager %}
-  <h1>Visual Data</h1>
-  <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <div id="bubblechart"></div>
+    <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
   </div>
-  
-    {% else %}
-      <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
-    {% endif %}
-  </div>
+
 {% endblock %}

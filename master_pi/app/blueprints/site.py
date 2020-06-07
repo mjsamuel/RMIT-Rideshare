@@ -89,3 +89,8 @@ def issue():
 @site.route('/pushbullet-account')
 def link_pushbullet_account():
     return render_template('link_pushbullet_account.html', title='Link Your Pushbullet Account')
+
+# Manager specific routes
+@site.route('/manager-console')
+def manager_console():
+    return render_template('search_cars.html', title='Manager Console')
