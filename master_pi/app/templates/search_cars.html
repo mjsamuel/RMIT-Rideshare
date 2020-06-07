@@ -64,18 +64,20 @@ google.charts.setOnLoadCallback(drawChart);
 // Draw the chart and set the chart values
 function drawChart() {
   var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Car Make');
-      data.addColumn('number', 'Count');
+      data.addColumn('string', 'ID');
+      data.addColumn('number', 'number of seats');
+      data.addColumn('number', 'cost per hour');
+      data.addColumn('string', 'Make');
       for (var i = 0; i < cars.length; ++i) {
       data.addRows([
-        [cars[i].make, 1]
+        [cars[i].id, cars[i].no_seats, cars[i].cost_per_hour,  cars[i].make]
       ]);
       }
   // Optional; add a title and set the width and height of the chart
   var options = {'title':'Car Makes', 'width':550, 'height':400};
 
   // Display the chart inside the <div> element with id="piechart"
-  var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+  var chart = new google.visualization.BubbleChart(document.getElementById('piechart'));
   chart.draw(data, options);
 }
 }
