@@ -99,7 +99,8 @@
                 var chart = new google.visualization.Timeline(container);
                 var dataTable = new google.visualization.DataTable();
 
-                dataTable.addColumn({ type: 'string', id: 'President' });
+                dataTable.addColumn({ type: 'string', id: 'User' });
+                dataTable.addColumn({ type: 'string', id: 'Name' });
                 dataTable.addColumn({ type: 'date', id: 'Start' });
                 dataTable.addColumn({ type: 'date', id: 'End' });
                 for (var i = 0; i < bookings.length; ++i) {
@@ -120,10 +121,10 @@
                 let fed = moment(bookTimeEnd).format('H');
                 let feg = moment(bookTimeEnd).format('m');
                 dataTable.addRows([
-                [ bookings[i].username, new Date(fa, fb, fc, fd, fg), new Date(fea, feb, fec, fed, feg) ]
+                [ bookings[i].username, bookings[i].username, new Date(fa, fb, fc, fd, fg), new Date(fea, feb, fec, fed, feg) ]
                 ]);
                 }
-                var options = {'title': 'How Much Pizza I Ate Last Night',
+                var options = {
                'width': 500,
                'height': 300,
                'chartArea': {'width': '100%', 'height': '80%'},
