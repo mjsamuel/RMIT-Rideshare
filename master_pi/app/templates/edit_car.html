@@ -159,6 +159,12 @@ function drawChart() {
           [ bookings[i].username, new Date(fa, fb, fc, fd, fg), new Date(fea, feb, fec, fed, feg) ]
           ]);
         }
+        var options = {
+          title: 'A timeline of all bookings made on this car',
+          width: 900,
+          height: 500
+        };
+
         chart.draw(dataTable);
       }
     }
