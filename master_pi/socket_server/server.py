@@ -164,7 +164,7 @@ class Server:
 
 
     def add_bluetooth(self):
-        """Update the users mac address via Flask API.
+        """Update the users bluetooth mac address via Flask API.
         """
 
         # Indicating to Agent Pi that the method has begun
@@ -189,8 +189,9 @@ class Server:
         # Returning response to Agent Pi
         self.__client.sendall(api_response.encode())
 
+
     def login_with_bluetooth(self):
-        """Authenticates user via the Flask APi.\n
+        """Authenticates users bluetooth device via the Flask APi.\n
         This method waits for a response from the Agent Pi, sends this
         information to the Flask API and returns the response to the Agent Pi
         after encoding it.
@@ -210,7 +211,7 @@ class Server:
         except:
             # If connection to API fails then send a generic error message
             api_response = json.dumps({
-                "username": None,
+                "user": None,
                 "message": {
                     "server": ["A server error occurred."]
                 }})

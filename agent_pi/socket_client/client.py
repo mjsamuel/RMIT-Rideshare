@@ -173,12 +173,13 @@ class Client:
 
     def add_bluetooth(self, username, mac_address):
         """Sends the username and mac_address values to Master Pi via
-        the TCP socket to update the users mac address.\
+        the TCP socket to update the users mac address.
         The method then receives a response from the server which is returned.
 
-        :param username: The user's username
-        :param mac_address: The user's new mac address
-        :return:
+        :param username: The users username
+        :type username: string
+        :param mac_address: The users mac address
+        :type mac_address: string
         """
 
         # Indicate to Master Pi to begin updating users mac address
@@ -272,6 +273,3 @@ class Client:
         data = self.__server.recv(4096)
         response = json.loads(data.decode())
         return response['message']
-
-
-

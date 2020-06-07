@@ -27,7 +27,7 @@ class TestApiCarEndpoints:
         """Testing search returns correct cars when filtering by colour
         """
 
-        response = client.get('/api/cars?colour=black')
+        response = client.get('/api/cars?colour=Black')
         expected_data = b'{"cars":[{"body_type":"SUV","colour":"Black","cost_per_hour":15,"id":1,"is_locked":true,"location":"-37.808880,144.965179","make":"Toyota","no_seats":5},{"body_type":"Hatchback","colour":"Black","cost_per_hour":15,"id":3,"is_locked":true,"location":null,"make":"Toyota","no_seats":5},{"body_type":"Hatchback","colour":"Black","cost_per_hour":40,"id":5,"is_locked":true,"location":null,"make":"Mercedes","no_seats":5},{"body_type":"Cabriolet","colour":"Black","cost_per_hour":30,"id":8,"is_locked":true,"location":null,"make":"BMW","no_seats":5},{"body_type":"Truck","colour":"Black","cost_per_hour":65,"id":10,"is_locked":true,"location":null,"make":"Porsche","no_seats":2}],"message":""}\n'
 
         assert (response.status == '200 OK')

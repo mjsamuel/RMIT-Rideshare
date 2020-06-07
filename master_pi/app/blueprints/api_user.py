@@ -114,14 +114,14 @@ def login_bluetooth():
 
     .. sourcecode:: http
 
-        POST /api/login HTTP/1.1
+        POST /api/login_bluetooth HTTP/1.1
         Host: localhost
         Accept: application/json
         Content-Type: application/json
 
         {
             "username": "dummy",
-            "password": "abcd"
+            "mac_address": "18:F1:D8:E2:E9:6B"
         }
 
     **Example response**:
@@ -144,18 +144,17 @@ def login_bluetooth():
         Content-Type: application/json
 
         {
-            "message": "Incorrect password",
+            "message": "MAC Address either not set, or does not match received.",
             "user": null
         }
 
     :<json string username: unique username
-    :<json string password: password for specified account
+    :<json string mac_address: mac address for specified account
     :>json message: repsonse information such as error information
     :>json app.models.user.User user: the user object that has been created
     :resheader Content-Type: application/json
     :status 200: successful login
-    :status 400: malformed request
-    :status 401: incorrect password
+    :status 401: invalid mac address
     :status 404: user does not exist
     """
 
@@ -171,17 +170,15 @@ def login_bluetooth():
 
     # Checking if user is in database & find mac address
     user = User.query.get(username)
-    mac_address_api = user.mac_address
 
     if user is None:
         response['message'] = {
             'user': ['User does not exist.']
         }
         status = 404
-    elif mac_address_api is None:
-        response['message'] = "MAC Address does not exist for user."
-        status = 404
     else:
+        # Grab mac address of user
+        mac_address_api = user.mac_address
         # Checking whether mac_address given matches username
         if mac_address_api == mac_address:
             response['message'] = "Logged in successfully"
@@ -189,7 +186,7 @@ def login_bluetooth():
             status = 200
         else:
             response['message'] = {
-                'user': ['Invalid MAC Address for given user.']
+                'user': ['MAC Address either not set, or does not match received.']
             }
             status = 401
 
@@ -308,18 +305,14 @@ def register_bluetooth():
 
     .. sourcecode:: http
 
-        POST /api/user HTTP/1.1
+        POST /api/register_bluetooth HTTP/1.1
         Host: localhost
         Accept: application/json
         Content-Type: application/json
 
         {
             "username": "dummy",
-            "f_name": "John",
-            "l_name": "Doe",
-            "email": "test@gmail.com",
-            "password": "abcd",
-            "confirm_password": "abcd"
+            "mac_address": "18:F1:D8:E2:E9:6B"
         }
 
     **Example response**:
@@ -330,7 +323,7 @@ def register_bluetooth():
         Content-Type: application/json
 
         {
-            "message": "Registered user successfully",
+            "message": "User MAC Address updated",
             "user": {
                 "username": "dummy"
             }
@@ -338,30 +331,24 @@ def register_bluetooth():
 
     .. sourcecode:: http
 
-        HTTP/1.1 400 BAD REQUEST
+        HTTP/1.1 404 BAD REQUEST
         Content-Type: application/json
 
         {
-            "message": "Passwords do not match",
-            "user": null
+            "message": "ERROR: User does not exist",
         }
 
-    :<json string username: username that does not already exist within the database
-    :<json string f_name: first name of the user
-    :<json string l_name: last name of the user
-    :<json string email: email of the user (in the correct format)
-    :<json string password: password for new accoutn
-    :<json string confirm_password: retyped password which should match the previous password value
+    :<json string username: username that exists within the database
+    :<json string mac_address: mac address of users bluetooth device
     :>json message: repsonse information such as error information
-    :>json app.models.user.User user: the user object that has been created
+    :>json app.models.user.User loggedin_user: the user object that is logged in
     :resheader Content-Type: application/json
     :status 200: successful registration
-    :status 400: malformed request
+    :status 404: invalid user
     """
 
     response = {
-        'message': '',
-        'user': None
+        'message': ''
     }
     status = 200
 

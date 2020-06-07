@@ -1,5 +1,4 @@
-import cv2, getpass, os
-import bluetooth
+import cv2, getpass, os, bluetooth
 
 
 def menu(client, car_id):
@@ -155,11 +154,11 @@ def add_face(client, username):
 def login_via_bluetooth(client):
     """Authenticates user via bluetooth mac address.\n
     Gets the bluetooth mac address of nearby device, and if matches with
-    user in database, the username is returned.
+    user in database, the user and username is returned.
 
     :param client: Socket connection of Master Pi
     :type client: Client
-    :return: Username of logged in user if successful
+    :return: User & Username of logged in user if successful
     :rtype: string
     """
 
@@ -170,12 +169,12 @@ def login_via_bluetooth(client):
     username = input("Enter username: ")
 
     # Get the MAC Address of device near pi
-    print("Please place your device close to pi now...")
+    print("Please place device close to pi now...")
     nearby_devices = bluetooth.discover_devices()
     for bdaddr in nearby_devices:
         mac_address = str(bdaddr)
 
-    # Verify if address exists in database for user
+    # Verify if mac address exists in database for user
     if mac_address is None:
         print("ERROR: No bluetooth device found.")
     else:
@@ -192,14 +191,15 @@ def login_via_bluetooth(client):
 
     return user
 
+
 def add_bluetooth(client, username):
     """Adds a logged in user's bluetooth to the Master Pi's dataset.\n
     Gets the MAC Address of users device, and sends it to
-    the Master Pi for it to be stored
+    the Master Pi for it to be stored for current user.
 
     :param client: The socket connection to the Master Pi
     :type client: Client
-    :param username: The username of the user who's face is being registered
+    :param username: The username of the user who's device is being registered
     :type username: string
     """
 
@@ -219,6 +219,7 @@ def add_bluetooth(client, username):
         print("Updating your MAC Address now...")
         client.add_bluetooth(username, mac_address)
         print("Finished")
+
 
 def change_lock_status(client, username, car_id, method):
     """Sends a message via sockets to unlock or return the car this Pi corresponds to.
@@ -263,17 +264,17 @@ def set_location(client, car_id):
         print("ERROR: Invalid location provided.")
 
 
-def validate_location(loc):
+def validate_location(location):
     """Validates the users location input.
 
-    :param loc: The location to be validated
-    :type loc: String
+    :param location: The location to be validated
+    :type location: String
     :return: True if input is valid
     :rtype: boolean
     """
     # First check loc can be split into long and lat
     try:
-        result = loc.split(',', 1)
+        result = location.split(',', 1)
     except:
         return False
 
