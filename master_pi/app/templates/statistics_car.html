@@ -175,33 +175,27 @@ function drawChart() {
     <div class="form-row">
       <div class="col">
         <label for="make">Make: {{ car.make }}</label>
-        <input type="text" class="form-control" id="make" placeholder="Make" value="{{ car.make }}"/>
       </div>
       <div class="col">
-        <label for="body-type">Body Type:</label>
-        <input type="text" class="form-control" id="body-type"  placeholder="Body type" value="{{ car.body_type }}"/>
+        <label for="body-type">Body Type: {{ car.body_type }}</label>
       </div>
       <div class="col">
-        <label for="colour">Colour:</label>
-        <input type="text" class="form-control" id="colour" placeholder="Colour" value="{{ car.colour }}"/>
+        <label for="colour">Colour: {{ car.colour }}</label>
       </div>
     </div>
 
     <div class="form-row">
       <div class="col">
-        <label for="no-seats">Number of Seats:</label>
-        <input type="number" class="form-control" id="no-seats"  placeholder="Number of seats" value="{{ car.no_seats }}"/>
+        <label for="no-seats">Number of Seats: {{ car.no_seats }}</label>
       </div>
       <div class="col">
-        <label for="cost-per-hour">Cost Per Hour:</label>
-        <input type="number" class="form-control" id="cost-per-hour"  placeholder="Cost per hour" value="{{ car.cost_per_hour }}"/>
+        <label for="cost-per-hour">Cost Per Hour: {{ car.cost_per_hour }}</label>
       </div>
     </div>
 
     <div class="form-row">
       <div class="col">
-        <label for="location">Location:</label>
-        <input type="text" class="form-control" id="location" placeholder="Location" value="{{ car.location }}"/>
+        <label for="location">Location: {{ car.location }}</label>
       </div>
     </div>
 
@@ -233,17 +227,10 @@ function drawChart() {
       <h1>Booking Timeline</h1>
       <div id="timeline"></div>
     </div>
-    <div class="btn-group">
-      <button type="button" class="btn btn-warning" onclick='reportIssueClicked()'>Report an issue</button>
-    </div>
-
-    <div class="btn-group">
-      <button type="button" class="btn btn-danger" onclick='deleteClicked()'>Delete</button>
-    </div>
+    
   {% endif %}
 
   <div class="btn-group">
-    <button type="button" class="btn btn-primary" onclick='submitClicked()'>Submit</button>
     <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
   </div>
 
