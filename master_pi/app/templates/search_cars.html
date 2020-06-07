@@ -140,15 +140,12 @@ function drawChart() {
     {% if admin %}
       <button type="button" class="btn btn-success" onclick='newCarClicked()'>New Car</button>
       <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
-    
-      
-  {% if manager %}
-  <h1>Visual Data</h1>
+      <h1>Visual Data</h1>
   <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <div id="bubblechart"></div>
   </div>
-  
+
     {% else %}
       <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
     {% endif %}
