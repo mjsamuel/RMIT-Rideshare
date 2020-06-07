@@ -94,3 +94,11 @@ def link_pushbullet_account():
 @site.route('/manager-console')
 def manager_console():
     return render_template('search_cars.html', title='Manager Console', manager=True)
+
+@site.route('/statistics-car')
+def statistics_car():
+    car_id = request.args.get('id')
+    response = requests.get('http://localhost:5000/api/cars?id=' + car_id)
+    data = json.loads(response.text)
+
+    return render_template('statistics_car.html', title="Car Statistics", car=data['cars'])
