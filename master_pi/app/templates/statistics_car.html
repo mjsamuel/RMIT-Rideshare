@@ -1,0 +1,226 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <script>
+    isLoggedIn();
+
+    function submitClicked() {
+      var data = {
+        username: sessionStorage.getItem('username'),
+        make: document.getElementById('make').value,
+        body_type: document.getElementById('body-type').value,
+        colour: document.getElementById('colour').value,
+        no_seats: document.getElementById('no-seats').value,
+        location: document.getElementById('location').value,
+        cost_per_hour: document.getElementById('cost-per-hour').value
+      };
+
+      var method = "POST";
+      {% if car is not none %}
+        data["car_id"] = {{ car.id }}
+        method = "PUT"
+      {% endif %}
+
+      make_request(data, method)
+    }
+
+    {% if car is not none %}
+
+      updateBookings()
+
+      function updateBookings() {
+        fetch("api/booking?car_id={{ car.id }}")
+          .then(response => response.json())
+          .then(data => {
+            document.getElementById("table-data").innerHTML = displayBookings(data.bookings)
+          });
+      }
+
+      function displayBookings(bookings) {
+        var output = ""
+        for (var i = 0; i < bookings.length; ++i) {
+          // Formatting booking date and time
+          let bookTime = moment.utc(bookings[i].book_time).toDate()
+          let formattedBookTime = moment(bookTime).format('DD/MM/YY, hh:mm A');
+
+          // Formatting the prefix for the duration column
+          let duration = bookings[i].duration
+          var durationPrefix = "hours"
+          if (duration == 1) durationPrefix = "hour"
+
+          output += "<tr>\n"
+              + "<td>" + bookings[i].username + "</td>\n"
+              + "<td>" + formattedBookTime + "</td>\n"
+              + "<td>" + duration + " " + durationPrefix + "</td>\n"
+            + "</tr>\n"
+        }
+        return output;
+      }
+      //gets data
+      fetch("api/booking?car_id={{ car.id }}")
+        .then(response => response.json())
+        .then(data => {
+          showCharts(data.bookings)
+          showTimeline(data.bookings)
+      });
+
+    function showCharts(bookings){
+      google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        // Draw the chart and set the chart values
+            
+        function drawChart() {
+        var data = new google.visualization.DataTable();
+            //creating our coloums 
+            data.addColumn('string', 'user');
+            data.addColumn('number', 'timebooked');
+            //creates rows for each booking
+            for (var i = 0; i < bookings.length; ++i) {
+            data.addRows([
+                [bookings[i].username, bookings[i].duration]
+            ]);
+            }
+        //  Setting options for chart
+        var options = {
+            'width':650, 
+            'height':400
+        };
+
+        // Display the chart inside the <div> element with id="piechart"
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        //makes sure not to draw graph if there are no bookings
+        if (bookings.length > 0) {
+        chart.draw(data, options);
+        document.getElementById("pieinfo").innerHTML = "RMIT RIDESHARE Users who booked this car.";
+        }
+        }
+            }
+
+            function showTimeline(bookings){
+            google.charts.load('current', {'packages':['timeline']});
+            google.charts.setOnLoadCallback(drawChart);
+            // Draw the chart and set the chart values
+            function drawChart() {
+                // Display the chart inside the <div> element with id="timeline"
+                var container = document.getElementById('timeline');
+                var chart = new google.visualization.Timeline(container);
+                var dataTable = new google.visualization.DataTable();
+                //creates our coloums
+                dataTable.addColumn({ type: 'string', id: 'User' });
+                dataTable.addColumn({ type: 'string', id: 'Name' });
+                dataTable.addColumn({ type: 'date', id: 'Start' });
+                dataTable.addColumn({ type: 'date', id: 'End' });
+                //creates rows for each booking
+                for (var i = 0; i < bookings.length; ++i) {
+                let bookTime = moment.utc(bookings[i].book_time).toDate()
+                let formattedBookTime = moment(bookTime).format('YYYY, M, D, H, m');
+                //breaking up the ISO format inorder to work with Google Charts
+                let fa = moment(bookTime).format('YYYY');
+                let fb = moment(bookTime).format('M');
+                let fc = moment(bookTime).format('D');
+                let fd = moment(bookTime).format('H');
+                let fg = moment(bookTime).format('m');
+                let prebookTimeEnd = moment.utc(bookings[i].book_time).add(bookings[i].duration, 'hours');
+                let bookTimeEnd = moment.utc(prebookTimeEnd).toDate()
+                let formattedBookTimeEnd = moment(bookTimeEnd).format('YYYY, M, D, H, m');  
+                //breaking up the ISO format inorder to work with Google Charts 
+                let fea = moment(bookTimeEnd).format('YYYY');
+                let feb = moment(bookTimeEnd).format('M');
+                let fec = moment(bookTimeEnd).format('D');
+                let fed = moment(bookTimeEnd).format('H');
+                let feg = moment(bookTimeEnd).format('m');
+                dataTable.addRows([
+                [ bookings[i].username, bookings[i].username, new Date(fa, fb, fc, fd, fg), new Date(fea, feb, fec, fed, feg) ]
+                ]);
+                }
+                var options = {
+                timeline: { showRowLabels: false },
+               'width': 500,
+               'height': 300,
+               'chartArea': {'width': '100%', 'height': '80%'},
+               'legend': {'position': 'bottom'}
+    };  
+                //makes sure not to draw graph if there are no bookings
+                if (bookings.length > 0) {
+                chart.draw(dataTable, options);
+                document.getElementById("timelineinfo").innerHTML = "Timeline Displaying Booking History of this Car.";
+                }
+            }
+        }
+
+
+    {% endif %}
+
+    function backClicked() {
+      window.location.href = "/manager-console"
+    }
+
+  </script>
+
+  <form>
+    <div class="form-row">
+      <div class="col">
+        <label for="make">Make: {{ car.make }}</label>
+      </div>
+      <div class="col">
+        <label for="body-type">Body Type: {{ car.body_type }}</label>
+      </div>
+      
+    </div>
+
+    <div class="form-row">
+        <div class="col">
+            <label for="colour">Colour: {{ car.colour }}</label>
+          </div>
+      <div class="col">
+        <label for="no-seats">Number of Seats: {{ car.no_seats }}</label>
+      </div>
+      
+    </div>
+
+    <div class="form-row">
+        <div class="col">
+            <label for="cost-per-hour">Cost Per Hour: {{ car.cost_per_hour }}</label>
+          </div>
+      <div class="col">
+        <label for="location">Location: {{ car.location }}</label>
+      </div>
+    </div>
+
+    <div class="alert alert-danger" id="error-message"></div>
+  </form>
+
+
+  {% if car is not none %}
+      <div class="btn-group">
+        <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseTable" aria-expanded="false" aria-controls="collapseTable">
+          Booking history/statistics
+        </button>
+      </div>
+    <div class="collapse" id="collapseTable">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Time</th>
+            <th>Duration</th>
+          </tr>
+        </thead>
+        <tbody id='table-data'>
+        </tbody>
+      </table>
+      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <p id="pieinfo"></p>
+      <div id="piechart"></div>
+      <p id="timelineinfo"></p>
+      <div id="timeline"></div>
+    </div>
+    
+  {% endif %}
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
+  </div>
+
+{% endblock %}

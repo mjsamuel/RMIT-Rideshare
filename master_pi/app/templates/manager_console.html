@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <script>
+    isLoggedIn();
+
+    // Loading all cars on page load
+    fetch("api/cars")
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("table-data").innerHTML = displayCars(data.cars)
+      });
+
+    function displayCars(cars) {
+      var output = ""
+      for (var i = 0; i < cars.length; ++i) {
+        output += "<tr class='table-data-row' onclick=rowClicked('" + cars[i].id + "')>\n"
+            + "<td>" + cars[i].make + "</td>\n"
+            + "<td>" + cars[i].body_type + "</td>\n"
+            + "<td>" + cars[i].colour + "</td>\n"
+            + "<td>" + cars[i].no_seats + "</td>\n"
+            + "<td>$" + cars[i].cost_per_hour + "</td>\n"
+          + "</tr>\n"
+      }
+      return output;
+    }
+
+    function submitClicked() {
+      var searchBy = document.getElementById('search-by').value;
+      var searchTerm = document.getElementById('search-term').value;
+      var url = "api/cars?" + searchBy + "=" + searchTerm
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("table-data").innerHTML = displayCars(data.cars)
+        });
+    }
+
+    function rowClicked(carId) {
+      window.location.href = "/car?id=" + carId
+    }
+
+    function backClicked() {
+      window.location.href = "/"
+    }
+  </script>
+
+  <form>
+    <div class="form-row">
+      <div class="col-7">
+        <input type="text" class="form-control" id="search-term" placeholder="Search">
+      </div>
+      <div class="col">
+        <select class="form-control" id="search-by">
+          <option value="" disabled selected>Filter by:</option>
+          <option value="make">Make</option>
+          <option value="body_type">Body Type</option>
+          <option value="colour">Colour</option>
+          <option value="no_seats">No. Seats</option>
+          <option value="cost_per_hour">Cost Per Hour</option>
+        </select>
+      </div>
+      <div class="col">
+         <button type="button" class="btn btn-primary" onclick='submitClicked()'>Submit</button>
+      </div>
+    </div>
+  </form>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Make</th>
+        <th>Type</th>
+        <th>Colour</th>
+        <th>No. Seats</th>
+        <th>Cost/Hour</th>
+      </tr>
+    </thead>
+    <tbody id='table-data'>
+    </tbody>
+  </table>
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
+  </div>
+
+{% endblock %}
