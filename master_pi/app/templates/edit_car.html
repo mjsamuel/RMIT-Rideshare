@@ -143,7 +143,7 @@ function drawChart() {
     DataTable.addColumn({ type: 'date', id: 'End' });
       for (var i = 0; i < bookings.length; ++i) {
         let bookTime = moment.utc(bookings[i].book_time).toDate()
-        let formattedBookTime = moment(bookTime).format('YYYY, MM, DD hh'+', mm');
+        let formattedBookTime = moment(bookTime).format('YYYY, MM, DD hh, mm');
         let bookTimeEnd = moment.utc(bookings[i].book_time).toDate().add(bookings[i].duration, 'hours');
         let formattedBookTimeEnd = moment(bookTime).format('YYYY, MM, DD hh, mm');
         alert(formattedBookTimeEnd)
