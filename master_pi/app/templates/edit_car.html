@@ -127,34 +127,50 @@ function drawChart() {
     }
 
     function showTimeline(bookings){
-     // alert("timeline called")
       google.charts.load('current', {'packages':['timeline']});
-google.charts.setOnLoadCallback(drawChart);
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var container = document.getElementById('timeline');
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
 
-// Draw the chart and set the chart values
-function drawChart() {
-  var container = document.getElementById('timeline');
-  var chart = new google.visualization.Timeline(container);
-  var dataTable = new google.visualization.DataTable();
-    DataTable.addColumn({ type: 'string', id: 'bookings' });
-    DataTable.addColumn({ type: 'string', id: 'dummy bar label' });
-    DataTable.addColumn({ type: 'string', role: 'tooltip' });
-    DataTable.addColumn({ type: 'date', id: 'Start' });
-    DataTable.addColumn({ type: 'date', id: 'End' });
-    alert("colums added")
-      for (var i = 0; i < bookings.length; ++i) {
-        let bookTime = moment.utc(bookings[i].book_time).toDate()
-        let formattedBookTime = moment(bookTime).format('YYYY, MM, DD hh, mm');
-        let bookTimeEnd = moment.utc(bookings[i].book_time).toDate().add(bookings[i].duration, 'hours');
-        let formattedBookTimeEnd = moment(bookTime).format('YYYY, MM, DD hh, mm');
-        DataTable.addRows([
-        [bookings[i].username, null, bookings[i].username, new Date(formattedBookTime), new Date(formattedBookTimeEnd)]
-      ]);
+        dataTable.addColumn({ type: 'string', id: 'President' });
+        dataTable.addColumn({ type: 'date', id: 'Start' });
+        dataTable.addColumn({ type: 'date', id: 'End' });
+        dataTable.addRows([
+          [ 'Washington', new Date(1789, 3, 30), new Date(1797, 2, 4) ],
+          [ 'Adams',      new Date(1797, 2, 4),  new Date(1801, 2, 4) ],
+          [ 'Jefferson',  new Date(1801, 2, 4),  new Date(1809, 2, 4) ]]);
+
+        chart.draw(dataTable);
       }
+//      // alert("timeline called")
+//       google.charts.load('current', {'packages':['timeline']});
+// google.charts.setOnLoadCallback(drawChart);
 
-  chart.draw(dataTable);
-}
-    }
+// // Draw the chart and set the chart values
+// function drawChart() {
+//   var container = document.getElementById('timeline');
+//   var chart = new google.visualization.Timeline(container);
+//   var dataTable = new google.visualization.DataTable();
+//     DataTable.addColumn({ type: 'string', id: 'bookings' });
+//     DataTable.addColumn({ type: 'string', id: 'dummy bar label' });
+//     DataTable.addColumn({ type: 'string', role: 'tooltip' });
+//     DataTable.addColumn({ type: 'date', id: 'Start' });
+//     DataTable.addColumn({ type: 'date', id: 'End' });
+//       for (var i = 0; i < bookings.length; ++i) {
+//         let bookTime = moment.utc(bookings[i].book_time).toDate()
+//         let formattedBookTime = moment(bookTime).format('YYYY, MM, DD hh, mm');
+//         let bookTimeEnd = moment.utc(bookings[i].book_time).toDate().add(bookings[i].duration, 'hours');
+//         let formattedBookTimeEnd = moment(bookTime).format('YYYY, MM, DD hh, mm');
+//         DataTable.addRows([
+//         [bookings[i].username, null, bookings[i].username, new Date(formattedBookTime), new Date(formattedBookTimeEnd)]
+//       ]);
+//       }
+
+//   chart.draw(dataTable);
+// }
+//     }
 
   </script>
 
