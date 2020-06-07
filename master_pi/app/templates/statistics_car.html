@@ -24,29 +24,6 @@
       make_request(data, method)
     }
 
-    {% if car is not none %}
-      function reportIssueClicked() {
-        window.location.href = "/report-issue?id={{ car.id }}"
-      }
-
-      function deleteClicked() {
-        var data = {
-          car_id: {{ car.id }},
-          username: sessionStorage.getItem('username')
-        }
-
-        make_request(data, "DELETE")
-      }
-
-      updateBookings()
-
-      function updateBookings() {
-        fetch("api/booking?car_id={{ car.id }}")
-          .then(response => response.json())
-          .then(data => {
-            document.getElementById("table-data").innerHTML = displayBookings(data.bookings)
-          });
-      }
 
       function displayBookings(bookings) {
         var output = ""
@@ -70,30 +47,8 @@
       }
     {% endif %}
 
-    function make_request(data, method) {
-      fetch('/api/car', {
-          method: method,
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.message == "Success") {
-            window.location.href = "/admin-console"
-          } else {
-            let errorBanner = document.getElementById("error-message");
-            errors = outputErrors(data.message);
-            errorBanner.innerHTML = errors;
-            errorBanner.style.display = "block";
-          }
-        });
-    }
-
     function backClicked() {
-      window.location.href = "/admin-console"
+      window.location.href = "/manager-console"
     }
 
     fetch("api/booking?car_id={{ car.id }}")
