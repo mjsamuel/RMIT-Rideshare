@@ -129,6 +129,7 @@ function drawChart() {
     function showTimeline(bookings){
       google.charts.load('current', {'packages':['timeline']});
       google.charts.setOnLoadCallback(drawChart);
+     // Draw the chart and set the chart values
       function drawChart() {
         var container = document.getElementById('timeline');
         var chart = new google.visualization.Timeline(container);
@@ -146,7 +147,6 @@ function drawChart() {
           let fc = moment(bookTime).format('D');
           let fd = moment(bookTime).format('H');
           let fg = moment(bookTime).format('m');
-          alert(formattedBookTime)
           let prebookTimeEnd = moment.utc(bookings[i].book_time).add(bookings[i].duration, 'hours');
           let bookTimeEnd = moment.utc(prebookTimeEnd).toDate()
           let formattedBookTimeEnd = moment(bookTimeEnd).format('YYYY, M, D, H, m');  
@@ -155,7 +155,6 @@ function drawChart() {
           let fec = moment(bookTimeEnd).format('D');
           let fed = moment(bookTimeEnd).format('H');
           let feg = moment(bookTimeEnd).format('m');
-          alert(formattedBookTimeEnd)
         dataTable.addRows([
           [ bookings[i].username, new Date(fa, fb, fc, fd, fg), new Date(fea, feb, fec, fed, feg) ]
           ]);
@@ -163,33 +162,6 @@ function drawChart() {
         chart.draw(dataTable);
       }
     }
-//      // alert("timeline called")
-//       google.charts.load('current', {'packages':['timeline']});
-// google.charts.setOnLoadCallback(drawChart);
-
-// // Draw the chart and set the chart values
-// function drawChart() {
-//   var container = document.getElementById('timeline');
-//   var chart = new google.visualization.Timeline(container);
-//   var dataTable = new google.visualization.DataTable();
-//     DataTable.addColumn({ type: 'string', id: 'bookings' });
-//     DataTable.addColumn({ type: 'string', id: 'dummy bar label' });
-//     DataTable.addColumn({ type: 'string', role: 'tooltip' });
-//     DataTable.addColumn({ type: 'date', id: 'Start' });
-//     DataTable.addColumn({ type: 'date', id: 'End' });
-//       for (var i = 0; i < bookings.length; ++i) {
-//         let bookTime = moment.utc(bookings[i].book_time).toDate()
-//         let formattedBookTime = moment(bookTime).format('YYYY, MM, DD hh, mm');
-//         let bookTimeEnd = moment.utc(bookings[i].book_time).toDate().add(bookings[i].duration, 'hours');
-//         let formattedBookTimeEnd = moment(bookTime).format('YYYY, MM, DD hh, mm');
-//         DataTable.addRows([
-//         [bookings[i].username, null, bookings[i].username, new Date(formattedBookTime), new Date(formattedBookTimeEnd)]
-//       ]);
-//       }
-
-//   chart.draw(dataTable);
-// }
-//     }
 
   </script>
 
