@@ -93,4 +93,4 @@ def link_pushbullet_account():
 # Manager specific routes
 @site.route('/manager-console')
 def manager_console():
-    return render_template('search_cars.html', title='Manager Console')
+    return render_template('search_cars.html', title='Manager Console', manager=True)
