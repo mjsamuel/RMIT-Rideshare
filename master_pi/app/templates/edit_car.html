@@ -140,20 +140,20 @@ function drawChart() {
         for (var i = 0; i < bookings.length; ++i) {
 
           let bookTime = moment.utc(bookings[i].book_time).toDate()
-          let formattedBookTime = moment(bookTime).format('YYYY, M, D, h, m');
+          let formattedBookTime = moment(bookTime).format('YYYY, M, D, H, m');
           let fa = moment(bookTime).format('YYYY');
           let fb = moment(bookTime).format('M');
           let fc = moment(bookTime).format('D');
-          let fd = moment(bookTime).format('h');
+          let fd = moment(bookTime).format('H');
           let fg = moment(bookTime).format('m');
           alert(formattedBookTime)
           let prebookTimeEnd = moment.utc(bookings[i].book_time).add(bookings[i].duration, 'hours');
           let bookTimeEnd = moment.utc(prebookTimeEnd).toDate()
-          let formattedBookTimeEnd = moment(bookTimeEnd).format('YYYY, M, D, h, m');  
+          let formattedBookTimeEnd = moment(bookTimeEnd).format('YYYY, M, D, H, m');  
           let fea = moment(bookTimeEnd).format('YYYY');
           let feb = moment(bookTimeEnd).format('M');
           let fec = moment(bookTimeEnd).format('D');
-          let fed = moment(bookTimeEnd).format('h');
+          let fed = moment(bookTimeEnd).format('H');
           let feg = moment(bookTimeEnd).format('m');
           alert(formattedBookTimeEnd)
         dataTable.addRows([
