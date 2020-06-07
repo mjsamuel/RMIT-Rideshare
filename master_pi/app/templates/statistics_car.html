@@ -68,13 +68,8 @@
         }
         return output;
       }
-    {% endif %}
 
-    function backClicked() {
-      window.location.href = "/manager-console"
-    }
-
-    fetch("api/booking?car_id={{ car.id }}")
+      fetch("api/booking?car_id={{ car.id }}")
         .then(response => response.json())
         .then(data => {
           showCharts(data.bookings)
@@ -145,6 +140,13 @@ function drawChart() {
 
         chart.draw(dataTable, options);
       }
+    }
+
+
+    {% endif %}
+
+    function backClicked() {
+      window.location.href = "/manager-console"
     }
 
   </script>
