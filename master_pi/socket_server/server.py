@@ -17,6 +17,7 @@ class Server:
     __fru = FaceRecognitionUtil()
     """Used to call all the facial recognition functions"""
 
+
     def start_socket_server(self):
         """Starts the server and makes it listen on the specified ip and port.
 
@@ -29,11 +30,13 @@ class Server:
         self.__server.bind(address)
         self.__server.listen()
 
+
     def stop_socket_server(self):
         """Stops the server from listening on the IP and port.
         """
         self.__server.shutdown(socket.SHUT_RDWR)
         self.__server.close()
+
 
     def wait_for_connection(self):
         """Wait for and Agent Pi to connect to the server and assigns it to
@@ -46,6 +49,7 @@ class Server:
         self.__client, address = self.__server.accept()
         return address
 
+
     def wait_for_instruction(self):
         """Wait for the Agent Pi to indicate what it would like to do.
 
@@ -55,6 +59,7 @@ class Server:
         data = self.__client.recv(4096)
         message = data.decode()
         return message
+
 
     def login(self):
         """Authenticates user via the Flask APi.\n
@@ -85,6 +90,7 @@ class Server:
         # Returning response to Agent Pi
         self.__client.sendall(api_response.encode())
 
+
     def add_face(self):
         """Receive an image from the Agent Pi and add it to the dataset.\n
         This method receives the image and username from the Agent Pi, encodes it
@@ -106,6 +112,7 @@ class Server:
         # Letting Agent Pi know that the process has completed
         self.__client.send("OK".encode())
 
+
     def login_with_face(self):
         """Receive an image from the Agent Pi and checks whether it matches a
         user in the dataset.\n
@@ -125,6 +132,7 @@ class Server:
         })
 
         self.__client.send(response.encode())
+
 
     def receive_image_from_client(self):
         """Receive an image from the Agent Pi via sockets.\n
@@ -153,6 +161,64 @@ class Server:
                 data.append(packet)
 
         return pickle.loads(b"".join(data))
+
+
+    def add_bluetooth(self):
+        """Update the users bluetooth mac address via Flask API.
+        """
+
+        # Indicating to Agent Pi that the method has begun
+        self.__client.sendall("OK".encode())
+
+        # Getting message from Agent Pi
+        data = self.__client.recv(4096)
+        message = json.loads(data.decode())
+
+        # Send mac address info to API to be processed
+        try:
+            # Sending location info to API
+            api_response = requests.post(
+                'http://localhost:5000/api/register_bluetooth',
+                json=message).text
+        except:
+            # If connection to API fails then send a generic error message
+            api_response = json.dumps({
+                "message": "A server error occurred."
+            })
+
+        # Returning response to Agent Pi
+        self.__client.sendall(api_response.encode())
+
+
+    def login_with_bluetooth(self):
+        """Authenticates users bluetooth device via the Flask APi.\n
+        This method waits for a response from the Agent Pi, sends this
+        information to the Flask API and returns the response to the Agent Pi
+        after encoding it.
+        """
+        # Indicating to Agent Pi that the method has begun
+        self.__client.sendall("OK".encode())
+
+        # Getting message from Agent Pi
+        data = self.__client.recv(4096)
+        message = json.loads(data.decode())
+
+        try:
+            # Sending login info to API
+            api_response = requests.post(
+                'http://localhost:5000/api/login_bluetooth',
+                json=message).text
+        except:
+            # If connection to API fails then send a generic error message
+            api_response = json.dumps({
+                "user": None,
+                "message": {
+                    "server": ["A server error occurred."]
+                }})
+
+        # Returning response to Agent Pi
+        self.__client.sendall(api_response.encode())
+
 
     def change_lock_status(self):
         """Makes a call on the API to unlock or return a car.\n
@@ -183,6 +249,7 @@ class Server:
         # Returning response to Agent Pi
         self.__client.sendall(api_response.encode())
 
+
     def change_car_location(self):
         """Makes a call on the API to update a cars location.\n
         This method receives the ID of a car and location is to be set.
@@ -198,7 +265,7 @@ class Server:
         message = json.loads(data.decode())
 
         try:
-            # Sending login info to API
+            # Sending location info to API
             api_response = requests.post(
                 'http://localhost:5000/api/setlocation',
                 json=message).text
@@ -211,6 +278,7 @@ class Server:
         # Returning response to Agent Pi
         self.__client.sendall(api_response.encode())
 
+
     def get_server(self):
         """Returns the server socket object.
 
@@ -218,6 +286,7 @@ class Server:
         :rtype: socket
         """
         return self.__server
+
 
     def get_client(self):
         """Returns the client socket object.

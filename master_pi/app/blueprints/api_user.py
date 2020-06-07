@@ -12,7 +12,9 @@ from app.forms import (
     PushbulletFormSchema
 )
 
+
 user = Blueprint("user", __name__, url_prefix='/api')
+
 
 @user.route('/login', methods = ["POST"])
 def login():
@@ -103,6 +105,95 @@ def login():
                     'user': ['Incorrect password.']
                 }
                 status = 401
+
+    return response, status
+
+
+@user.route('/login_bluetooth', methods = ["POST"])
+def login_bluetooth():
+    """Endpoint for a user's credentials to be checked in order to log in to their account
+
+    .. :quickref: User; Validate user credentials for login.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        POST /api/login_bluetooth HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "username": "dummy",
+            "mac_address": "18:F1:D8:E2:E9:6B"
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Logged in successfully",
+            "user": {
+                "username": "dummy"
+            }
+        }
+
+    .. sourcecode:: http
+
+        HTTP/1.1 401 UNAUTHORIZED
+        Content-Type: application/json
+
+        {
+            "message": "MAC Address either not set, or does not match received.",
+            "user": null
+        }
+
+    :<json string username: unique username
+    :<json string mac_address: mac address for specified account
+    :>json message: repsonse information such as error information
+    :>json app.models.user.User user: the user object that has been created
+    :resheader Content-Type: application/json
+    :status 200: successful login
+    :status 401: invalid mac address
+    :status 404: user does not exist
+    """
+
+    response = {
+        'message': '',
+        'user': None
+    }
+    status = 200
+
+
+    username = request.json["username"]
+    mac_address = request.json["mac_address"]
+
+    # Checking if user is in database & find mac address
+    user = User.query.get(username)
+
+    if user is None:
+        response['message'] = {
+            'user': ['User does not exist.']
+        }
+        status = 404
+    else:
+        # Grab mac address of user
+        mac_address_api = user.mac_address
+        # Checking whether mac_address given matches username
+        if mac_address_api == mac_address:
+            response['message'] = "Logged in successfully"
+            response['user'] = user_schema.dump(user)
+            status = 200
+        else:
+            response['message'] = {
+                'user': ['MAC Address either not set, or does not match received.']
+            }
+            status = 401
 
     return response, status
 
@@ -205,6 +296,78 @@ def register_user():
 
             response['message'] = "Registered user successfully"
             response['user'] = user_schema.dump(new_user)
+
+    return response, status
+
+
+@user.route('/register_bluetooth', methods=["POST"])
+def register_bluetooth():
+    """Updates a users bluetooth mac address identifier
+
+    .. :quickref: User Bluetooth; Update users Bluetooth.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        POST /api/register_bluetooth HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "username": "dummy",
+            "mac_address": "18:F1:D8:E2:E9:6B"
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "User MAC Address updated",
+            "user": {
+                "username": "dummy"
+            }
+        }
+
+    .. sourcecode:: http
+
+        HTTP/1.1 404 BAD REQUEST
+        Content-Type: application/json
+
+        {
+            "message": "ERROR: User does not exist",
+        }
+
+    :<json string username: username that exists within the database
+    :<json string mac_address: mac address of users bluetooth device
+    :>json message: repsonse information such as error information
+    :>json app.models.user.User loggedin_user: the user object that is logged in
+    :resheader Content-Type: application/json
+    :status 200: successful registration
+    :status 404: invalid user
+    """
+
+    response = {
+        'message': ''
+    }
+    status = 200
+
+    username = request.json["username"]
+    mac_address = request.json["mac_address"]
+    loggedin_user = User.query.get(username)
+
+    if loggedin_user is not None:
+        loggedin_user.mac_address = mac_address
+        db.session.commit()
+        response['message'] = "User MAC Address updated"
+    else:
+        response['message'] = "ERROR: User does not exist"
+        status = 404
 
     return response, status
 
