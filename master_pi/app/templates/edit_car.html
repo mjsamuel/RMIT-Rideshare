@@ -133,26 +133,24 @@ google.charts.setOnLoadCallback(drawChart2);
 
 // Draw the chart and set the chart values
 function drawChart2() {
-  var data = new google.visualization.DataTable();
-        data.addColumn({ type: 'string', id: 'bookings' });
-        data.addColumn({ type: 'string', id: 'dummy bar label' });
-        data.addColumn({ type: 'string', role: 'tooltip' });
-        data.addColumn({ type: 'date', id: 'Start' });
-        data.addColumn({ type: 'date', id: 'End' });
+  var container = document.getElementById('timeline');
+  var chart = new google.visualization.Timeline(container);
+  var dataTable = new google.visualization.DataTable();
+    DataTable.addColumn({ type: 'string', id: 'bookings' });
+    DataTable.addColumn({ type: 'string', id: 'dummy bar label' });
+    DataTable.addColumn({ type: 'string', role: 'tooltip' });
+    DataTable.addColumn({ type: 'date', id: 'Start' });
+    DataTable.addColumn({ type: 'date', id: 'End' });
       for (var i = 0; i < bookings.length; ++i) {
         let bookTime = moment.utc(bookings[i].book_time).toDate()
         let formattedBookTime = moment(bookTime).format('YYYY, MM, DD hh'+', mm');
         let bookTimeEnd = moment.utc(bookings[i].book_time).toDate().add(bookings[i].duration, 'hours');
         let formattedBookTimeEnd = moment(bookTime).format('YYYY, MM, DD hh, mm');
-      data.addRows([
+        DataTable.addRows([
         [bookings[i].username, null, bookings[i].username, new Date(formattedBookTime), new Date(formattedBookTimeEnd)]
       ]);
       }
-  // Optional; add a title and set the width and height of the chart
-  var options = {'title':'Users who booked this car', 'width':650, 'height':400};
 
-  // Display the chart inside the <div> element with id="piechart"
-  var chart = new google.visualization.Timeline(document.getElementById('timeline'));
   chart.draw(data, options);
 }
     }
