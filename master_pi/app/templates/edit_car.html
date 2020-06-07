@@ -143,7 +143,7 @@ function drawChart() {
         let bookTimeEnd = moment.utc(bookings[i].book_time).toDate().add(bookings[i].duration, 'hours');
         let formattedBookTimeEnd = moment(bookTime).format('YYYY, MM, DD hh, mm');
         DataTable.addRows([
-          [ 'Washington', new Date(formattedBookTime), new Date(2021, 2, 4) ]]);
+          [ 'Washington', new Date(1789, 3, 30), new Date(1797, 2, 4) ]]);
 
         chart.draw(dataTable);
       }
