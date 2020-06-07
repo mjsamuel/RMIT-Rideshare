@@ -146,15 +146,16 @@ function drawChart() {
           let fc = moment(bookTime).format('D');
           let fd = moment(bookTime).format('h');
           let fg = moment(bookTime).format('m');
-          alert(fd)
-          let bookTimeEnd = moment.utc(bookings[i].book_time).toDate().add(bookings[i].duration, 'hours');
+          alert(formattedBookTime)
+          let prebookTimeEnd = moment.utc(bookings[i].book_time).add(bookings[i].duration, 'hours');
+          let bookTimeEnd = moment.utc(prebookTimeEnd).toDate()
           let formattedBookTimeEnd = moment(bookTimeEnd).format('YYYY, MM, DD, hh, mm');  
           let fea = moment(bookTimeEnd).format('YYYY');
           let feb = moment(bookTimeEnd).format('M');
           let fec = moment(bookTimeEnd).format('D');
           let fed = moment(bookTimeEnd).format('h');
           let feg = moment(bookTimeEnd).format('m');
-          alert(fed)
+          alert(formattedBookTimeEnd)
         dataTable.addRows([
           [ bookings[i].username, new Date(fa, fb, fc, fd, fg), new Date(fea, feb, fec, fed, feg) ]
           ]);
