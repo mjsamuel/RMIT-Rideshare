@@ -29,8 +29,8 @@ def search_cars():
 
 @site.route('/car')
 def book_car():
-    carId = request.args.get('id')
-    response = requests.get('http://localhost:5000/api/cars?id=' + carId)
+    car_id = request.args.get('id')
+    response = requests.get('http://localhost:5000/api/cars?id=' + car_id)
     data = json.loads(response.text)
     title = data['cars']['make'] + ' - ' + data['cars']['body_type']
 
@@ -55,8 +55,8 @@ def new_car():
 
 @site.route('/edit-car')
 def edit_car():
-    carId = request.args.get('id')
-    response = requests.get('http://localhost:5000/api/cars?id=' + carId)
+    car_id = request.args.get('id')
+    response = requests.get('http://localhost:5000/api/cars?id=' + car_id)
     data = json.loads(response.text)
 
     return render_template('edit_car.html', title="Edit Car", car=data['cars'])
@@ -64,8 +64,29 @@ def edit_car():
 
 @site.route('/report-issue')
 def report_issue():
-    carId = request.args.get('id')
-    response = requests.get('http://localhost:5000/api/cars?id=' + carId)
+    car_id = request.args.get('id')
+    response = requests.get('http://localhost:5000/api/cars?id=' + car_id)
     data = json.loads(response.text)
 
     return render_template('report_issue.html', title="Report Issue", car=data['cars'])
+
+
+# Engineer specific routes
+@site.route('/engineer-console')
+def engineer_console():
+    return render_template('engineer_console.html', title='Engineer Console')
+
+
+@site.route('/issue')
+def issue():
+    issue_id = request.args.get('id')
+    response = requests.get('http://localhost:5000/api/issue?id=' + issue_id)
+    data = json.loads(response.text)
+    title = "Issue - #" + str(data['issues']['id'])
+
+    return render_template('issue.html', title=title, issue=data['issues'])
+
+
+@site.route('/pushbullet-account')
+def link_pushbullet_account():
+    return render_template('link_pushbullet_account.html', title='Link Your Pushbullet Account')

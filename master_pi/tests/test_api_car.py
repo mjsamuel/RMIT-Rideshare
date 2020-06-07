@@ -321,7 +321,7 @@ class TestApiCarEndpoints:
 
 
     def test_put_car_fail_invalid_role(self, client):
-        """Testing that updating a car fails when not the user requesting then
+        """Testing that updating a car fails when not the user requesting the
         update is not an admin
         """
         response = client.put(
@@ -427,7 +427,7 @@ class TestApiCarEndpoints:
         assert (response.data == expected_data)
 
     def test_delete_car_fail_invalid_role(self, client):
-        """Testing that updating a car fails when not the user requesting then
+        """Testing that updating a car fails when not the user requesting the
         update is not an admin
         """
         response = client.delete(

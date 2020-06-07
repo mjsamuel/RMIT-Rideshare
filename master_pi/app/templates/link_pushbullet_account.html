@@ -3,20 +3,15 @@
 {% block content %}
   <script>
     isLoggedIn();
-    fetch("api/googleauth")
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById("auth-link").href = data.auth_url
-      });
 
     function submitClicked() {
 
       var data = {
         username: sessionStorage.getItem('username'),
-        code: document.getElementById('auth-code').value
+        token: document.getElementById('token').value
       }
 
-      fetch('/api/googleauth', {
+      fetch('/api/pushbullet', {
           method: "POST",
           headers: {
             'Accept': 'application/json',
@@ -27,7 +22,7 @@
         .then(response => response.json())
         .then(data => {
           if (data.message == "Success") {
-            window.location.href = "/";
+            window.location.href = "/engineer-console";
           } else {
             let errorBanner = document.getElementById("error-message");
             errors = outputErrors(data.message);
@@ -38,21 +33,22 @@
     }
 
     function backClicked() {
-      window.location.href = "/"
+      window.location.href = "/engineer-console"
     }
   </script>
+
   <div class='text-block'>
-    <b>To link your Google account you must:</b>
+    <b>To link your Pusbullet account you must:</b>
     <ol>
-      <li><a href='#' id='auth-link'>Click here<a> to open and sign into your Google account</li>
-      <li>Copy the authentication code given by Google</li>
-      <li>Paste the code into the below text box and submit</li>
+      <li>Go to your <a href='https://www.pushbullet.com/#settings/account' id='auth-link'>Pusbullet account dashboard<a></li>
+      <li>Click on create access token</li>
+      <li>Copy and paste the access token into the text box and submit</li>
     </ol>
   </div>
 
   <form>
     <div class="form-group">
-      <input type="text" class="form-control" id="auth-code" placeholder="Authentication Code"/>
+      <input type="text" class="form-control" id="token" placeholder="Access Token"/>
     </div>
     <div class="alert alert-danger" id="error-message"></div>
   </form>
@@ -61,5 +57,4 @@
     <button type="button" class="btn btn-primary" onclick='submitClicked()'>Submit</button>
     <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
   </div>
-
 {% endblock %}
