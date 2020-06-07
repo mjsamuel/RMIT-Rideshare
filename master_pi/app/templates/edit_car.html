@@ -159,8 +159,15 @@ function drawChart() {
         dataTable.addRows([
           [ bookings[i].username, new Date(fa, fb, fc, fd, fg), new Date(fea, feb, fec, fed, feg) ]
           ]);
+
+          var options = {
+        height: 450,
+        width: 450
         }
-        chart.draw(dataTable);
+      };
+
+        }
+        chart.draw(dataTable, options);
       }
     }
 //      // alert("timeline called")
@@ -253,7 +260,7 @@ function drawChart() {
       <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
       <div id="piechart"></div>
       <h1>Booking Timeline</h1>
-      <div id="timeline" style="height: 150px;"></div>
+      <div id="timeline"></div>
     </div>
     <div class="btn-group">
       <button type="button" class="btn btn-warning" onclick='reportIssueClicked()'>Report an issue</button>
