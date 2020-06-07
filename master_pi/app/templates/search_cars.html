@@ -137,20 +137,21 @@ function drawChart() {
     <tbody id='table-data'>
     </tbody>
   </table>
-  <div class="btn-group">
+
+  <div class="btn-group"></div>
+    
     {% if admin %}
+    <div class="btn-group">
       <button type="button" class="btn btn-success" onclick='newCarClicked()'>New Car</button>
       <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
     </div>
     {% elif manager %}
-    </div>
-      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
       <div id="bubblechart"></div>
-      <div class="btn-group"></div>
       <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
       <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
+      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      </div>
       
     {% endif %}
-      <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
   </div>
 {% endblock %}
