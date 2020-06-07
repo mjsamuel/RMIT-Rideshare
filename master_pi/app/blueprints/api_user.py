@@ -169,18 +169,17 @@ def login_bluetooth():
     username = request.json["username"]
     mac_address = request.json["mac_address"]
 
-    # Checking if user is in database
+    # Checking if user is in database & find mac address
     user = User.query.get(username)
-    mac_address_api = User.query.get(mac_address)
+    mac_address_api = user.mac_address
+
     if user is None:
         response['message'] = {
             'user': ['User does not exist.']
         }
         status = 404
     elif mac_address_api is None:
-        response['message'] = {
-            'user': ['MAC Address does not exist for user.']
-        }
+        response['message'] = "MAC Address does not exist for user."
         status = 404
     else:
         # Checking whether mac_address given matches username
@@ -190,7 +189,7 @@ def login_bluetooth():
             status = 200
         else:
             response['message'] = {
-                'user': ['Invalid mac address for given user.']
+                'user': ['Invalid MAC Address for given user.']
             }
             status = 401
 

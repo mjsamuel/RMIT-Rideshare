@@ -164,7 +164,7 @@ def login_via_bluetooth(client):
     """
 
     user = None
-    user_mac_addr = None
+    mac_address = None
 
     # Grab username of person
     username = input("Enter username: ")
@@ -173,16 +173,16 @@ def login_via_bluetooth(client):
     print("Please place your device close to pi now...")
     nearby_devices = bluetooth.discover_devices()
     for bdaddr in nearby_devices:
-        user_mac_addr = str(bdaddr)
+        mac_address = str(bdaddr)
 
     # Verify if address exists in database for user
-    if user_mac_addr is None:
+    if mac_address is None:
         print("ERROR: No bluetooth device found.")
     else:
-        print("Found Device: " + user_mac_addr)
+        print("Found Device: " + mac_address)
         print("Now processing...")
         # Check for successful login
-        response = client.login_via_bluetooth(username, user_mac_addr)
+        response = client.login_via_bluetooth(username, mac_address)
         if response['user'] is None:
             print("The following error(s) occured:")
             for error in response['message']:
@@ -215,7 +215,8 @@ def add_bluetooth(client, username):
     if mac_address is None:
         print("ERROR: No bluetooth device found.")
     else:
-        print("Device Found, updating users MAC Address now...")
+        print("Found Device: " + mac_address)
+        print("Updating your MAC Address now...")
         client.add_bluetooth(username, mac_address)
         print("Finished")
 

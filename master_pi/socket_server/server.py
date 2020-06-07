@@ -210,7 +210,7 @@ class Server:
         except:
             # If connection to API fails then send a generic error message
             api_response = json.dumps({
-                "user": None,
+                "username": None,
                 "message": {
                     "server": ["A server error occurred."]
                 }})
