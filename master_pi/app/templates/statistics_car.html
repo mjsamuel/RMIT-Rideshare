@@ -137,7 +137,7 @@
     };
                 if (bookings.length > 0) {
                 chart.draw(dataTable, options);
-                document.getElementById("timelineinfo").innerHTML = "Timeline Displaying All Booking History of this Car.";
+                document.getElementById("timelineinfo").innerHTML = "Timeline Displaying Booking History of this Car.";
                 }
             }
         }
@@ -188,7 +188,7 @@
   {% if car is not none %}
       <div class="btn-group">
         <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseTable" aria-expanded="false" aria-controls="collapseTable">
-          Booking history
+          Booking history/statistics
         </button>
       </div>
     <div class="collapse" id="collapseTable">
