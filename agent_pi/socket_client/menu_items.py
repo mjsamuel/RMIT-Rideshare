@@ -88,8 +88,8 @@ def login_via_text(client):
 
     :param client: The socket connection to the Master Pi
     :type client: Client
-    :return: The username of the logged in user if successful
-    :rtype: string
+    :return: The username and role of the logged in user if successful
+    :rtype: tuple
     """
 
     user = None
@@ -117,8 +117,8 @@ def login_via_face(client):
 
     :param client: The socket connection to the Master Pi
     :type client: Client
-    :return: The username of the logged in user if successful
-    :rtype: string
+    :return: The username and role of the logged in user if successful
+    :rtype: tuple
     """
 
     user = None
@@ -180,8 +180,8 @@ def login_via_bluetooth(client):
 
     :param client: Socket connection of Master Pi
     :type client: Client
-    :return: User & Username of logged in user if successful
-    :rtype: string
+    :return: The username and role of logged in user if successful
+    :rtype: tuple
     """
 
     user = None
@@ -225,6 +225,8 @@ def add_bluetooth(client, username, role):
     :type client: Client
     :param username: The username of the user who's device is being registered
     :type username: string
+    :param role: The user's role defining their permissions
+    :type username: string
     """
 
     mac_address = None
@@ -249,6 +251,16 @@ def add_bluetooth(client, username, role):
 
 
 def login_via_qr_code(client):
+    """Authenticates a user based on a supplied QR code.\n
+    Gets the path to an image of a QR code, creates and image object, decodes it
+    and send the login information to the Master Pi.
+
+    :param client: The socket connection to the Master Pi
+    :type client: Client
+    :return: The username and role of logged in user if successful
+    :rtype: tuple
+    """
+
     user = None
     role = None
 
@@ -282,6 +294,18 @@ def login_via_qr_code(client):
 
 
 def generate_qr_code(client, username, role):
+    """Authenticates a user based on a supplied QR code.\n
+    Gets the path to an image of a QR code, creates and image object, decodes it
+    and send the login information to the Master Pi.
+
+    :param client: The socket connection to the Master Pi
+    :type client: Client
+    :param username: The username of the user requesting the qr code
+    :type username: string
+    :param role: The user's role defining their permissions
+    :type username: string
+    """
+
     if role == "engineer":
         password = getpass.getpass(prompt='Enter Password: ')
 
@@ -301,7 +325,8 @@ def generate_qr_code(client, username, role):
 
 
 def change_lock_status(client, username, car_id, method):
-    """Sends a message via sockets to unlock or return the car this Pi corresponds to.
+    """Sends a message via sockets to unlock or return the car this Pi
+    corresponds to.
 
     :param client: The socket connection to the Master Pi
     :type client: Client
@@ -318,7 +343,8 @@ def change_lock_status(client, username, car_id, method):
 
 
 def set_location(client, car_id):
-    """Sends a message via sockets to change location of the car this Pi corresponds to.
+    """Sends a message via sockets to change location of the car this Pi
+    corresponds to.
 
     :param client: The socket connection to the Master Pi
     :type client: Client
