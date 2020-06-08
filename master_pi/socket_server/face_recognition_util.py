@@ -13,12 +13,11 @@ class FaceRecognitionUtil:
         """Saves an image to the dataset in the folder that corresponds to that
         user's username
 
-        :param username: The user's usernmae
+        :param username: The user's username
         :type username: string
-        :param image: The omage of the user's face to be sent
+        :param image: The image of the user's face to be sent
         :type image: numpy.ndarray
         """
-        # Indicati
         logging.info("add_face() called")
 
         # Folder to store user images
