@@ -1,0 +1,100 @@
+{
+    "manifest": {
+        "displayName": "Search Car Databse",
+        "invocationName": "Search Car Databse",
+        "category": "PRODUCTIVITY"
+    },
+    "actions": [
+        {
+            "name": "com.example.actions.SearchCar",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.example.intents.SearchCar",
+                "parameters": [
+                    {
+                        "name": "param",
+                        "type": "SchemaOrg_Text"
+                    },
+                    {
+                        "name": "filter",
+                        "type": "Filter"
+                    }
+                ],
+                "trigger": {
+                    "queryPatterns": [
+                        "filter cars by $Filter:filter being $SchemaOrg_Text:param"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Here are the results"
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.example.commands.SearchCar",
+                                    "params": {
+                                        "filter": "$filter",
+                                        "param": "$param"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ],
+    "types": [
+        {
+            "name": "$Filter",
+            "entities": [
+                {
+                    "key": "make",
+                    "synonyms": [
+                        "make",
+                        "manufacturer"
+                    ]
+                },
+                {
+                    "key": "body_type",
+                    "synonyms": [
+                      "body type"
+                    ]
+                },
+                {
+                    "key": "colour",
+                    "synonyms": [
+                      "colour"
+                    ]
+                },
+                {
+                    "key": "no_seats",
+                    "synonyms": [
+                      "seats",
+                      "number of seats"
+                    ]
+                },
+                {
+                    "key": "cost_per_hour",
+                    "synonyms": [
+                      "cost",
+                      "price",
+                      "cost per hour"
+                    ]
+                }
+            ]
+        }
+    ]
+}
