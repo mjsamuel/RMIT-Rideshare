@@ -3,10 +3,7 @@
 {% block content %}
   <script>
     isLoggedIn();
-
-    function backClicked() {
-      window.location.href = "/engineer-console"
-    }
+    lockout(["engineer"]);
   </script>
 
   <h4>{{ issue.car.make }} {{ issue.car.body_type }}, {{ issue.car.colour }}</h4><br>
@@ -18,13 +15,13 @@
 
   <div class="car-location-frame" id="google-frame">
     <iframe id="maps" width="100%" height="450" frameborder="0" style="border:0"
-    src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAj8xU-bbz_CRM37O4GMbdQFMrBZojS3gE
+      src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAj8xU-bbz_CRM37O4GMbdQFMrBZojS3gE
       &q={{ issue.car.location }}" allowfullscreen>
     </iframe>
   </div>
 
   <div class="btn-group">
-    <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
+    <button type="button" class="btn btn-secondary" onclick='redirect("engineer-console")'>Back</button>
   </div>
 
   <script>

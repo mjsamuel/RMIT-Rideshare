@@ -1,0 +1,54 @@
+{% extends "register.html" if title == "Register" else "admin/edit_user.html" %}
+
+{% block form %}
+  <form>
+    <div class="form-row">
+      <div class="col">
+        <label for="username">Username:</label>
+        <input type="text" class="form-control" id="username" value="{{ user.username }}"/>
+      </div>
+      <div class="col">
+        <label for="email">Email:</label>
+        <input type="email" class="form-control" id="email" value="{{ user.email }}"/>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col">
+        <label for="first-name">First Name:</label>
+        <input type="text" class="form-control" id="first-name" value="{{ user.f_name }}" />
+      </div>
+      <div class="col">
+        <label for="last-name">Last Name:</label>
+        <input type="text" class="form-control" id="last-name" value="{{ user.l_name }}" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col">
+        <label for="no-seats">Password:</label>
+        <input type="password" class="form-control" id="password" />
+      </div>
+      <div class="col">
+        <label for="no-seats">Confirm Password:</label>
+        <input type="password" class="form-control" id="confirm-password" />
+      </div>
+    </div>
+
+    {% if user is not none %}
+      <div class="form-row">
+        <div class="col">
+          <label for="role">Role:</label>
+          <select class="form-control" id="role" value="{{ user.role }}">
+            <option value=1 {{ 'selected="selected"' if user.role == "default" }}>Default</option>
+            <option value=2 {{ 'selected="selected"' if user.role == "admin" }}>Admin</option>
+            <option value=3 {{ 'selected="selected"' if user.role == "manager" }}>Manager</option>
+            <option value=4 {{ 'selected="selected"' if user.role == "engineer" }}>Engineer</option>
+          </select>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="alert alert-danger" id="error-message"></div>
+  </form>
+{% endblock %}

@@ -9,22 +9,22 @@
       fetch("api/booking?username=" + sessionStorage.getItem('username'))
         .then(response => response.json())
         .then(data => {
-          document.getElementById("table-data").innerHTML = displayBookings(data.bookings)
+          document.getElementById("table-data").innerHTML = displayBookings(data.bookings);
         });
     }
 
     function displayBookings(bookings) {
       var output = ""
       for (var i = 0; i < bookings.length; ++i) {
-        let car = bookings[i].car
+        let car = bookings[i].car;
         // Formatting booking date and time
-        let bookTime = moment.utc(bookings[i].book_time).toDate()
+        let bookTime = moment.utc(bookings[i].book_time).toDate();
         let formattedBookTime = moment(bookTime).format('DD/MM/YY, hh:mm A');
 
         // Formatting the prefix for the duration column
-        var duration = bookings[i].duration
-        var durationPrefix = "hours"
-        if (duration == 1) durationPrefix = "hour"
+        let duration = bookings[i].duration;
+        var durationPrefix = "hours";
+        if (duration == 1) durationPrefix = "hour";
 
         output += "<tr>\n"
             + "<td>" + formattedBookTime + "</td>\n"
@@ -38,17 +38,9 @@
                   +"Cancel"
                 +"</button>"
             + "</td>\n"
-          + "</tr>\n"
+          + "</tr>\n";
       }
       return output;
-    }
-
-    function bookCarsClicked() {
-      window.location.href = "/cars"
-    }
-
-    function linkAccountClicked() {
-      window.location.href = "/google-account"
     }
 
     function cancelBooking(bookingId) {
@@ -77,8 +69,8 @@
   </table>
 
   <div class="btn-group">
-    <button type="button" class="btn btn-primary" onclick='bookCarsClicked()'>Book a car</button>
-    <button type="button" class="btn btn-success" onclick='linkAccountClicked()'>Link Google account</button>
+    <button type="button" class="btn btn-primary" onclick='redirect("cars")'>Book a car</button>
+    <button type="button" class="btn btn-success" onclick='redirect("google-account")'>Link Google account</button>
   </div>
   <div class="btn-group">
     <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>

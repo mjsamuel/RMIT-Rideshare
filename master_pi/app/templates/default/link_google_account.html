@@ -4,14 +4,19 @@
   <script>
     isLoggedIn();
 
+    fetch("api/googleauth")
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("auth-link").href = data.auth_url;
+      });
+
     function submitClicked() {
-      var data = {
-        car_id: {{ car.id }},
+      let data = {
         username: sessionStorage.getItem('username'),
-        details: document.getElementById('details').value,
+        code: document.getElementById('auth-code').value
       };
 
-      fetch('/api/issue', {
+      fetch('/api/googleauth', {
           method: "POST",
           headers: {
             'Accept': 'application/json',
@@ -22,7 +27,7 @@
         .then(response => response.json())
         .then(data => {
           if (data.message == "Success") {
-            window.location.href = "/admin-console"
+            window.location.href = "/";
           } else {
             let errorBanner = document.getElementById("error-message");
             errors = outputErrors(data.message);
@@ -31,24 +36,26 @@
           }
         });
     }
-
-    function backClicked() {
-      window.location.href = "/edit-car?id={{ car.id }}" 
-    }
   </script>
 
-  <h4>{{ car.colour }}, {{ car.make }} {{ car.body_type }}</h4><br>
+  <div class='text-block'>
+    <b>To link your Google account you must:</b>
+    <ol>
+      <li><a href='#' id='auth-link'>Click here<a> to open and sign into your Google account</li>
+      <li>Copy the authentication code given by Google</li>
+      <li>Paste the code into the below text box and submit</li>
+    </ol>
+  </div>
 
   <form>
     <div class="form-group">
-      <label for="details">Issue details:</label>
-      <textarea class="form-control" id="details" rows="4"></textarea>
+      <input type="text" class="form-control" id="auth-code" placeholder="Authentication Code"/>
     </div>
     <div class="alert alert-danger" id="error-message"></div>
   </form>
 
   <div class="btn-group">
     <button type="button" class="btn btn-primary" onclick='submitClicked()'>Submit</button>
-    <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
+    <button type="button" class="btn btn-secondary" onclick='redirect("")'>Back</button>
   </div>
 {% endblock %}

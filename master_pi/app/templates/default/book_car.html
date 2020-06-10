@@ -31,10 +31,6 @@
           }
         });
     }
-
-    function backClicked() {
-      window.location.href = "/cars"
-    }
   </script>
 
   <h4>{{ car.colour }}, {{ car.no_seats }} seater, ${{ car.cost_per_hour }}/hour</h4><br>
@@ -55,7 +51,7 @@
 
   <div class="btn-group">
     <button type="button" class="btn btn-primary" onclick='submitClicked()'>Book Car</button>
-    <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
+    <button type="button" class="btn btn-secondary" onclick='redirect("cars")'>Back</button>
   </div>
 
   <script>
@@ -64,5 +60,4 @@
         document.getElementById('google-frame').style.display = 'none';
       }
   </script>
-
 {% endblock %}

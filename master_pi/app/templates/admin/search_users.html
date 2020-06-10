@@ -3,6 +3,7 @@
 {% block content %}
   <script>
     isLoggedIn();
+    lockout(["admin"]);
 
     // Loading all users on page load
     fetch("api/user")
@@ -33,20 +34,12 @@
       fetch(url)
         .then(response => response.json())
         .then(data => {
-          document.getElementById("table-data").innerHTML = displayUsers(data.users)
+          document.getElementById("table-data").innerHTML = displayUsers(data.users);
         });
     }
 
     function rowClicked(username) {
       window.location.href = "/edit-user?username=" + username
-    }
-
-    function backClicked() {
-      window.location.href = "/admin-console"
-    }
-
-    function newUserClicked() {
-      window.location.href = "/new-user"
     }
   </script>
 
@@ -84,7 +77,7 @@
   </table>
 
   <div class="btn-group">
-    <button type="button" class="btn btn-success" onclick='newUserClicked()'>New User</button>
-    <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
+    <button type="button" class="btn btn-success" onclick='redirect("new-user")'>New User</button>
+    <button type="button" class="btn btn-secondary" onclick='redirect("admin-console")'>Back</button>
   </div>
 {% endblock %}
