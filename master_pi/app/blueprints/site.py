@@ -45,7 +45,30 @@ def link_google_account():
 # Admin specific routes
 @site.route('/admin-console')
 def admin_console():
-    return render_template('search_cars.html', title='Admin Console', admin=True)
+    return render_template('admin_console.html', title='Admin Console')
+
+
+@site.route('/manage-users')
+def manage_user():
+    return render_template('search_users.html', title='Manage Users')
+
+
+@site.route('/new-user')
+def new_user():
+    return render_template('edit_user.html', title='New User', user=None)
+
+
+@site.route('/edit-user')
+def edit_user():
+    username = request.args.get('username')
+    response = requests.get('http://localhost:5000/api/user?username=' + username)
+    data = json.loads(response.text)
+    return render_template('edit_user.html', title='Edit User', user=data['users'])
+
+
+@site.route('/manage-cars')
+def manage_cars():
+    return render_template('search_cars.html', title='Manage Cars', admin=True)
 
 
 @site.route('/new-car')

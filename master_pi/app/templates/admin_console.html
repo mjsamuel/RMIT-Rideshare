@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <script>
+    isLoggedIn()
+
+    function carsClicked() {
+      window.location.href = "/manage-cars"
+    }
+
+    function usersClicked() {
+      window.location.href = "/manage-users"
+    }
+  </script>
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary" onclick='carsClicked()'>Manage Cars</button>
+    <button type="button" class="btn btn-success" onclick='usersClicked()'>Manage Users</button>
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
+  </div>
+{% endblock %}

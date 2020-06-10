@@ -3,11 +3,12 @@ from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 
 from app.extensions import db, bcrypt
-from app.models.user import User, user_schema
+from app.models.user import User, Role, user_schema, verbose_user_schema
 from app.models.booking import Booking, booking_schema
 from app.forms import (
     LoginFormSchema,
     RegisterFormSchema,
+    UpdateUserFormSchema,
     AuthenticationFormSchema,
     PushbulletFormSchema
 )
@@ -276,7 +277,6 @@ def register_user():
         l_name =  request.json["l_name"]
         email =  request.json["email"]
         password = request.json["password"]
-        confirm_password = request.json["confirm_password"]
 
         # Checking that user is not already in the system
         if User.query.get(username) is not None:
@@ -293,7 +293,7 @@ def register_user():
             db.session.add(new_user)
             db.session.commit()
 
-            response['message'] = "Registered user successfully"
+            response['message'] = "Success"
             response['user'] = user_schema.dump(new_user)
 
     return response, status
@@ -418,20 +418,96 @@ def get_user():
     """
 
     response = {
-        'message': '',
-        'user': None
+        'users': None
     }
-    status = None
+    status = 200
 
-    username = request.args.get('username')
-    user = User.query.get(username)
-    if user is None:
-        response['message'] = "User not found"
-        status = 404
+    if request.args.get('username') is not None:
+        username = request.args.get('username')
+        user = User.query.get(username)
+        response['users'] = verbose_user_schema.dump(user)
     else:
-        response['message'] = "User found"
-        response['user'] = user_schema.dump(user)
-        status = 200
+        users = None
+        if request.args.get('fuzzy_username') is not None:
+            username = request.args.get('fuzzy_username')
+            users = (User.query.filter(User.username.like("%"+username+"%")).all())
+        elif request.args.get('role') is not None:
+            role = request.args.get('role')
+            users = (User.query.filter(User.role.like("%"+role+"%")).all())
+        elif request.args.get('email') is not None:
+            email = request.args.get('email')
+            users = (User.query.filter(User.email.like("%"+email+"%")).all())
+        else:
+            users = User.query.all()
+
+        response['users'] = verbose_user_schema.dump(users, many=True)
+
+    return response, status
+
+
+@user.route('/user', methods=["PUT"])
+def update_user():
+    response = {
+        'message': '',
+    }
+    status = 200
+
+    form_schema = UpdateUserFormSchema()
+    form_errors = form_schema.validate(request.json)
+    if form_errors:
+        response['message'] = form_errors
+        status = 400
+        print(form_errors)
+    else:
+        # Checking if user making the request is an admin
+        admin_user = User.query.get(request.json["admin_username"])
+        if admin_user.role is not Role.admin:
+            response['message'] = {
+                'user': ['User is not an admin.']
+            }
+            status = 401
+        else:
+            user = User.query.get(request.json["username"])
+            user.username = request.json["username"]
+            user.f_name = request.json["f_name"]
+            user.l_name = request.json["l_name"]
+            user.email = request.json["email"]
+            user.role = Role(int(request.json["role"]))
+            if "password" in request.json:
+                password = request.json["password"]
+                hashed_password = bcrypt.generate_password_hash(password)
+                user.password = hashed_password
+
+            db.session.commit()
+            response['message'] = "Success"
+
+    return response, status
+
+
+@user.route('/user', methods=["DELETE"])
+def delete_user():
+    response = {
+        'message': '',
+    }
+    status = 200
+
+    # Checking if user making the request is an admin
+    admin_user = User.query.get(request.json["admin_username"])
+    if admin_user.role is not Role.admin:
+        response['message'] = {
+            'user': ['User is not an admin.']
+        }
+        status = 401
+    elif admin_user.username == request.json["username"]:
+        response['message'] = {
+            'user': ['Cannot delete your own account.']
+        }
+        status = 401
+    else:
+        user = User.query.get(request.json["username"])
+        db.session.delete(user)
+        db.session.commit()
+        response['message'] = "Success"
 
     return response, status
 
