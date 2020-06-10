@@ -76,8 +76,6 @@ class TestApiUserEndpoints:
         assert (response.data == expected_data)
 
 
-
-
     def test_login_fail_missing_username(self, client):
         """Testing for a unsucessful login due to a missing username
         """
@@ -335,7 +333,7 @@ class TestApiUserEndpoints:
 
     def test_user_get_success(self, client):
         response = client.get('/api/user?username=dummy')
-        expected_data = b'{"message":"User found","user":{"role":"default","username":"dummy"}}\n'
+        expected_data = b'{"users":{"email":"dummyemail@gmail.com","f_name":"First","l_name":"Last","role":"default","username":"dummy"}}\n'
 
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
@@ -343,7 +341,7 @@ class TestApiUserEndpoints:
 
     def test_user_get_fail(self, client):
         response = client.get('/api/user?username=unregistered_user')
-        expected_data = b'{"message":"User not found","user":null}\n'
+        expected_data = b'{"users":{}}\n'
 
-        assert (response.status == '404 NOT FOUND')
+        assert (response.status == '200 OK')
         assert (response.data == expected_data)

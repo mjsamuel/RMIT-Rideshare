@@ -201,7 +201,7 @@ def put_car():
 
 @car.route('/car', methods=["DELETE"])
 def delete_car():
-    """Delete a car from the databaseonly if the user making the request is an admin
+    """Delete a car from the database only if the user making the request is an admin
 
     .. :quickref: Car; Delete a car.
 
@@ -246,7 +246,6 @@ def delete_car():
     :>json message: repsonse information such as error information
     :resheader Content-Type: application/json
     :status 200: return was successful
-    :status 400: missing or invalid fields
     :status 401: user is not an admin
     """
 

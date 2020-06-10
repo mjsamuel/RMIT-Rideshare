@@ -373,9 +373,9 @@ def register_bluetooth():
 
 @user.route('/user', methods=["GET"])
 def get_user():
-    """Gets a user from the database
+    """Gets a user or a collection of users from the database
 
-    .. :quickref: User; Get a user.
+    .. :quickref: User; Get a user(s).
 
     **Example request**:
 
@@ -393,28 +393,24 @@ def get_user():
         Content-Type: application/json
 
         {
-            "message": "User found",
-            "user": {
-                "username": "dummy"
-            }
+            "user": [
+                {
+                    "username": "dummy",
+                    "f_name": "First",
+                    "l_name": "Last",
+                    "email": "john.doe@outlook.com",
+                    "role": "default"
+                }
+            ]
         }
 
-    .. sourcecode:: http
-
-        HTTP/1.1 404 NOT FOUND
-        Content-Type: application/json
-
-        {
-            "message": "User not found",
-            "user": null
-        }
-
-    :query username: the username that you are searching for
-    :>json message: repsonse information such as error information
-    :>json app.models.user.User user: the user object found
+    :query username: the username for the specifc user that is being searched for
+    :query fuzzy_username: a substring of the username that is being searched for
+    :query role: the substring of the role that is being searched for
+    :query email: a substring of the email that is being searched for
+    :>json app.models.user.User user: the user objects found
     :resheader Content-Type: application/json
-    :status 200: user found
-    :status 404: user does not exit
+    :status 200: user(s) found
     """
 
     response = {
@@ -447,6 +443,67 @@ def get_user():
 
 @user.route('/user', methods=["PUT"])
 def update_user():
+    """Updates the data of a user only if the user making the request is an admin
+
+    .. :quickref: User; Update a user.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        PUT /api/user HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "admin_username": 1,
+            "username": "dummy",
+            "f_name": "John",
+            "l_name": "Doe",
+            "email": "test@gmail.com",
+            "password": "test",
+            "confirm_password": "test",
+            "role": 2,
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Success"
+        }
+
+    .. sourcecode:: http
+
+        HTTP/1.1 401 UNAUTHORIZED
+        Content-Type: application/json
+
+        {
+            "message": {
+                "user": ["User is not an admin."]
+            }
+        }
+
+    :<json string admin_username: the username of the person updating the user
+    :<json string username: the updated username of the user
+    :<json string f_name: the updated first name of the user
+    :<json string l_name: the updated last name of the user
+    :<json string email: the updated email of the user
+    :<json string password: the updated password of the user, optional
+    :<json string confirm_password: field that must match the original password, optional
+    :<json int role: the cost_per_hour of the car being updated
+    :>json message: repsonse information such as error information
+    :resheader Content-Type: application/json
+    :status 200: updating user was successful
+    :status 400: missing or invalid fields
+    :status 401: user is not an admin
+    """
+
     response = {
         'message': '',
     }
@@ -486,6 +543,54 @@ def update_user():
 
 @user.route('/user', methods=["DELETE"])
 def delete_user():
+    """Delete a user from the database only if the user making the request is an admin
+
+    .. :quickref: User; Delete a user.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        DELETE /api/user HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "admin_username": "admin",
+            "username": "dummy"
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Success"
+        }
+
+    .. sourcecode:: http
+
+        HTTP/1.1 401 UNAUTHORIZED
+        Content-Type: application/json
+
+        {
+            "message": {
+                "user": ["User is not an admin."]
+            }
+        }
+
+    :<json string admin_username: the username of the person updating the car
+    :<json string username: the username of the account to be deleted
+    :>json message: repsonse information such as error information
+    :resheader Content-Type: application/json
+    :status 200: deleting user was successfull
+    :status 401: user is not an admin
+    """
+
     response = {
         'message': '',
     }
