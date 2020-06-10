@@ -201,7 +201,7 @@ def put_car():
 
 @car.route('/car', methods=["DELETE"])
 def delete_car():
-    """Delete a car from the databaseonly if the user making the request is an admin
+    """Delete a car from the database only if the user making the request is an admin
 
     .. :quickref: Car; Delete a car.
 
@@ -246,7 +246,6 @@ def delete_car():
     :>json message: repsonse information such as error information
     :resheader Content-Type: application/json
     :status 200: return was successful
-    :status 400: missing or invalid fields
     :status 401: user is not an admin
     """
 
@@ -332,14 +331,12 @@ def get_cars():
         'message': '',
         'cars': None
     }
-    status = None
 
     if request.args.get('id') is not None:
         id = request.args.get('id')
         car = Car.query.get(id)
 
         response['cars'] = car_schema.dump(car)
-        status = 200
     else:
         cars = None
         if request.args.get('make') is not None:
@@ -360,9 +357,8 @@ def get_cars():
         else:
             cars = Car.query.all()
         response['cars'] = car_schema.dump(cars, many=True)
-        status = 200
 
-    return response, status
+    return response, 200
 
 
 @car.route('/return', methods=["POST"])

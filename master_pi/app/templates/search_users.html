@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <script>
+    isLoggedIn();
+
+    // Loading all users on page load
+    fetch("api/user")
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("table-data").innerHTML = displayUsers(data.users)
+      });
+
+    function displayUsers(users) {
+      var output = ""
+      for (var i = 0; i < users.length; ++i) {
+        output += "<tr class='table-data-row' onclick=rowClicked('" + users[i].username + "')>\n"
+            + "<td>" + users[i].username + "</td>\n"
+            + "<td>" + users[i].role + "</td>\n"
+            + "<td>" + users[i].f_name + "</td>\n"
+            + "<td>" + users[i].l_name + "</td>\n"
+            + "<td>" + users[i].email + "</td>\n"
+          + "</tr>\n"
+      }
+      return output;
+    }
+
+    function submitClicked() {
+      let searchBy = document.getElementById('search-by').value;
+      let searchTerm = document.getElementById('search-term').value;
+      let url = "api/user?" + searchBy + "=" + searchTerm
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("table-data").innerHTML = displayUsers(data.users)
+        });
+    }
+
+    function rowClicked(username) {
+      window.location.href = "/edit-user?username=" + username
+    }
+
+    function backClicked() {
+      window.location.href = "/admin-console"
+    }
+
+    function newUserClicked() {
+      window.location.href = "/new-user"
+    }
+  </script>
+
+  <form>
+    <div class="form-row">
+      <div class="col-7">
+        <input type="text" class="form-control" id="search-term" placeholder="Search">
+      </div>
+      <div class="col">
+        <select class="form-control" id="search-by">
+          <option value="" disabled selected>Filter by:</option>
+          <option value="fuzzy_username">Username</option>
+          <option value="role">Role</option>
+          <option value="email">Email</option>
+        </select>
+      </div>
+      <div class="col">
+         <button type="button" class="btn btn-primary" onclick='submitClicked()'>Submit</button>
+      </div>
+    </div>
+  </form>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Role</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody id='table-data'>
+    </tbody>
+  </table>
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-success" onclick='newUserClicked()'>New User</button>
+    <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
+  </div>
+{% endblock %}

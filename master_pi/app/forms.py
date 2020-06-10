@@ -3,6 +3,7 @@ import re
 
 from app.models.user import User
 
+
 class LoginFormSchema(Schema):
     username = fields.Str(required=True)
     password = fields.Str(required=True)
@@ -55,6 +56,48 @@ class RegisterFormSchema(Schema):
     def validate_password(self, data, **kwargs):
         if data["password"] != data["confirm_password"]:
             raise ValidationError("Passwords do not match.")
+
+
+class UpdateUserFormSchema(Schema):
+    admin_username = fields.Str(required=True)
+    username = fields.Str(required=True)
+    f_name = fields.Str(required=True)
+    l_name = fields.Str(required=True)
+    email = fields.Email(required=True)
+    password = fields.Str(required=False)
+    confirm_password = fields.Str(required=False)
+    role = fields.Int(required=True)
+
+    @validates('admin_username')
+    def admin_username_empty(self, value):
+        if value == "":
+            raise ValidationError("Missing admin username.")
+
+    @validates('username')
+    def username_empty(self, value):
+        if value == "":
+            raise ValidationError("Missing username.")
+
+    @validates('f_name')
+    def f_name_empty(self,value):
+        if value == "":
+            raise ValidationError("Missing first name.")
+
+    @validates('l_name')
+    def l_name_empty(self, value):
+        if value == "":
+            raise ValidationError("Missing username.")
+
+    @validates_schema
+    def validate_password(self, data, **kwargs):
+        if "password" in data and "confirm_password" in data:
+            if data["password"] != data["confirm_password"]:
+                raise ValidationError("Passwords do not match.")
+
+    @validates('role')
+    def validate_role(self, value):
+        if value < 1 or value > 4:
+            raise ValidationError("Invalid role.")
 
 
 class AuthenticationFormSchema(Schema):

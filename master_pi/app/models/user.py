@@ -62,3 +62,17 @@ class UserSchema(ma.SQLAlchemySchema):
     role = fields.Str()
 
 user_schema = UserSchema()
+
+class VerboseUserSchema(ma.SQLAlchemySchema):
+    """A class to represent the schema for users
+    """
+    class Meta:
+        model = User
+
+    username = fields.Str()
+    f_name = fields.Str()
+    l_name = fields.Str()
+    email = fields.Email()
+    role = fields.Str()
+
+verbose_user_schema = VerboseUserSchema()

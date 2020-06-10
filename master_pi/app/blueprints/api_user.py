@@ -3,11 +3,12 @@ from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 
 from app.extensions import db, bcrypt
-from app.models.user import User, user_schema
+from app.models.user import User, Role, user_schema, verbose_user_schema
 from app.models.booking import Booking, booking_schema
 from app.forms import (
     LoginFormSchema,
     RegisterFormSchema,
+    UpdateUserFormSchema,
     AuthenticationFormSchema,
     PushbulletFormSchema
 )
@@ -276,7 +277,6 @@ def register_user():
         l_name =  request.json["l_name"]
         email =  request.json["email"]
         password = request.json["password"]
-        confirm_password = request.json["confirm_password"]
 
         # Checking that user is not already in the system
         if User.query.get(username) is not None:
@@ -293,7 +293,7 @@ def register_user():
             db.session.add(new_user)
             db.session.commit()
 
-            response['message'] = "Registered user successfully"
+            response['message'] = "Success"
             response['user'] = user_schema.dump(new_user)
 
     return response, status
@@ -373,9 +373,9 @@ def register_bluetooth():
 
 @user.route('/user', methods=["GET"])
 def get_user():
-    """Gets a user from the database
+    """Gets a user or a collection of users from the database
 
-    .. :quickref: User; Get a user.
+    .. :quickref: User; Get a user(s).
 
     **Example request**:
 
@@ -393,45 +393,226 @@ def get_user():
         Content-Type: application/json
 
         {
-            "message": "User found",
-            "user": {
-                "username": "dummy"
-            }
+            "user": [
+                {
+                    "username": "dummy",
+                    "f_name": "First",
+                    "l_name": "Last",
+                    "email": "john.doe@outlook.com",
+                    "role": "default"
+                }
+            ]
+        }
+
+    :query username: the username for the specifc user that is being searched for
+    :query fuzzy_username: a substring of the username that is being searched for
+    :query role: the substring of the role that is being searched for
+    :query email: a substring of the email that is being searched for
+    :>json app.models.user.User user: the user objects found
+    :resheader Content-Type: application/json
+    :status 200: user(s) found
+    """
+
+    response = {
+        'users': None
+    }
+    status = 200
+
+    if request.args.get('username') is not None:
+        username = request.args.get('username')
+        user = User.query.get(username)
+        response['users'] = verbose_user_schema.dump(user)
+    else:
+        users = None
+        if request.args.get('fuzzy_username') is not None:
+            username = request.args.get('fuzzy_username')
+            users = (User.query.filter(User.username.like("%"+username+"%")).all())
+        elif request.args.get('role') is not None:
+            role = request.args.get('role')
+            users = (User.query.filter(User.role.like("%"+role+"%")).all())
+        elif request.args.get('email') is not None:
+            email = request.args.get('email')
+            users = (User.query.filter(User.email.like("%"+email+"%")).all())
+        else:
+            users = User.query.all()
+
+        response['users'] = verbose_user_schema.dump(users, many=True)
+
+    return response, status
+
+
+@user.route('/user', methods=["PUT"])
+def update_user():
+    """Updates the data of a user only if the user making the request is an admin
+
+    .. :quickref: User; Update a user.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        PUT /api/user HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "admin_username": 1,
+            "username": "dummy",
+            "f_name": "John",
+            "l_name": "Doe",
+            "email": "test@gmail.com",
+            "password": "test",
+            "confirm_password": "test",
+            "role": 2,
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Success"
         }
 
     .. sourcecode:: http
 
-        HTTP/1.1 404 NOT FOUND
+        HTTP/1.1 401 UNAUTHORIZED
         Content-Type: application/json
 
         {
-            "message": "User not found",
-            "user": null
+            "message": {
+                "user": ["User is not an admin."]
+            }
         }
 
-    :query username: the username that you are searching for
+    :<json string admin_username: the username of the person updating the user
+    :<json string username: the updated username of the user
+    :<json string f_name: the updated first name of the user
+    :<json string l_name: the updated last name of the user
+    :<json string email: the updated email of the user
+    :<json string password: the updated password of the user, optional
+    :<json string confirm_password: field that must match the original password, optional
+    :<json int role: the cost_per_hour of the car being updated
     :>json message: repsonse information such as error information
-    :>json app.models.user.User user: the user object found
     :resheader Content-Type: application/json
-    :status 200: user found
-    :status 404: user does not exit
+    :status 200: updating user was successful
+    :status 400: missing or invalid fields
+    :status 401: user is not an admin
     """
 
     response = {
         'message': '',
-        'user': None
     }
-    status = None
+    status = 200
 
-    username = request.args.get('username')
-    user = User.query.get(username)
-    if user is None:
-        response['message'] = "User not found"
-        status = 404
+    form_schema = UpdateUserFormSchema()
+    form_errors = form_schema.validate(request.json)
+    if form_errors:
+        response['message'] = form_errors
+        status = 400
+        print(form_errors)
     else:
-        response['message'] = "User found"
-        response['user'] = user_schema.dump(user)
-        status = 200
+        # Checking if user making the request is an admin
+        admin_user = User.query.get(request.json["admin_username"])
+        if admin_user.role is not Role.admin:
+            response['message'] = {
+                'user': ['User is not an admin.']
+            }
+            status = 401
+        else:
+            user = User.query.get(request.json["username"])
+            user.username = request.json["username"]
+            user.f_name = request.json["f_name"]
+            user.l_name = request.json["l_name"]
+            user.email = request.json["email"]
+            user.role = Role(int(request.json["role"]))
+            if "password" in request.json:
+                password = request.json["password"]
+                hashed_password = bcrypt.generate_password_hash(password)
+                user.password = hashed_password
+
+            db.session.commit()
+            response['message'] = "Success"
+
+    return response, status
+
+
+@user.route('/user', methods=["DELETE"])
+def delete_user():
+    """Delete a user from the database only if the user making the request is an admin
+
+    .. :quickref: User; Delete a user.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        DELETE /api/user HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "admin_username": "admin",
+            "username": "dummy"
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Success"
+        }
+
+    .. sourcecode:: http
+
+        HTTP/1.1 401 UNAUTHORIZED
+        Content-Type: application/json
+
+        {
+            "message": {
+                "user": ["User is not an admin."]
+            }
+        }
+
+    :<json string admin_username: the username of the person updating the car
+    :<json string username: the username of the account to be deleted
+    :>json message: repsonse information such as error information
+    :resheader Content-Type: application/json
+    :status 200: deleting user was successfull
+    :status 401: user is not an admin
+    """
+
+    response = {
+        'message': '',
+    }
+    status = 200
+
+    # Checking if user making the request is an admin
+    admin_user = User.query.get(request.json["admin_username"])
+    if admin_user.role is not Role.admin:
+        response['message'] = {
+            'user': ['User is not an admin.']
+        }
+        status = 401
+    elif admin_user.username == request.json["username"]:
+        response['message'] = {
+            'user': ['Cannot delete your own account.']
+        }
+        status = 401
+    else:
+        user = User.query.get(request.json["username"])
+        db.session.delete(user)
+        db.session.commit()
+        response['message'] = "Success"
 
     return response, status
 

@@ -47,7 +47,11 @@
     }
 
     function backClicked() {
-      window.location.href = "/"
+      {% if admin %}
+        window.location.href = "/admin-console"
+      {% else %}
+        window.location.href = "/"
+      {% endif %}
     }
 
     function newCarClicked() {
@@ -145,7 +149,7 @@
   {% if admin %}
     <div class="btn-group">
       <button type="button" class="btn btn-success" onclick='newCarClicked()'>New Car</button>
-      <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
+      <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
     </div>
   {% elif manager %}
     <div class="btn-group">
