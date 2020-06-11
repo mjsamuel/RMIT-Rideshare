@@ -346,7 +346,7 @@ class TestApiUserEndpoints:
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
 
-    def test_updateuser_success(self, client):
+    def test_update_user_success(self, client):
         """Testing for a successful update user by the admin
         """
 
