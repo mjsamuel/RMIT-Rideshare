@@ -345,3 +345,105 @@ class TestApiUserEndpoints:
 
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
+
+    def test_update_user_success(self, client):
+        """Testing for a successful update user by the admin
+        """
+
+        response = client.put(
+            '/api/user',
+            json={
+                "admin_username": "admin",
+                "confirm_password": "test",
+                "email": "dummyemail@gmail.com",
+                "f_name": "First",
+                "l_name": "Last",
+                "password": "test",
+                "role": "3",
+                "username": "dummy"
+            }
+        )
+
+        expected_data = b'{"message":"Success"}\n'
+
+        assert (response.status == '200 OK')
+        assert (response.data == expected_data)
+
+    def test_update_user_missing_fields(self, client):
+        """Testing that updating a user fails when missing the required fields
+        """
+        response = client.put(
+            '/api/user',
+            json={
+                "admin_username": "admin",
+                "confirm_password": "1234",
+                "email": "dummyemail@gmail.com",
+                "f_name": "First",
+                "l_name": "",
+                "password": "1234",
+                "role": "3",
+                "username": ""
+            }
+        )
+        expected_data = b'{"message":{"l_name":["Missing username."],"username":["Missing username."]}}\n'
+
+        assert (response.status == '400 BAD REQUEST')
+        assert (response.data == expected_data)
+
+    def test_update_user_fail_invalid_role(self, client):
+        """Testing for a unsucessful update user due to not being an admin
+        """
+
+        response = client.put(
+            '/api/user',
+            json={
+                "admin_username": "dummy",
+                "confirm_password": "test",
+                "email": "dummyemail@gmail.com",
+                "f_name": "First",
+                "l_name": "Last",
+                "password": "test",
+                "role": "3",
+                "username": "dummy"
+            }
+        )
+
+        expected_data = b'{"message":{"user":["User is not an admin."]}}\n'
+
+        assert (response.status == '401 UNAUTHORIZED')
+        assert (response.data == expected_data)
+
+    def test_delete_user_fail_invalid_role(self, client):
+        """Testing that deleting a user fails when not the user requesting the
+        update is not an admin
+        """
+        response = client.delete(
+            '/api/user',
+            json={
+                "admin_username": "dummy",
+                "username": "dummy"
+            }
+        )
+        expected_data = b'{"message":{"user":["User is not an admin."]}}\n'
+
+        assert (response.status == '401 UNAUTHORIZED')
+        assert (response.data == expected_data)
+
+
+    def test_delete_user_success(self, client):
+        """Testing that deleting user succeeds with the correct
+        information
+        """
+        response = client.delete(
+            '/api/user',
+            json={
+                "admin_username": "admin",
+                "username": "dummy"
+            }
+        )
+        expected_data = b'{"message":"Success"}\n'
+
+        assert (response.status == '200 OK')
+        assert (response.data == expected_data)
+
+    
