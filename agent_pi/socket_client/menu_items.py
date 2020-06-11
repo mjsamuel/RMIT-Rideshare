@@ -188,9 +188,6 @@ def login_via_bluetooth(client):
     role = None
     mac_address = None
 
-    # Grab username of person
-    username = input("Enter username: ")
-
     # Get the MAC Address of device near pi
     print("Please place device close to pi now...")
     nearby_devices = bluetooth.discover_devices()
@@ -204,11 +201,9 @@ def login_via_bluetooth(client):
         print("Found Device: " + mac_address)
         print("Now processing...")
         # Check for successful login
-        response = client.login_via_bluetooth(username, mac_address)
+        response = client.login_via_bluetooth(mac_address)
         if response['user'] is None:
-            print("The following error(s) occured:")
-            for error in response['message']:
-                print("- " + response['message'][error][0])
+            print(response['message'])
         else:
             user = response['user']['username']
             role =  response['user']['role']

@@ -22,7 +22,7 @@ def new_issue():
 
     .. sourcecode:: http
 
-        POST /api/car HTTP/1.1
+        POST /api/issue HTTP/1.1
         Host: localhost
         Accept: application/json
         Content-Type: application/json
@@ -59,7 +59,7 @@ def new_issue():
     :<json string username: the username of the person reporting the issue
     :<json string details: details of what the issue may be
     :resheader Content-Type: application/json
-    :status 200: creating a new car was successful
+    :status 200: creating a new issue was successful
     :status 400: missing or invalid fields
     :status 401: user is not an admin
     """

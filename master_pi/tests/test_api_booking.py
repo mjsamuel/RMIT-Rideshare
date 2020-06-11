@@ -1,7 +1,7 @@
 import pytest
 
 class TestApiBookingEndpoints:
-    def test_get_for_user(self, client):
+    def test_get_user(self, client):
         """Testing get returns the right bookings for the right user
         """
 
@@ -11,12 +11,13 @@ class TestApiBookingEndpoints:
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
 
-    def test_get_for_car(self, client):
+    def test_get_car(self, client):
         """Testing get returns the right bookings for the right user
         """
 
         response = client.get('/api/booking?car_id=1')
-        expected_data = b'{"bookings":[{"book_time":"2020-05-09T10:22:51","car":null,"car_id":1,"duration":3,"gcal_id":null,"id":2,"username":"dummy"}]}\n'
+        expected_data = b'{"bookings":[{"book_time":"2020-05-09T14:22:51","car":null,"car_id":1,"duration":2,"gcal_id":null,"id":4,"username":"manager"},{"book_time":"2020-05-09T13:22:51","car":null,"car_id":1,"duration":1,"gcal_id":null,"id":3,"username":"john"},{"book_time":"2020-05-09T10:22:51","car":null,"car_id":1,"duration":3,"gcal_id":null,"id":2,"username":"dummy"}]}\n'
+
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
 

@@ -245,7 +245,7 @@ def delete_car():
     :<json string username: the username of the person updating the car
     :>json message: repsonse information such as error information
     :resheader Content-Type: application/json
-    :status 200: return was successful
+    :status 200: deletion of car was successful
     :status 401: user is not an admin
     """
 
@@ -341,13 +341,13 @@ def get_cars():
         cars = None
         if request.args.get('make') is not None:
             make = request.args.get('make')
-            cars = Car.query.filter_by(make=make).all()
+            cars = Car.query.filter(Car.make.like("%"+make+"%")).all()
         elif request.args.get('body_type') is not None:
             body_type = request.args.get('body_type')
-            cars = Car.query.filter_by(body_type=body_type).all()
+            cars = Car.query.filter(Car.body_type.like("%"+body_type+"%")).all()
         elif request.args.get('colour') is not None:
             colour = request.args.get('colour')
-            cars = Car.query.filter_by(colour=colour).all()
+            cars = Car.query.filter(Car.colour.like("%"+colour+"%")).all()
         elif request.args.get('no_seats') is not None:
             no_seats = request.args.get('no_seats')
             cars = Car.query.filter_by(no_seats=no_seats).all()
@@ -544,7 +544,7 @@ def change_car_location():
 
     .. sourcecode:: http
 
-        POST /api/return HTTP/1.1
+        POST /api/setlocation HTTP/1.1
         Host: localhost
         Accept: application/json
         Content-Type: application/json
@@ -569,7 +569,7 @@ def change_car_location():
     :<json string location: the latitude and longitude of the new location
     :>json message: response information such as error information
     :resheader Content-Type: application/json
-    :status 200: update was successful
+    :status 200: updating location was successful
     :status 404: the car does not exist
     """
 
