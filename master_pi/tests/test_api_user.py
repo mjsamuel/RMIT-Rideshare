@@ -27,7 +27,7 @@ class TestApiUserEndpoints:
         """
 
         response = client.post(
-            '/api/login_bluetooth',
+            '/api/login-bluetooth',
             json={
                 "username": "dummy",
                 "mac_address": "18:F1:D8:E2:E9:6B"
@@ -35,6 +35,7 @@ class TestApiUserEndpoints:
         )
 
         expected_data = b'{"message":"Logged in successfully","user":{"role":"default","username":"dummy"}}\n'
+        print(response.data)
 
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
@@ -45,14 +46,14 @@ class TestApiUserEndpoints:
         """
 
         response = client.post(
-            '/api/login_bluetooth',
+            '/api/login-bluetooth',
             json={
                 "username": "dummy",
                 "mac_address": "37:F4:C8:E2:E5:9B"
             }
         )
 
-        expected_data = b'{"message":{"user":["MAC Address either not set, or does not match received."]},"user":null}\n'
+        expected_data = b'{"message":"ERROR: Bluetooth device is not registered to a user","user":null}\n'
 
         assert (response.status == '401 UNAUTHORIZED')
         assert (response.data == expected_data)

@@ -28,7 +28,9 @@ VALUES
 INSERT INTO booking (car_id, username, duration, book_time)
 VALUES
     (2, 'dummy', 1, '2020-05-09 02:22:51'),
-    (1, 'dummy', 3, '2020-05-09 10:22:51');
+    (1, 'dummy', 3, '2020-05-09 10:22:51'),
+    (1, 'john', 1, '2020-05-09 13:22:51'),
+    (1, 'manager', 2, '2020-05-09 14:22:51');
 
 -- Add dummy issues
 

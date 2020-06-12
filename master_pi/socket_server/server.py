@@ -178,7 +178,7 @@ class Server:
         try:
             # Sending location info to API
             api_response = requests.post(
-                'http://localhost:5000/api/register_bluetooth',
+                'http://localhost:5000/api/register-bluetooth',
                 json=message).text
         except:
             # If connection to API fails then send a generic error message
@@ -206,7 +206,7 @@ class Server:
         try:
             # Sending login info to API
             api_response = requests.post(
-                'http://localhost:5000/api/login_bluetooth',
+                'http://localhost:5000/api/login-bluetooth',
                 json=message).text
         except:
             # If connection to API fails then send a generic error message

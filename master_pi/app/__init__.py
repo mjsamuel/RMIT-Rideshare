@@ -22,7 +22,7 @@ def create_app(test_config = None):
         os.pardir,
         'config.ini'))
 
-    # Checking if in test eviroment to change config values
+    # Checking if in test environment to change config values
     if test_config is None:
         config_state = "DEFAULT"
     else:

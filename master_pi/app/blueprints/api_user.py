@@ -109,11 +109,11 @@ def login():
     return response, status
 
 
-@user.route('/login_bluetooth', methods = ["POST"])
+@user.route('/login-bluetooth', methods = ["POST"])
 def login_bluetooth():
-    """Endpoint for a user's credentials to be checked in order to log in to their account
+    """Endpoint for to login via bluetooth
 
-    .. :quickref: User; Validate user credentials for login.
+    .. :quickref: User; Validate MAC address to login.
 
     **Example request**:
 
@@ -125,7 +125,6 @@ def login_bluetooth():
         Content-Type: application/json
 
         {
-            "username": "dummy",
             "mac_address": "18:F1:D8:E2:E9:6B"
         }
 
@@ -153,14 +152,12 @@ def login_bluetooth():
             "user": null
         }
 
-    :<json string username: unique username
     :<json string mac_address: mac address for specified account
     :>json message: repsonse information such as error information
     :>json app.models.user.User user: the user object that has been created
     :resheader Content-Type: application/json
     :status 200: successful login
     :status 401: invalid mac address
-    :status 404: user does not exist
     """
 
     response = {
@@ -169,31 +166,17 @@ def login_bluetooth():
     }
     status = 200
 
-
-    username = request.json["username"]
     mac_address = request.json["mac_address"]
-
-    # Checking if user is in database & find mac address
-    user = User.query.get(username)
+    # Getting the user that corresponds to this MAC address
+    user = User.query.filter_by(mac_address=mac_address).first()
 
     if user is None:
-        response['message'] = {
-            'user': ['User does not exist.']
-        }
-        status = 404
+        response['message'] = "ERROR: Bluetooth device is not registered to a user"
+        status = 401
     else:
-        # Grab mac address of user
-        mac_address_api = user.mac_address
-        # Checking whether mac_address given matches username
-        if mac_address_api == mac_address:
-            response['message'] = "Logged in successfully"
-            response['user'] = user_schema.dump(user)
-            status = 200
-        else:
-            response['message'] = {
-                'user': ['MAC Address either not set, or does not match received.']
-            }
-            status = 401
+        response['message'] = "Logged in successfully"
+        response['user'] = user_schema.dump(user)
+        status = 200
 
     return response, status
 
@@ -299,7 +282,7 @@ def register_user():
     return response, status
 
 
-@user.route('/register_bluetooth', methods=["POST"])
+@user.route('/register-bluetooth', methods=["POST"])
 def register_bluetooth():
     """Updates a users bluetooth mac address identifier
 
@@ -358,10 +341,10 @@ def register_bluetooth():
 
     username = request.json["username"]
     mac_address = request.json["mac_address"]
-    loggedin_user = User.query.get(username)
+    user = User.query.get(username)
 
-    if loggedin_user is not None:
-        loggedin_user.mac_address = mac_address
+    if user is not None:
+        user.mac_address = mac_address
         db.session.commit()
         response['message'] = "User MAC Address updated"
     else:

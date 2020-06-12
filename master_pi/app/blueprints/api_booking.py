@@ -61,6 +61,7 @@ def get_bookings():
     :resheader Content-Type: application/json
     :status 200: bookings found
     """
+
     response = {
         'bookings': None
     }

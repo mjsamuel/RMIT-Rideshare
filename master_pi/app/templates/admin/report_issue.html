@@ -3,15 +3,16 @@
 {% block content %}
   <script>
     isLoggedIn();
+    lockout(["admin"]);
 
     function submitClicked() {
-
       var data = {
+        car_id: {{ car.id }},
         username: sessionStorage.getItem('username'),
-        token: document.getElementById('token').value
-      }
+        details: document.getElementById('details').value,
+      };
 
-      fetch('/api/pushbullet', {
+      fetch('/api/issue', {
           method: "POST",
           headers: {
             'Accept': 'application/json',
@@ -22,7 +23,7 @@
         .then(response => response.json())
         .then(data => {
           if (data.message == "Success") {
-            window.location.href = "/engineer-console";
+            window.location.href = "/admin-console";
           } else {
             let errorBanner = document.getElementById("error-message");
             errors = outputErrors(data.message);
@@ -31,30 +32,22 @@
           }
         });
     }
-
-    function backClicked() {
-      window.location.href = "/engineer-console"
-    }
   </script>
 
-  <div class='text-block'>
-    <b>To link your Pusbullet account you must:</b>
-    <ol>
-      <li>Go to your <a href='https://www.pushbullet.com/#settings/account' id='auth-link'>Pusbullet account dashboard<a></li>
-      <li>Click on create access token</li>
-      <li>Copy and paste the access token into the text box and submit</li>
-    </ol>
-  </div>
+  <h4>{{ car.colour }}, {{ car.make }} {{ car.body_type }}</h4><br>
 
   <form>
     <div class="form-group">
-      <input type="text" class="form-control" id="token" placeholder="Access Token"/>
+      <label for="details">Issue details:</label>
+      <textarea class="form-control" id="details" rows="4"></textarea>
     </div>
     <div class="alert alert-danger" id="error-message"></div>
   </form>
 
   <div class="btn-group">
     <button type="button" class="btn btn-primary" onclick='submitClicked()'>Submit</button>
-    <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
+    <button type="button" class="btn btn-secondary" onclick='redirect("edit-car?id={{ car.id }}")'>
+      Back
+    </button>
   </div>
 {% endblock %}

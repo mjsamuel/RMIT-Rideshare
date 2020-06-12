@@ -14,17 +14,17 @@ def login():
 
 @site.route('/register')
 def register():
-    return render_template('register.html', title='Register')
+    return render_template('shared/edit_user.html', title='Register', user=None)
 
 
 @site.route('/')
 def booked_cars():
-    return render_template('booked_cars.html', title='Booked Cars')
+    return render_template('default/user_console.html', title='Booked Cars')
 
 
 @site.route('/cars')
 def search_cars():
-    return render_template('search_cars.html', title='Cars')
+    return render_template('shared/list_cars.html', title='Cars')
 
 
 @site.route('/car')
@@ -34,28 +34,28 @@ def book_car():
     data = json.loads(response.text)
     title = data['cars']['make'] + ' - ' + data['cars']['body_type']
 
-    return render_template('book_car.html', title=title, car=data['cars'])
+    return render_template('default/book_car.html', title=title, car=data['cars'])
 
 
 @site.route('/google-account')
 def link_google_account():
-    return render_template('link_google_account.html', title='Link Your Google Account')
+    return render_template('default/link_google_account.html', title='Link Your Google Account')
 
 
 # Admin specific routes
 @site.route('/admin-console')
 def admin_console():
-    return render_template('admin_console.html', title='Admin Console')
+    return render_template('admin/admin_console.html', title='Admin Console')
 
 
 @site.route('/manage-users')
 def manage_user():
-    return render_template('search_users.html', title='Manage Users')
+    return render_template('admin/search_users.html', title='Manage Users')
 
 
 @site.route('/new-user')
 def new_user():
-    return render_template('edit_user.html', title='New User', user=None)
+    return render_template('shared/edit_user.html', title='New User', user=None)
 
 
 @site.route('/edit-user')
@@ -63,17 +63,17 @@ def edit_user():
     username = request.args.get('username')
     response = requests.get('http://localhost:5000/api/user?username=' + username)
     data = json.loads(response.text)
-    return render_template('edit_user.html', title='Edit User', user=data['users'])
+    return render_template('shared/edit_user.html', title='Edit User', user=data['users'])
 
 
 @site.route('/manage-cars')
 def manage_cars():
-    return render_template('search_cars.html', title='Manage Cars', admin=True)
+    return render_template('shared/list_cars.html', title='Manage Cars', admin=True)
 
 
 @site.route('/new-car')
 def new_car():
-    return render_template('edit_car.html', title="New Car", car=None)
+    return render_template('admin/edit_car.html', title="New Car", car=None)
 
 
 @site.route('/edit-car')
@@ -82,7 +82,7 @@ def edit_car():
     response = requests.get('http://localhost:5000/api/cars?id=' + car_id)
     data = json.loads(response.text)
 
-    return render_template('edit_car.html', title="Edit Car", car=data['cars'])
+    return render_template('admin/edit_car.html', title="Edit Car", car=data['cars'])
 
 
 @site.route('/report-issue')
@@ -91,13 +91,13 @@ def report_issue():
     response = requests.get('http://localhost:5000/api/cars?id=' + car_id)
     data = json.loads(response.text)
 
-    return render_template('report_issue.html', title="Report Issue", car=data['cars'])
+    return render_template('admin/report_issue.html', title="Report Issue", car=data['cars'])
 
 
 # Engineer specific routes
 @site.route('/engineer-console')
 def engineer_console():
-    return render_template('engineer_console.html', title='Engineer Console')
+    return render_template('engineer/engineer_console.html', title='Engineer Console')
 
 
 @site.route('/issue')
@@ -107,18 +107,18 @@ def issue():
     data = json.loads(response.text)
     title = "Issue - #" + str(data['issues']['id'])
 
-    return render_template('issue.html', title=title, issue=data['issues'])
+    return render_template('engineer/issue.html', title=title, issue=data['issues'])
 
 
 @site.route('/pushbullet-account')
 def link_pushbullet_account():
-    return render_template('link_pushbullet_account.html', title='Link Your Pushbullet Account')
+    return render_template('engineer/link_pushbullet_account.html', title='Link Your Pushbullet Account')
 
 
 # Manager specific routes
 @site.route('/manager-console')
 def manager_console():
-    return render_template('search_cars.html', title='Manager Console', manager=True)
+    return render_template('shared/list_cars.html', title='Manager Console', manager=True)
 
 
 @site.route('/statistics-car')
@@ -127,4 +127,4 @@ def statistics_car():
     response = requests.get('http://localhost:5000/api/cars?id=' + car_id)
     data = json.loads(response.text)
 
-    return render_template('statistics_car.html', title="Car Statistics", car=data['cars'])
+    return render_template('manager/statistics_car.html', title="Car Statistics", car=data['cars'])

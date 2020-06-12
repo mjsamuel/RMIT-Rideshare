@@ -140,7 +140,7 @@ class Client:
         data = self.__server.recv(4096)
 
 
-    def login_via_bluetooth(self, username, mac_address):
+    def login_via_bluetooth(self, mac_address):
         """Sends the username and mac_address values to the Master Pi via
         the TCP socket.\n
         The method then receives a response from the server which is returned.
@@ -160,7 +160,6 @@ class Client:
 
         # Sending login credentials to Master Pi
         message = json.dumps({
-            "username": username,
             "mac_address": mac_address
         })
         self.__server.sendall(message.encode())

@@ -2,6 +2,8 @@
 
 {% block content %}
   <script>
+    // lockout([])
+    
     function submitClicked() {
       var data = {
         username: document.getElementById('username').value,
@@ -20,6 +22,7 @@
         .then(data => {
           if (data.user != null) {
             sessionStorage.setItem('username', data.user.username);
+            sessionStorage.setItem('role', data.user.role);
 
             if (data.user.role == "admin") window.location.href = "/admin-console";
             else if (data.user.role == "manager") window.location.href = "/manager-console";
@@ -34,25 +37,23 @@
           }
         });
     }
-
-    function registerClicked() {
-      window.location.href = "/register"
-    }
   </script>
 
   <form>
     <div class="form-group">
-      <input type="username" class="form-control" id="username" placeholder="Username"/>
+      <label for="username">Username:</label>
+      <input type="username" class="form-control" id="username" />
     </div>
     <div class="form-group">
-      <input type="password" class="form-control" id="password"  placeholder="Password"/>
+      <label for="password">Password:</label>
+      <input type="password" class="form-control" id="password" />
     </div>
 
     <div class="alert alert-danger" id="error-message"></div>
 
     <div class="btn-group">
       <button type="button" class="btn btn-primary" onclick='submitClicked()'>Submit</button>
-      <button type="button" class="btn btn-secondary" onclick='registerClicked()'>Register</button>
+      <button type="button" class="btn btn-success" onclick='redirect("register")'>Register</button>
     </div>
   </form>
 {% endblock %}
