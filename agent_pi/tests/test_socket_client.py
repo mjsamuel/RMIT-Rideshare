@@ -1,6 +1,5 @@
 import json, pytest, mock, pyqrcode, png, os, cv2
 from socket_client.client import Client
-from socket_client.qr_code_util import QrCodeUtil
 
 
 @pytest.fixture
@@ -110,4 +109,3 @@ class TestSocketClient:
 
         # Checking values are as expected
         assert(response == server_response['message'])
-
