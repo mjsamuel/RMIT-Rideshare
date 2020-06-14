@@ -90,7 +90,7 @@ class Client:
         self.__server.sendall(message.encode())
         data = self.__server.recv(4096)
 
-        # Sending piickle to Master Pi
+        # Sending pickle to Master Pi
         self.__server.send(pickle.dumps(image))
         # Since the pickled image is too large for it to be sent in one go, it
         # has to be received in parts and so a terminating string is added to

@@ -1,10 +1,12 @@
-import json, pytest, mock
+import json, pytest, mock, pyqrcode, png, os, cv2
 from socket_client.client import Client
+
 
 @pytest.fixture
 def socket_client():
     socket_client = Client("127.0.0.1", "1")
     return socket_client
+
 
 class TestSocketClient:
 
@@ -39,6 +41,27 @@ class TestSocketClient:
 
         # Checking values are as expected
         assert(response == server_response)
+
+
+    @mock.patch('socket_client.client.socket.socket')
+    def test_login_bluetooth(self, mock_connection, socket_client):
+        server_response = {
+            'message': 'Logged in',
+            'user': 'test'
+        }
+        # Dummy mac address
+        mac_address = '18:F1:D8:E2:E9:6B'
+
+        # Setting up mock object
+        mock_connection.return_value = mock_connection
+        mock_connection.recv.return_value = json.dumps(server_response).encode()
+
+        # Code to be tested
+        socket_client.connect_to_server()
+        response = socket_client.login_via_bluetooth(mac_address)
+
+        # Checking values are as expected
+        assert (response == server_response)
 
 
     @mock.patch('socket_client.client.socket.socket')
