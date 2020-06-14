@@ -497,7 +497,6 @@ def update_user():
     if form_errors:
         response['message'] = form_errors
         status = 400
-        print(form_errors)
     else:
         # Checking if user making the request is an admin
         admin_user = User.query.get(request.json["admin_username"])
