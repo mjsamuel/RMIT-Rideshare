@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <script>
+    isLoggedIn();
+    lockout(["engineer"]);
+  </script>
+
+  <h4>{{ issue.car.make }} {{ issue.car.body_type }}, {{ issue.car.colour }}</h4><br>
+
+  <div class='text-block'>
+    <b>Details:</b><br>
+    {{ issue.details }}
+  </div>
+
+  <div class="car-location-frame" id="google-frame">
+    <iframe id="maps" width="100%" height="450" frameborder="0" style="border:0"
+      src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAj8xU-bbz_CRM37O4GMbdQFMrBZojS3gE
+      &q={{ issue.car.location }}" allowfullscreen>
+    </iframe>
+  </div>
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-secondary" onclick='redirect("engineer-console")'>Back</button>
+  </div>
+
+  <script>
+    let carLocation = "{{ issue.car.location }}"
+    if (carLocation == 'None') {
+      document.getElementById("google-frame").style.display = "none";
+    }
+  </script>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <script>
+    isLoggedIn();
+
+    fetch("api/googleauth")
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("auth-link").href = data.auth_url;
+      });
+
+    function submitClicked() {
+      let data = {
+        username: sessionStorage.getItem('username'),
+        code: document.getElementById('auth-code').value
+      };
+
+      fetch('/api/googleauth', {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.message == "Success") {
+            window.location.href = "/";
+          } else {
+            let errorBanner = document.getElementById("error-message");
+            errors = outputErrors(data.message);
+            errorBanner.innerHTML = errors;
+            errorBanner.style.display = "block";
+          }
+        });
+    }
+  </script>
+
+  <div class='text-block'>
+    <b>To link your Google account you must:</b>
+    <ol>
+      <li><a href='#' id='auth-link'>Click here<a> to open and sign into your Google account</li>
+      <li>Copy the authentication code given by Google</li>
+      <li>Paste the code into the below text box and submit</li>
+    </ol>
+  </div>
+
+  <form>
+    <div class="form-group">
+      <input type="text" class="form-control" id="auth-code" placeholder="Authentication Code"/>
+    </div>
+    <div class="alert alert-danger" id="error-message"></div>
+  </form>
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary" onclick='submitClicked()'>Submit</button>
+    <button type="button" class="btn btn-secondary" onclick='redirect("")'>Back</button>
+  </div>
+{% endblock %}

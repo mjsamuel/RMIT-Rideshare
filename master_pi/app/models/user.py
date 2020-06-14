@@ -1,6 +1,18 @@
+import enum
 from marshmallow import fields, validates_schema, ValidationError
 
 from app.extensions import db, ma
+
+class Role(enum.Enum):
+    """Enums to indicate what permissions a user has
+    """
+    default = 1
+    admin = 2
+    manager = 3
+    engineer = 4
+
+    def __str__(self):
+        return self.name
 
 class User(db.Model):
     """Class to represent a basic user that can hire vehicles
@@ -15,6 +27,8 @@ class User(db.Model):
     :type l_name: string
     :param email: The user's email
     :type email: string
+    :param role: The user's permission role
+    :type role: app.model.user.Role
     :param google_credentials: Google authentication information
     :type username: credentials
     """
@@ -23,9 +37,12 @@ class User(db.Model):
     f_name = db.Column(db.String(32), unique=False, nullable=False)
     l_name = db.Column(db.String(32), unique=False, nullable=False)
     email = db.Column(db.String(64), unique=False, nullable=False)
+    role = db.Column(db.Enum(Role), unique=False, nullable=True)
     google_credentials = db.Column(db.PickleType(), unique=False, nullable=True)
+    mac_address = db.Column(db.String(128), unique=True, nullable=True)
+    pb_token = db.Column(db.String(128), unique=False, nullable=True)
 
-    def __init__(self, username, password, f_name, l_name, email):
+    def __init__(self, username, password, f_name, l_name, email, role=Role.default):
         """Constructor method
         """
         self.username = username
@@ -33,6 +50,7 @@ class User(db.Model):
         self.f_name = f_name
         self.l_name = l_name
         self.email = email
+        self.role = role
 
 class UserSchema(ma.SQLAlchemySchema):
     """A class to represent the schema for users
@@ -41,5 +59,20 @@ class UserSchema(ma.SQLAlchemySchema):
         model = User
 
     username = fields.Str()
+    role = fields.Str()
 
 user_schema = UserSchema()
+
+class VerboseUserSchema(ma.SQLAlchemySchema):
+    """A class to represent the schema for users
+    """
+    class Meta:
+        model = User
+
+    username = fields.Str()
+    f_name = fields.Str()
+    l_name = fields.Str()
+    email = fields.Email()
+    role = fields.Str()
+
+verbose_user_schema = VerboseUserSchema()

@@ -3,6 +3,7 @@
   width: 500px;
   text-align: center;
   padding-top: 125px;
+  margin-bottom: 25px;
 }
 
 h2 {
@@ -40,4 +41,12 @@ form #error-message {
   padding-top: 35px;
   display: block;
   text-align: center;
+}
+
+.form-row {
+  padding-bottom: 12px;
+}
+
+label {
+  font-weight: bold;
 }

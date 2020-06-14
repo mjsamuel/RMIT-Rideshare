@@ -1,0 +1,116 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <script>
+    isLoggedIn();
+    lockout(["manager"]);
+
+    // Populates data data
+    fetch("api/booking?car_id={{ car.id }}")
+      .then(response => response.json())
+      .then(data => {
+        showCharts(data.bookings);
+        showTimeline(data.bookings);
+    });
+
+    function showCharts(bookings) {
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      // Draw the chart and set the chart values
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        // Creating columns
+        data.addColumn('string', 'user');
+        data.addColumn('number', 'timebooked');
+
+        // Adding rows for each booking in table
+        for (var i = 0; i < bookings.length; ++i) {
+          data.addRows([
+              [bookings[i].username, bookings[i].duration]
+          ]);
+        }
+        //  Setting options for chart
+        var options = {
+            'width':650,
+            'height':400
+        };
+
+        // Display the chart
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        // Make sure not to draw graph if there are no bookings
+        if (bookings.length > 0) {
+          chart.draw(data, options);
+          document.getElementById("piechart-label").innerHTML = "Users booking percentage:";
+        }
+      }
+    }
+
+    function showTimeline(bookings) {
+      google.charts.load('current', {'packages':['timeline']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      // Draw the chart and set the chart values
+      function drawChart() {
+        // Display the chart inside the <div> element with id="timeline"
+        var container = document.getElementById('timeline');
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
+
+        // Create columns
+        dataTable.addColumn({ type: 'string', id: 'User' });
+        dataTable.addColumn({ type: 'string', id: 'Name' });
+        dataTable.addColumn({ type: 'date', id: 'Start' });
+        dataTable.addColumn({ type: 'date', id: 'End' });
+
+        // Adding rows for each booking in the table
+        for (var i = 0; i < bookings.length; ++i) {
+          let startMoment = moment.utc(bookings[i].book_time);
+          let startDate = new Date(startMoment.toISOString());
+
+          let endMoment = startMoment.add(bookings[i].duration, 'hours');
+          let endDate = new Date(endMoment.toISOString());
+
+          dataTable.addRows([[
+            bookings[i].username,
+            bookings[i].username,
+            startDate,
+            endDate
+          ]]);
+        }
+
+        var options = {
+          timeline: { showRowLabels: false },
+          'height': dataTable.getNumberOfRows() * 55 + 40,
+          'chartArea': {'width': '100%', 'height': '100%'},
+          'legend': {'position': 'bottom'}
+        };
+
+        // Makes sure not to draw graph if there are no bookings
+        if (bookings.length > 0) {
+          chart.draw(dataTable, options);
+          document.getElementById("timeline-label").innerHTML = "Booking timeline:";
+        }
+      }
+    }
+  </script>
+
+  <h4>
+    {{ car.colour }} {{ car.make }} {{ car.body_type }},<br>
+    {{ car.no_seats }} seater, ${{ car.cost_per_hour }}/hour
+  </h4><br>
+
+  {% if car is not none %}
+    <label for="piechart" id="piechart-label"></label>
+    <div id="piechart"></div>
+    <label for="timeline" id="timeline-label"></label>
+    <div id="timeline"></div>
+  {% endif %}
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-secondary" onclick='redirect("manager-console")'>
+      Back
+    </button>
+  </div>
+{% endblock %}

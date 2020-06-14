@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <script>
+    isLoggedIn();
+    lockout(["admin"]);
+
+    function submitClicked() {
+      var data = {
+        f_name: document.getElementById('first-name').value,
+        l_name: document.getElementById('last-name').value,
+        email: document.getElementById('email').value,
+      };
+
+      username = document.getElementById('username').value;
+      password = document.getElementById('password').value;
+      confirmPassword = document.getElementById('confirm-password').value;
+
+      var method = "POST";
+      {% if user is not none %}
+        data["admin_username"] = sessionStorage.getItem('username');
+        data["role"] = document.getElementById('role').value;
+        data["username"] = "{{ user.username }}"
+        if (password != "") {
+          data["password"] = password;
+          data["confirm_password"] = confirmPassword;
+        }
+        method = "PUT"
+      {% else %}
+        data["username"] = username;
+        data["password"] = password;
+        data["confirm_password"] = confirmPassword;
+      {% endif %}
+
+      make_request(data, method);
+    }
+
+    {% if user is not none %}
+      function deleteClicked() {
+        var data = {
+          admin_username: sessionStorage.getItem('username'),
+          username: "{{ user.username }}",
+        };
+
+        make_request(data, "DELETE");
+      }
+    {% endif %}
+
+    function make_request(data, method) {
+      fetch('/api/user', {
+          method: method,
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.message == "Success") {
+            window.location.href = "/manage-users";
+          } else {
+            let errorBanner = document.getElementById("error-message");
+            errors = outputErrors(data.message);
+            errorBanner.innerHTML = errors;
+            errorBanner.style.display = "block";
+          }
+        });
+    }
+  </script>
+
+  {% block form %}{% endblock %}
+
+  {% if user is not none %}
+    <div class="btn-group">
+      <button type="button" class="btn btn-danger" onclick='deleteClicked()'>Delete</button>
+    </div>
+  {% endif %}
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary" onclick='submitClicked()'>Submit</button>
+    <button type="button" class="btn btn-secondary" onclick='redirect("manage-users")'>Back</button>
+  </div>
+
+{% endblock %}

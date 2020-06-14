@@ -2,10 +2,272 @@ from flask import Blueprint, request
 from datetime import datetime
 
 from app.extensions import db
+from app.models.user import User, Role
 from app.models.car import Car, car_schema
 from app.models.booking import Booking
+from app.forms import EditCarFormSchema
 
 car = Blueprint("car", __name__, url_prefix='/api')
+
+@car.route('/car', methods=["POST"])
+def new_car():
+    """Registers a new car if the user making the request is an admin
+
+    .. :quickref: Car; Register a new car.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        POST /api/car HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "username": "admin",
+            "make": "Toyota",
+            "body_type": "SUV",
+            "colour": "Black",
+            "no_seats": 5,
+            "location": "-37.808880,144.965179",
+            "cost_per_hour": 15
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Success"
+        }
+
+    .. sourcecode:: http
+
+        HTTP/1.1 401 UNAUTHORIZED
+        Content-Type: application/json
+
+        {
+            "message": {
+                "user": ["User is not an admin."]
+            }
+        }
+
+    :<json string username: the username of the person updating the car
+    :<json string make: the make of the car being updated
+    :<json string body_type: the body_type of the car being updated
+    :<json string colour: the colour of the car being updated
+    :<json int no_seats: the no_seats of the car being updated
+    :<json string location: the location of the car being updated
+    :<json int cost_per_hour: the cost_per_hour of the car being updated
+    :>json message: repsonse information such as error information
+    :resheader Content-Type: application/json
+    :status 200: creating a new car was successful
+    :status 400: missing or invalid fields
+    :status 401: user is not an admin
+    """
+
+    response = {
+        'message': '',
+    }
+    status = 200
+
+    form_schema = EditCarFormSchema()
+    form_errors = form_schema.validate(request.json)
+    if form_errors:
+        response['message'] = form_errors
+        status = 400
+    else:
+        # Checking if user making the request is an admin
+        user = User.query.get(request.json["username"])
+        if user.role is not Role.admin:
+            response['message'] = {
+                'user': ['User is not an admin.']
+            }
+            status = 401
+        else:
+            make = request.json["make"]
+            body_type = request.json["body_type"]
+            colour = request.json["colour"]
+            no_seats = request.json["no_seats"]
+            location = request.json["location"]
+            cost_per_hour = request.json["cost_per_hour"]
+
+            car = Car(make, body_type, colour, no_seats, cost_per_hour, location)
+            db.session.add(car)
+            db.session.commit()
+            response['message'] = "Success"
+
+    return response, status
+
+
+@car.route('/car', methods=["PUT"])
+def put_car():
+    """Updates the data of a single car only if the user making the request is an admin
+
+    .. :quickref: Car; Update a car.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        PUT /api/car HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "car_id": 1,
+            "username": "admin",
+            "make": "Toyota",
+            "body_type": "SUV",
+            "colour": "Black",
+            "no_seats": 5,
+            "location": "-37.808880,144.965179",
+            "cost_per_hour": 15
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Success"
+        }
+
+    .. sourcecode:: http
+
+        HTTP/1.1 401 UNAUTHORIZED
+        Content-Type: application/json
+
+        {
+            "message": {
+                "user": ["User is not an admin."]
+            }
+        }
+
+    :<json string car_id: the id of the car being updated
+    :<json string username: the username of the person updating the car
+    :<json string make: the make of the car being updated
+    :<json string body_type: the body_type of the car being updated
+    :<json string colour: the colour of the car being updated
+    :<json int no_seats: the no_seats of the car being updated
+    :<json string location: the location of the car being updated
+    :<json int cost_per_hour: the cost_per_hour of the car being updated
+    :>json message: repsonse information such as error information
+    :resheader Content-Type: application/json
+    :status 200: updating car was successful
+    :status 400: missing or invalid fields
+    :status 401: user is not an admin
+    """
+
+    response = {
+        'message': '',
+    }
+    status = 200
+
+    form_schema = EditCarFormSchema()
+    form_errors = form_schema.validate(request.json)
+    if form_errors:
+        response['message'] = form_errors
+        status = 400
+    else:
+        # Checking if user making the request is an admin
+        user = User.query.get(request.json["username"])
+        if user.role is not Role.admin:
+            response['message'] = {
+                'user': ['User is not an admin.']
+            }
+            status = 401
+        else:
+            car = Car.query.get(request.json["car_id"])
+            car.make = request.json["make"]
+            car.body_type = request.json["body_type"]
+            car.colour = request.json["colour"]
+            car.no_seats = request.json["no_seats"]
+            car.location = request.json["location"]
+            car.cost_per_hour = request.json["cost_per_hour"]
+            db.session.commit()
+            response['message'] = "Success"
+
+    return response, status
+
+
+@car.route('/car', methods=["DELETE"])
+def delete_car():
+    """Delete a car from the database only if the user making the request is an admin
+
+    .. :quickref: Car; Delete a car.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        DELETE /api/car HTTP/1.1
+        Host: localhost
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "car_id": 1,
+            "username": "admin"
+        }
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "message": "Success"
+        }
+
+    .. sourcecode:: http
+
+        HTTP/1.1 401 UNAUTHORIZED
+        Content-Type: application/json
+
+        {
+            "message": {
+                "user": ["User is not an admin."]
+            }
+        }
+
+    :<json string car_id: the id of the car being updated
+    :<json string username: the username of the person updating the car
+    :>json message: repsonse information such as error information
+    :resheader Content-Type: application/json
+    :status 200: deletion of car was successful
+    :status 401: user is not an admin
+    """
+
+    response = {
+        'message': '',
+    }
+    status = 200
+
+    # Checking if user making the request is an admin
+    user = User.query.get(request.json["username"])
+    if user.role is not Role.admin:
+        response['message'] = {
+            'user': ['User is not an admin.']
+        }
+        status = 401
+    else:
+        car = Car.query.get(request.json["car_id"])
+        db.session.delete(car)
+        db.session.commit()
+        response['message'] = "Success"
+
+    return response, status
 
 
 @car.route('/cars', methods=["GET"])
@@ -69,25 +331,23 @@ def get_cars():
         'message': '',
         'cars': None
     }
-    status = None
 
     if request.args.get('id') is not None:
         id = request.args.get('id')
         car = Car.query.get(id)
 
         response['cars'] = car_schema.dump(car)
-        status = 200
     else:
         cars = None
         if request.args.get('make') is not None:
             make = request.args.get('make')
-            cars = Car.query.filter_by(make=make).all()
+            cars = Car.query.filter(Car.make.like("%"+make+"%")).all()
         elif request.args.get('body_type') is not None:
             body_type = request.args.get('body_type')
-            cars = Car.query.filter_by(body_type=body_type).all()
+            cars = Car.query.filter(Car.body_type.like("%"+body_type+"%")).all()
         elif request.args.get('colour') is not None:
             colour = request.args.get('colour')
-            cars = Car.query.filter_by(colour=colour).all()
+            cars = Car.query.filter(Car.colour.like("%"+colour+"%")).all()
         elif request.args.get('no_seats') is not None:
             no_seats = request.args.get('no_seats')
             cars = Car.query.filter_by(no_seats=no_seats).all()
@@ -97,9 +357,8 @@ def get_cars():
         else:
             cars = Car.query.all()
         response['cars'] = car_schema.dump(cars, many=True)
-        status = 200
 
-    return response, status
+    return response, 200
 
 
 @car.route('/return', methods=["POST"])
@@ -118,7 +377,8 @@ def return_car():
         Content-Type: application/json
 
         {
-            "car_id": 1,
+            "username": "dummy",
+            "car_id": 1
         }
 
     **Example response**:
@@ -142,7 +402,7 @@ def return_car():
         }
 
     :<json string username: the username of the person returning the car
-    :<json string car_id: the id of the car being returned
+    :<json int car_id: the id of the car being returned
     :>json message: repsonse information such as error information
     :resheader Content-Type: application/json
     :status 200: return was successful
@@ -203,7 +463,8 @@ def unlock_car():
         Content-Type: application/json
 
         {
-            "car_id": 1,
+            "username": "dummy",
+            "car_id": 1
         }
 
     **Example response**:
@@ -283,13 +544,14 @@ def change_car_location():
 
     .. sourcecode:: http
 
-        POST /api/return HTTP/1.1
+        POST /api/setlocation HTTP/1.1
         Host: localhost
         Accept: application/json
         Content-Type: application/json
 
         {
             "car_id": 1,
+            "location": "-37.808880,144.965179"
         }
 
     **Example response**:
@@ -303,20 +565,11 @@ def change_car_location():
             "message": "Car location updated"
         }
 
-    .. sourcecode:: http
-
-        HTTP/1.1 403 CONFLICT
-        Content-Type: application/json
-
-        {
-            "message": "ERROR: Car location not updated. Location given error."
-        }
-
     :<json string car_id: the id of the car being unlocked
     :<json string location: the latitude and longitude of the new location
     :>json message: response information such as error information
     :resheader Content-Type: application/json
-    :status 200: update was successful
+    :status 200: updating location was successful
     :status 404: the car does not exist
     """
 

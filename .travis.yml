@@ -9,6 +9,7 @@ services:
 cache: pip
 
 before_install:
+  - sudo apt-get -y install bluetooth libbluetooth-dev libzbar0
   - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
   - mysql -e 'CREATE DATABASE IF NOT EXISTS main;'
 

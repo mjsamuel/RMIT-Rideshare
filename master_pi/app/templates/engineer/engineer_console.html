@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <script>
+    isLoggedIn();
+    lockout(["engineer"]);
+    updateIssues();
+
+    function updateIssues() {
+      fetch("api/issue")
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("table-data").innerHTML = displayIssues(data.issues);
+        });
+    }
+
+    function displayIssues(issues) {
+      var output = "";
+      for (var i = 0; i < issues.length; ++i) {
+        let car = issues[i].car
+        // Formatting issue date and time
+        let time = moment.utc(issues[i].time).toDate();
+        let formattedTime = moment(time).format('DD/MM/YY, hh:mm A');
+
+        output +=  "<tr class='table-data-row' onclick=rowClicked('" + issues[i].id + "')>\n"
+            + "<td>" + formattedTime + "</td>\n"
+            + "<td>" + car.make + " " + car.body_type + ", " + car.colour + "</td>\n"
+            + "<td>" + issues[i].resolved + "</td>\n"
+          + "</tr>\n";
+      }
+      return output;
+    }
+
+    function rowClicked(issueId) {
+      window.location.href = "/issue?id=" + issueId;
+    }
+  </script>
+
+  <h4>Recent Issues</h4><br>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Car</th>
+        <th>Resolved</th>
+      </tr>
+    </thead>
+    <tbody id='table-data'>
+    </tbody>
+  </table>
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-success" onclick='redirect("pushbullet-account")'>
+      Link Pushbullet Account
+    </button>
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
+  </div>
+{% endblock %}

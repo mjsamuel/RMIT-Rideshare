@@ -2,19 +2,17 @@
 
 {% block content %}
   <script>
-    lockout([])
+    isLoggedIn();
+    lockout(["admin"]);
 
     function submitClicked() {
-      let data = {
-        username: document.getElementById('username').value,
-        f_name: document.getElementById('first-name').value,
-        l_name: document.getElementById('last-name').value,
-        email: document.getElementById('email').value,
-        password: document.getElementById('password').value,
-        confirm_password: document.getElementById('confirm-password').value
+      var data = {
+        car_id: {{ car.id }},
+        username: sessionStorage.getItem('username'),
+        details: document.getElementById('details').value,
       };
 
-      fetch('/api/user', {
+      fetch('/api/issue', {
           method: "POST",
           headers: {
             'Accept': 'application/json',
@@ -24,9 +22,8 @@
         })
         .then(response => response.json())
         .then(data => {
-          if (data.user != null) {
-            sessionStorage.setItem('username', data.user.username);
-            window.location.href = "/";
+          if (data.message == "Success") {
+            window.location.href = "/admin-console";
           } else {
             let errorBanner = document.getElementById("error-message");
             errors = outputErrors(data.message);
@@ -37,10 +34,20 @@
     }
   </script>
 
-  {% block form %}{% endblock %}
+  <h4>{{ car.colour }}, {{ car.make }} {{ car.body_type }}</h4><br>
+
+  <form>
+    <div class="form-group">
+      <label for="details">Issue details:</label>
+      <textarea class="form-control" id="details" rows="4"></textarea>
+    </div>
+    <div class="alert alert-danger" id="error-message"></div>
+  </form>
 
   <div class="btn-group">
     <button type="button" class="btn btn-primary" onclick='submitClicked()'>Submit</button>
-    <button type="button" class="btn btn-secondary" onclick='redirect("login")'>Back</button>
+    <button type="button" class="btn btn-secondary" onclick='redirect("edit-car?id={{ car.id }}")'>
+      Back
+    </button>
   </div>
 {% endblock %}

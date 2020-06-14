@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <script>
+    isLoggedIn();
+    lockout(["admin"]);
+  </script>
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary" onclick='redirect("manage-cars")'>Manage Cars</button>
+    <button type="button" class="btn btn-success" onclick='redirect("manage-users")'>Manage Users</button>
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn btn-secondary" onclick='logout()'>Logout</button>
+  </div>
+{% endblock %}

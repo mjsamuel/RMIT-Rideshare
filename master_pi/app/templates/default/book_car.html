@@ -31,10 +31,6 @@
           }
         });
     }
-
-    function backClicked() {
-      window.location.href = "/cars"
-    }
   </script>
 
   <h4>{{ car.colour }}, {{ car.no_seats }} seater, ${{ car.cost_per_hour }}/hour</h4><br>
@@ -46,11 +42,6 @@
     <div class="alert alert-danger" id="error-message"></div>
   </form>
 
-  <div class="btn-group">
-    <button type="button" class="btn btn-primary" onclick='submitClicked()'>Book Car</button>
-    <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
-  </div>
-
   <div class="car-loc-frame" id="google-frame">
     <iframe width="100%" height="450" frameborder="0" style="border:0"
     src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAj8xU-bbz_CRM37O4GMbdQFMrBZojS3gE
@@ -58,17 +49,15 @@
     </iframe>
   </div>
 
-  <div id="location-error" style="padding-top: 20px; display: none">
-    <h4> Car selected has no location set. </h4>
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary" onclick='submitClicked()'>Book Car</button>
+    <button type="button" class="btn btn-secondary" onclick='redirect("cars")'>Back</button>
   </div>
 
   <script>
-      let carLoc = "{{ car.location }}"
-      if (carLoc == 'None') {
-        document.getElementById('location-error').style.display = 'block';
+      let carLocation = "{{ car.location }}"
+      if (carLocation == 'None') {
         document.getElementById('google-frame').style.display = 'none';
       }
-      console.log(carLoc);
   </script>
-
 {% endblock %}

@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <script>
+    function rowClicked(carId) {
+      window.location.href = "/car?id=" + carId;
+    }
+  </script>
+
+  {% block table %}{% endblock %}
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-secondary" onclick='redirect("")'>Back</button>
+  </div>
+{% endblock %}

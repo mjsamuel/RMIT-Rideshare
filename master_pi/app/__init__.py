@@ -1,12 +1,13 @@
 import os
 
-import configparser
+import click, configparser
 from flask import Flask
 
 from app.extensions import db, ma, bcrypt
 from app.blueprints.api_user import user
 from app.blueprints.api_car import car
 from app.blueprints.api_booking import booking
+from app.blueprints.api_issue import issue
 from app.blueprints.site import site
 from app.blueprints.docs import docs
 
@@ -21,7 +22,7 @@ def create_app(test_config = None):
         os.pardir,
         'config.ini'))
 
-    # Checking if in test eviroment to change config values
+    # Checking if in test environment to change config values
     if test_config is None:
         config_state = "DEFAULT"
     else:
@@ -51,8 +52,28 @@ def create_app(test_config = None):
     app.register_blueprint(user)
     app.register_blueprint(car)
     app.register_blueprint(booking)
+    app.register_blueprint(issue)
     app.register_blueprint(site)
     app.register_blueprint(docs)
+
+    @app.cli.command("init-db")
+    def init_db():
+        print("Initializing databse...")
+        sql_data_path = os.path.join(
+            os.path.dirname(__file__),
+            os.pardir, 'tests',
+            'data.sql')
+        with open(sql_data_path, 'rb') as file:
+            sql_commands = file.read().decode('utf8')
+        db.session.execute(sql_commands)
+        db.session.commit()
+        print("Done!")
+
+    @app.cli.command("clear-db")
+    def init_db():
+        print("Clearing databse...")
+        db.drop_all()
+        print("Done!")
 
     return app
 

@@ -1,0 +1,168 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <script>
+    isLoggedIn();
+    lockout(["admin"]);
+
+    function submitClicked() {
+      var data = {
+        username: sessionStorage.getItem('username'),
+        make: document.getElementById('make').value,
+        body_type: document.getElementById('body-type').value,
+        colour: document.getElementById('colour').value,
+        no_seats: document.getElementById('no-seats').value,
+        location: document.getElementById('location').value,
+        cost_per_hour: document.getElementById('cost-per-hour').value
+      };
+
+      var method = "POST";
+      {% if car is not none %}
+        data["car_id"] = {{ car.id }};
+        method = "PUT";
+      {% endif %}
+
+      make_request(data, method);
+    }
+
+    {% if car is not none %}
+      function reportIssueClicked() {
+        window.location.href = "/report-issue?id={{ car.id }}";
+      }
+
+      function deleteClicked() {
+        let data = {
+          car_id: {{ car.id }},
+          username: sessionStorage.getItem('username')
+        };
+
+        make_request(data, "DELETE");
+      }
+
+      updateBookings()
+
+      function updateBookings() {
+        fetch("api/booking?car_id={{ car.id }}")
+          .then(response => response.json())
+          .then(data => {
+            document.getElementById("table-data").innerHTML = displayBookings(data.bookings);
+          });
+      }
+
+      function displayBookings(bookings) {
+        var output = "";
+        for (var i = 0; i < bookings.length; ++i) {
+          // Formatting booking date and time
+          let bookTime = moment.utc(bookings[i].book_time).toDate();
+          let formattedBookTime = moment(bookTime).format('DD/MM/YY, hh:mm A');
+
+          // Formatting the prefix for the duration column
+          let duration = bookings[i].duration;
+          var durationPrefix = "hours";
+          if (duration == 1) durationPrefix = "hour";
+
+          output += "<tr>\n"
+              + "<td>" + bookings[i].username + "</td>\n"
+              + "<td>" + formattedBookTime + "</td>\n"
+              + "<td>" + duration + " " + durationPrefix + "</td>\n"
+            + "</tr>\n";
+        }
+        return output;
+      }
+    {% endif %}
+
+    function make_request(data, method) {
+      fetch('/api/car', {
+          method: method,
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.message == "Success") {
+            window.location.href = "/manage-cars";
+          } else {
+            let errorBanner = document.getElementById("error-message");
+            errors = outputErrors(data.message);
+            errorBanner.innerHTML = errors;
+            errorBanner.style.display = "block";
+          }
+        });
+    }
+  </script>
+
+  <form>
+    <div class="form-row">
+      <div class="col">
+        <label for="make">Make:</label>
+        <input type="text" class="form-control" id="make" placeholder="Make" value="{{ car.make }}"/>
+      </div>
+      <div class="col">
+        <label for="body-type">Body Type:</label>
+        <input type="text" class="form-control" id="body-type"  placeholder="Body type" value="{{ car.body_type }}"/>
+      </div>
+      <div class="col">
+        <label for="colour">Colour:</label>
+        <input type="text" class="form-control" id="colour" placeholder="Colour" value="{{ car.colour }}"/>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col">
+        <label for="no-seats">Number of Seats:</label>
+        <input type="number" class="form-control" id="no-seats"  placeholder="Number of seats" value="{{ car.no_seats }}"/>
+      </div>
+      <div class="col">
+        <label for="cost-per-hour">Cost Per Hour:</label>
+        <input type="number" class="form-control" id="cost-per-hour"  placeholder="Cost per hour" value="{{ car.cost_per_hour }}"/>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col">
+        <label for="location">Location:</label>
+        <input type="text" class="form-control" id="location" placeholder="Location" value="{{ car.location }}"/>
+      </div>
+    </div>
+
+    <div class="alert alert-danger" id="error-message"></div>
+  </form>
+
+  {% if car is not none %}
+    <div class="btn-group">
+      <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseTable" aria-expanded="false" aria-controls="collapseTable">
+        Booking history
+      </button>
+    </div>
+    <div class="collapse" id="collapseTable">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Time</th>
+            <th>Duration</th>
+          </tr>
+        </thead>
+        <tbody id='table-data'>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="btn-group">
+      <button type="button" class="btn btn-warning" onclick='reportIssueClicked()'>Report an issue</button>
+    </div>
+
+    <div class="btn-group">
+      <button type="button" class="btn btn-danger" onclick='deleteClicked()'>Delete</button>
+    </div>
+  {% endif %}
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary" onclick='submitClicked()'>Submit</button>
+    <button type="button" class="btn btn-secondary" onclick='redirect("manage-cars")'>Back</button>
+  </div>
+
+{% endblock %}

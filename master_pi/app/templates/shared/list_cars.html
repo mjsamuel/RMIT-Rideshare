@@ -1,6 +1,15 @@
-{% extends "layout.html" %}
+{% if title == "Manage Cars" %}
+  {% extends "admin/list_cars.html" %}
+{% elif title == "Manager Console" %}
+  {% extends "manager/list_cars.html" %}
+{% elif title == "Cars" %}
+  {% extends "default/list_cars.html" %}
+{% else %}
 
-{% block content %}
+{% endif %}
+
+
+{% block table %}
   <script>
     isLoggedIn();
 
@@ -8,7 +17,7 @@
     fetch("api/cars")
       .then(response => response.json())
       .then(data => {
-        document.getElementById("table-data").innerHTML = displayCars(data.cars)
+        document.getElementById("table-data").innerHTML = displayCars(data.cars);
       });
 
     function displayCars(cars) {
@@ -21,28 +30,20 @@
             + "<td>" + cars[i].no_seats + "</td>\n"
             + "<td>$" + cars[i].cost_per_hour + "</td>\n"
           + "</tr>\n"
-      }
+      };
       return output;
     }
 
     function submitClicked() {
       var searchBy = document.getElementById('search-by').value;
       var searchTerm = document.getElementById('search-term').value;
-      var url = "api/cars?" + searchBy + "=" + searchTerm
+      var url = "api/cars?" + searchBy + "=" + searchTerm;
 
       fetch(url)
         .then(response => response.json())
         .then(data => {
-          document.getElementById("table-data").innerHTML = displayCars(data.cars)
+          document.getElementById("table-data").innerHTML = displayCars(data.cars);
         });
-    }
-
-    function rowClicked(carId) {
-      window.location.href = "/car?id=" + carId
-    }
-
-    function backClicked() {
-      window.location.href = "/"
     }
   </script>
 
@@ -80,8 +81,4 @@
     <tbody id='table-data'>
     </tbody>
   </table>
-
-  <div class="btn-group">
-    <button type="button" class="btn btn-secondary" onclick='backClicked()'>Back</button>
-  </div>
 {% endblock %}
