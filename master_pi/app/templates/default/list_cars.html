@@ -1,6 +1,12 @@
 {% extends "layout.html" %}
 
 {% block content %}
+  <script>
+    function rowClicked(carId) {
+      window.location.href = "/car?id=" + carId;
+    }
+  </script>
+
   {% block table %}{% endblock %}
 
   <div class="btn-group">

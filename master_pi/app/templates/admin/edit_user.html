@@ -7,12 +7,12 @@
 
     function submitClicked() {
       var data = {
-        username: document.getElementById('username').value,
         f_name: document.getElementById('first-name').value,
         l_name: document.getElementById('last-name').value,
         email: document.getElementById('email').value,
       };
 
+      username = document.getElementById('username').value;
       password = document.getElementById('password').value;
       confirmPassword = document.getElementById('confirm-password').value;
 
@@ -20,12 +20,14 @@
       {% if user is not none %}
         data["admin_username"] = sessionStorage.getItem('username');
         data["role"] = document.getElementById('role').value;
+        data["username"] = "{{ user.username }}"
         if (password != "") {
           data["password"] = password;
           data["confirm_password"] = confirmPassword;
         }
         method = "PUT"
       {% else %}
+        data["username"] = username;
         data["password"] = password;
         data["confirm_password"] = confirmPassword;
       {% endif %}
