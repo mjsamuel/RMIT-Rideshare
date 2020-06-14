@@ -347,6 +347,31 @@ class TestApiUserEndpoints:
         assert (response.status == '200 OK')
         assert (response.data == expected_data)
 
+
+    def test_user_query_email(self, client):
+        response = client.get('/api/user?email=dummyemail@gmail.com')
+        expected_data = b'{"users":[{"email":"dummyemail@gmail.com","f_name":"First","l_name":"Last","role":"default","username":"dummy"}]}\n'
+
+        assert (response.status == '200 OK')
+        assert (response.data == expected_data)
+
+
+    def test_user_query_role(self, client):
+        response = client.get('/api/user?role=admin')
+        expected_data = b'{"users":[{"email":"admin@gmail.com","f_name":"First","l_name":"Last","role":"admin","username":"admin"}]}\n'
+
+        assert (response.status == '200 OK')
+        assert (response.data == expected_data)
+
+
+    def test_user_query_fuzzy_name(self, client):
+        response = client.get('/api/user?fuzzy_username=dum')
+        expected_data = b'{"users":[{"email":"dummyemail@gmail.com","f_name":"First","l_name":"Last","role":"default","username":"dummy"}]}\n'
+
+        assert (response.status == '200 OK')
+        assert (response.data == expected_data)
+
+
     def test_update_user_success(self, client):
         """Testing for a successful update user by the admin
         """
