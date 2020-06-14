@@ -3,12 +3,6 @@ from socket_client.client import Client
 from socket_client.qr_code_util import QrCodeUtil
 
 
-@pytest.fixture
-def socket_client():
-    socket_client = Client("127.0.0.1", "1")
-    return socket_client
-
-
 class TestQrCodeUtil:
 
 
@@ -26,4 +20,3 @@ class TestQrCodeUtil:
         # Ensuring data that is read matches the data that has been encoded
         assert(data["username"] == "engineer")
         assert(data["password"] == "test")
-
