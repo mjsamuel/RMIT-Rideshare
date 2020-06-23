@@ -4,7 +4,7 @@
   <h1>
     <img src="/docs/images/rpi_logo.png?raw=true" alt="Raspberry Pi Logo" height="125"><br>
     Programming Internet of Things<br> Assignment 3<br>
-    <img src="https://travis-ci.com/mjsamuel/IoT-Assignment3.svg?token=8bnx6syKrM5BbM1FTCfx&branch=master"/><br>
+    <img src="https://travis-ci.com/mjsamuel/RMIT-Rideshare.svg?token=8bnx6syKrM5BbM1FTCfx&branch=master"/><br>
   </h1>
   <strong>Ride Share IoT Application</strong><br>
   <sub>Matthew Samuel, Sakaowduan Artpru, Oskar Floeck and Patrick Jones
